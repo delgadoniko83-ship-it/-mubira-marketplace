@@ -1,2 +1,31 @@
-# -mubira-marketplace
-Plataforma colombiana de muebles, decoración y diseño del hogar.
+# MUBIRA — Marketplace colombiano de muebles
+
+Prototipo inicial de una plataforma colombiana de muebles, decoración y diseño del hogar.
+
+## Estado actual
+- Portada adaptable a celulares y computadores.
+- Navegación por categorías y catálogo de muestra.
+- Buscador de productos y carrito demostrativo.
+- Configuración inicial para publicación como sitio estático en Render.
+
+## Ejecutar
+Abre `index.html` en un navegador. Esta etapa no requiere dependencias ni servidor backend.
+
+## Publicar en Render
+El archivo `render.yaml` define un sitio estático. En Render puedes crear un Blueprint conectado a este repositorio y revisar el servicio `mubira-prototipo` antes de confirmar. Alternativamente, crea un servicio Static Site con rama `main`, comando de compilación vacío y directorio de publicación `.`.
+
+El plan gratuito y sus límites dependen de las condiciones vigentes de Render. No se ha configurado ningún pago ni dominio personalizado.
+
+## Aviso
+Los productos, descripciones y precios son ficticios. No representan inventario ni ofertas reales. El carrito es demostrativo: no recibe pagos ni crea pedidos.
+
+## Próximas etapas
+1. Validar la marca MUBIRA en Colombia.
+2. Incorporar catálogo real autorizado por el cliente.
+3. Crear backend, base de datos y panel administrativo.
+4. Añadir vendedores, inventario y pedidos.
+5. Integrar pagos y logística cuando exista presupuesto y autorización.
+6. Preparar módulos futuros de video, visualización 3D y showroom virtual.
+
+## Tecnologías
+HTML, CSS y JavaScript sin dependencias de servidor.
