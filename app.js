@@ -32,4 +32,15 @@ document.getElementById("menuToggle").addEventListener("click",()=>document.quer
 deck.addEventListener("scroll",()=>{window.requestAnimationFrame(updateNavigation)},{passive:true});
 deck.addEventListener("wheel",e=>{if(Math.abs(e.deltaY)<Math.abs(e.deltaX)||Math.abs(e.deltaY)<18)return;const panel=pages[activePage],canScroll=panel.scrollHeight>panel.clientHeight+4,atTop=panel.scrollTop<=0,atBottom=panel.scrollTop+panel.clientHeight>=panel.scrollHeight-3;if(canScroll&&((e.deltaY>0&&!atBottom)||(e.deltaY<0&&!atTop)))return;e.preventDefault();goToPage(activePage+(e.deltaY>0?1:-1));},{passive:false});
 document.addEventListener("keydown",e=>{if(["INPUT","TEXTAREA"].includes(document.activeElement.tagName))return;if(e.key==="ArrowRight"||e.key==="PageDown"){e.preventDefault();goToPage(activePage+1)}if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();goToPage(activePage-1)}if(e.key==="Escape")closeCart()});
+
+const eraNames={past:"PAST / HERITAGE",present:"PRESENT / NOW",future:"FUTURE / LIVING"};
+const eraColors={past:"#6b4935",present:"#527f94",future:"#17151f"};
+document.querySelectorAll("[data-era-choice]").forEach(button=>button.addEventListener("click",()=>{
+ const era=button.dataset.eraChoice;
+ document.body.dataset.era=era;
+ document.querySelectorAll("[data-era-choice]").forEach(item=>item.classList.toggle("selected",item===button));
+ const stamp=document.querySelector(".era-stamp");if(stamp)stamp.textContent="MUBIRA / "+eraNames[era];
+ const theme=document.querySelector('meta[name="theme-color"]');if(theme)theme.setAttribute("content",eraColors[era]);
+}));
+
 document.getElementById("year").textContent=new Date().getFullYear();renderProducts();renderCart();updateNavigation();
