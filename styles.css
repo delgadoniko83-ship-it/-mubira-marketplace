@@ -374,3 +374,6 @@ body[data-era="present"] .era-switch button.selected{background:linear-gradient(
  .studio360-head{padding:16px}.studio360-head h2{font-size:22px}
  .studio360-viewer-box{padding:18px}.studio360-turntable{min-height:230px}.studio360-turntable img{height:42vh}
 }
+
+/* Ensure the empty-state placeholder respects the hidden attribute. */
+.studio360-placeholder[hidden]{display:none!important}
