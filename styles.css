@@ -318,3 +318,59 @@ body[data-era="present"] .era-switch button.selected{background:linear-gradient(
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+/* Estudio MUBIRA 360° — captura real desde la cámara del dispositivo */
+.collection-tools{display:flex;align-items:center;gap:14px}
+.studio360-launch{border:1px solid #d34aad;background:linear-gradient(110deg,#df35ae,#a084ed);color:#fff;padding:11px 14px;font-size:9px;font-weight:800;letter-spacing:.08em;box-shadow:0 7px 18px #c84ab333}
+.studio360-modal,.studio360-viewer{position:fixed;z-index:90;inset:0;display:grid;place-items:center;padding:16px;background:#15101dcc;backdrop-filter:blur(12px)}
+.studio360-modal[hidden],.studio360-viewer[hidden]{display:none}
+.studio360-shell{width:min(960px,100%);max-height:min(92dvh,900px);overflow:auto;background:linear-gradient(145deg,#f8f4fb,#e8e0f0);border:1px solid #ffffffaa;box-shadow:0 28px 90px #09061180;color:#2b2234}
+.studio360-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #d9cddd}
+.studio360-kicker{margin:0 0 6px;color:#c22c9e;font-size:8px;font-weight:900;letter-spacing:.2em}
+.studio360-head h2,.studio360-viewer-box h2{margin:0;font:800 26px 'Manrope',sans-serif;letter-spacing:-.05em}
+.studio360-close{width:38px;height:38px;border:1px solid #cbbbd4;background:#fff8;color:#42364e;font-size:25px}
+.studio360-body{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(230px,.8fr);gap:22px;padding:22px 24px}
+.studio360-label{display:block;margin:0 0 7px;color:#6e6178;font-size:10px;font-weight:800}
+#studio360Name{width:100%;height:42px;margin-bottom:14px;padding:0 12px;border:1px solid #cdbbd6;background:#fff;color:#30263a;font-size:12px}
+.studio360-camera-wrap{position:relative;display:grid;place-items:center;min-height:260px;overflow:hidden;background:#201a2b;border:1px solid #b9a5c5}
+#studio360Video{display:block;width:100%;max-height:390px;aspect-ratio:4/3;object-fit:cover;transform:scaleX(1)}
+.studio360-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:#f8edff;text-align:center;padding:20px}
+.studio360-placeholder span{font-size:42px;color:#f18bd4}.studio360-placeholder b{font:700 14px 'Manrope'}
+.studio360-placeholder small{max-width:250px;color:#cbbbd8;font-size:10px;line-height:1.6}
+.studio360-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.studio360-actions button{min-height:39px;padding:0 13px;font-size:9px;font-weight:900;letter-spacing:.06em}
+.studio360-primary{border:0;background:linear-gradient(110deg,#dc32a9,#9878eb);color:white}
+.studio360-primary:disabled{opacity:.4;cursor:not-allowed}
+.studio360-secondary{border:1px solid #c4aecf;background:#fff8;color:#5e4a6d}
+.studio360-progress{height:5px;margin-top:14px;overflow:hidden;background:#ded3e5}
+.studio360-progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,#e735ad,#a58af1);transition:width .15s}
+.studio360-status{min-height:30px;margin:9px 0 0;color:#64566e;font-size:10px;line-height:1.5}
+.studio360-tip,.studio360-library-note{color:#887b91;font-size:9px;line-height:1.6}
+.studio360-library{padding-left:18px;border-left:1px solid #d9cddd}
+.studio360-library-title{display:flex;align-items:center;justify-content:space-between}
+.studio360-library-title h3{margin:0;font:800 15px 'Manrope'}
+.studio360-library-title span{display:grid;place-items:center;min-width:24px;height:24px;border-radius:20px;background:#ead8f0;color:#9d328c;font-size:10px;font-weight:800}
+.studio360-library-list{display:grid;gap:8px;max-height:380px;overflow:auto;margin-top:12px}
+.studio360-empty{color:#93869a;font-size:10px;line-height:1.6}
+.studio360-item{display:flex;align-items:center;gap:9px;padding:8px;background:#fff9;border:1px solid #e0d4e7}
+.studio360-thumb{width:54px;height:54px;flex:0 0 54px;object-fit:cover;background:#d7ccdf}
+.studio360-item-copy{min-width:0;flex:1}
+.studio360-item-copy b{display:block;overflow:hidden;color:#40334a;font-size:10px;text-overflow:ellipsis;white-space:nowrap}
+.studio360-item-copy small{display:block;margin-top:4px;color:#8c7d95;font-size:8px}
+.studio360-item button{border:0;background:transparent;color:#b12d93;font-size:9px;font-weight:800}
+.studio360-foot{padding:12px 24px;border-top:1px solid #d9cddd;color:#8b7e92;font-size:8px;line-height:1.5}
+.studio360-viewer{z-index:100}
+.studio360-viewer-box{position:relative;width:min(720px,100%);padding:25px;background:#f8f4fb;color:#30263a;text-align:center;box-shadow:0 28px 90px #09061180}
+.studio360-viewer-box>.studio360-close{position:absolute;right:14px;top:14px}
+.studio360-viewer-box h2{margin-bottom:15px}
+.studio360-turntable{position:relative;display:grid;place-items:center;min-height:300px;overflow:hidden;background:radial-gradient(ellipse,#fff,#e7ddec);cursor:ew-resize;touch-action:pan-y;user-select:none}
+.studio360-turntable img{display:block;width:100%;height:min(52vh,430px);object-fit:contain;pointer-events:none}
+.studio360-turntable span{position:absolute;bottom:12px;padding:7px 10px;background:#2b2035cc;color:white;font-size:8px;font-weight:900;letter-spacing:.16em}
+.studio360-viewer-help{margin:12px 0 0;color:#83758d;font-size:10px}
+@media(max-width:760px){
+ .collection-tools{align-items:flex-end;flex-direction:column;gap:8px}.studio360-launch{padding:9px 10px;font-size:8px}
+ .studio360-body{grid-template-columns:1fr;gap:18px;padding:16px}
+ .studio360-library{padding:15px 0 0;border-left:0;border-top:1px solid #d9cddd}
+ .studio360-camera-wrap{min-height:210px}
+ .studio360-head{padding:16px}.studio360-head h2{font-size:22px}
+ .studio360-viewer-box{padding:18px}.studio360-turntable{min-height:230px}.studio360-turntable img{height:42vh}
+}
