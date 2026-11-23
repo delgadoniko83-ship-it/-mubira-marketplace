@@ -1,65 +1,19 @@
 <!doctype html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f1e9">
-  <meta name="description" content="MUBIRA: muebles, decoración y diseño para tu hogar en Colombia.">
-  <title>MUBIRA | Muebles y diseño para tu hogar</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="announcement">Diseño para vivir mejor · Prototipo de demostración</div>
-  <header class="site-header">
-    <a class="brand" href="#" aria-label="MUBIRA inicio">MUBIRA<span>.</span><small>MUEBLES · DISEÑO · HOGAR</small></a>
-    <nav class="main-nav" aria-label="Navegación principal">
-      <a href="#categorias">Categorías</a><a href="#coleccion">Colección</a><a href="#nosotros">Nuestra esencia</a>
-    </nav>
-    <div class="header-actions">
-      <label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="¿Qué estás buscando?" aria-label="Buscar productos"></label>
-      <button class="cart-button" id="cartButton" aria-label="Abrir carrito">Bolsa <b id="cartCount">0</b></button>
-      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
-    </div>
-  </header>
-  <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">ESPACIOS CON PERSONALIDAD</p>
-        <h1>Tu hogar,<br><em>tu mejor historia.</em></h1>
-        <p class="hero-text">Encuentra inspiración y piezas para crear espacios que se sienten como tuyos.</p>
-        <a class="button button-dark" href="#coleccion">Explorar colección <span>↗</span></a>
-        <div class="hero-note"><span class="note-line"></span> Diseño pensado para cada rincón</div>
-      </div>
-      <div class="hero-art" role="img" aria-label="Ilustración de sala cálida con sofá y decoración">
-        <div class="sun"></div><div class="wall-frame"></div><div class="plant plant-one">✦</div>
-        <div class="sofa"><div class="sofa-back"></div><div class="sofa-seat"></div><div class="sofa-arm"></div><div class="pillow"></div><div class="sofa-leg"></div></div>
-        <div class="side-table"><i></i></div><div class="vase">♧</div><div class="rug"></div>
-        <div class="art-label">INSPIRACIÓN<br><b>01 / SALA</b></div>
-      </div>
-    </section>
-    <section class="category-section section-wrap" id="categorias">
-      <div class="section-heading"><div><p class="eyebrow">ENCUENTRA TU ESTILO</p><h2>Explora por espacios</h2></div><a class="text-link" href="#coleccion">Ver todo <span>→</span></a></div>
-      <div class="category-grid">
-        <a class="category-card cat-living" href="#coleccion" data-category="Salas"><span>01</span><strong>Salas</strong><small>Descanso con estilo ↗</small></a>
-        <a class="category-card cat-dining" href="#coleccion" data-category="Comedores"><span>02</span><strong>Comedores</strong><small>Momentos para compartir ↗</small></a>
-        <a class="category-card cat-bedroom" href="#coleccion" data-category="Habitaciones"><span>03</span><strong>Habitaciones</strong><small>Tu lugar favorito ↗</small></a>
-        <a class="category-card cat-decor" href="#coleccion" data-category="Decoración"><span>04</span><strong>Decoración</strong><small>Detalles que hablan de ti ↗</small></a>
-      </div>
-    </section>
-    <section class="collection section-wrap" id="coleccion">
-      <div class="section-heading"><div><p class="eyebrow">SELECCIÓN MUBIRA</p><h2>Piezas para inspirarte</h2><p class="muted">Productos ilustrativos; precios y referencias de demostración.</p></div><span class="collection-count">COLECCIÓN DE MUESTRA</span></div>
-      <div class="product-grid" id="productGrid"></div>
-      <p class="demo-note">Este prototipo utiliza productos y valores ficticios. No se reciben pagos ni pedidos reales.</p>
-    </section>
-    <section class="story" id="nosotros"><div class="story-art"><div class="story-shape"></div><span>HOGAR<br>ES SENTIR</span></div><div class="story-copy"><p class="eyebrow">LA ESENCIA MUBIRA</p><h2>Los espacios cuentan historias. Hagamos que la tuya sea especial.</h2><p>Estamos creando un lugar para descubrir muebles, encontrar ideas y transformar cada espacio a tu manera. Muy pronto, con marcas y fabricantes de Colombia.</p><a href="#categorias" class="text-link">Descubrir MUBIRA →</a></div></section>
-    <section class="newsletter"><p class="eyebrow">INSPIRACIÓN PARA TU HOGAR</p><h2>Un espacio nuevo<br>para grandes ideas.</h2><p>Estamos preparando algo especial para Colombia.</p></section>
-  </main>
-  <footer><a class="brand footer-brand" href="#">MUBIRA<span>.</span><small>MUEBLES · DISEÑO · HOGAR</small></a><p>Prototipo en desarrollo · Colombia</p><span>© <span id="year"></span> MUBIRA</span></footer>
-  <div class="cart-panel" id="cartPanel" aria-hidden="true"><div class="cart-head"><h3>Tu bolsa</h3><button id="closeCart" aria-label="Cerrar carrito">×</button></div><div id="cartItems" class="cart-items"><p class="muted">Tu bolsa está vacía.</p></div><div class="cart-bottom"><div><span>Total de muestra</span><strong id="cartTotal">$0</strong></div><p>Demostración: el proceso de pago aún no está habilitado.</p></div></div>
-  <div class="scrim" id="scrim"></div>
-  <script src="app.js"></script>
-</body>
-</html>
+<html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20251d"><meta name="description" content="MUBIRA: descubre muebles, diseño y espacios para tu hogar en Colombia.">
+<title>MUBIRA — Diseña tu manera de vivir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body>
+<header class="site-header"><a class="brand" href="#inicio">MUBIRA<span>®</span><small>OBJETOS · ESPACIOS · VIDA</small></a>
+<nav class="main-nav" aria-label="Navegación principal"><a href="#inicio" data-page-link="0">Inicio</a><a href="#espacios" data-page-link="1">Espacios</a><a href="#coleccion" data-page-link="2">Colección</a><a href="#estudio" data-page-link="3">Nuestro mundo</a></nav>
+<div class="header-actions"><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar una pieza..." aria-label="Buscar productos"></label><button class="cart-button" id="cartButton">Bolsa <b id="cartCount">0</b></button><button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button></div></header>
+<main class="page-deck" id="pageDeck" aria-label="Páginas de MUBIRA">
+<section class="page-panel hero" id="inicio" data-page="0"><div class="hero-copy"><p class="eyebrow">UNA NUEVA FORMA DE HABITAR</p><h1>El diseño<br>se siente<br><em>en casa.</em></h1><p class="hero-text">Piezas con carácter. Espacios que hablan de ti. Descubre una nueva manera de imaginar tu hogar.</p><a class="button button-light" href="#espacios" data-go="1">Explorar MUBIRA <span>↗</span></a><div class="hero-note"><span class="note-line"></span> Diseño colombiano · Inspiración sin límites</div></div>
+<div class="hero-visual"><div class="hero-kicker">COLECCIÓN / 001 <span>—</span> VIVIR BONITO</div><div class="hero-window"></div><div class="hero-sun"></div><div class="hero-plant">♧</div><div class="hero-sofa"><i></i><b></b><em></em></div><div class="hero-table"></div><div class="hero-vase">⌁</div><div class="hero-rug"></div><div class="hero-caption">Un lugar para<br><strong>sentirte tú.</strong></div></div><div class="hero-index">01 <span>/ 04</span></div></section>
+<section class="page-panel spaces-page" id="espacios" data-page="1"><div class="page-intro"><p class="eyebrow">ENCUENTRA TU LUGAR</p><h2>¿Qué espacio<br>quieres transformar?</h2><p>Una casa tiene muchas formas de sentirse hogar.</p></div><div class="category-grid">
+<a class="category-card cat-living" href="#coleccion" data-category="Salas" data-go="2"><span>01 / RELAJARSE</span><strong>Salas</strong><small>El placer de llegar a casa ↗</small></a><a class="category-card cat-dining" href="#coleccion" data-category="Comedores" data-go="2"><span>02 / COMPARTIR</span><strong>Comedores</strong><small>Donde pasan las mejores cosas ↗</small></a><a class="category-card cat-bedroom" href="#coleccion" data-category="Habitaciones" data-go="2"><span>03 / DESCANSAR</span><strong>Habitaciones</strong><small>Tu pausa favorita ↗</small></a><a class="category-card cat-decor" href="#coleccion" data-category="Decoración" data-go="2"><span>04 / EXPRESAR</span><strong>Decoración</strong><small>Los detalles son todo ↗</small></a></div><div class="page-footnote">MUBIRA — DISEÑO PARA VIVIR MEJOR</div><div class="hero-index">02 <span>/ 04</span></div></section>
+<section class="page-panel collection" id="coleccion" data-page="2"><div class="section-heading"><div><p class="eyebrow">SELECCIÓN MUBIRA</p><h2>Piezas que hacen<br>la diferencia<span>.</span></h2><p class="muted">Una selección de demostración para imaginar posibilidades.</p></div><span class="collection-count">CATÁLOGO / 2026</span></div><div class="product-grid" id="productGrid"></div><p class="demo-note">Catálogo de muestra: nombres, productos y precios ilustrativos. No hay inventario ni compras reales habilitadas.</p><div class="hero-index">03 <span>/ 04</span></div></section>
+<section class="page-panel studio-page" id="estudio" data-page="3"><div class="studio-art"><div class="studio-arch"></div><div class="studio-object">M</div><span>FORMA · MATERIA · CALMA</span></div><div class="studio-copy"><p class="eyebrow">EL UNIVERSO MUBIRA</p><h2>No se trata<br>solo de muebles.<br><em>Se trata de vivir.</em></h2><p>Estamos construyendo un espacio para descubrir diseño, conectar con fabricantes colombianos y encontrar piezas que hagan cada lugar más tuyo.</p><div class="studio-points"><span>01 <b>Diseño con intención</b></span><span>02 <b>Talento colombiano</b></span><span>03 <b>Espacios para vivir</b></span></div><a class="button button-light" href="#inicio" data-go="0">Volver al inicio ↗</a></div><footer><a class="brand footer-brand" href="#inicio">MUBIRA<span>®</span><small>OBJETOS · ESPACIOS · VIDA</small></a><p>Prototipo en desarrollo · Colombia</p><span>© <span id="year"></span> MUBIRA</span></footer><div class="hero-index">04 <span>/ 04</span></div></section></main>
+<div class="page-controls" aria-label="Cambiar de página"><button id="prevPage" aria-label="Página anterior">←</button><div id="pageDots" class="page-dots"><button aria-label="Ir a inicio" class="active"></button><button aria-label="Ir a espacios"></button><button aria-label="Ir a colección"></button><button aria-label="Ir a nuestro mundo"></button></div><button id="nextPage" aria-label="Página siguiente">→</button><span class="swipe-hint">DESLIZA PARA EXPLORAR</span></div>
+<div class="cart-panel" id="cartPanel" aria-hidden="true"><div class="cart-head"><h3>Tu bolsa</h3><button id="closeCart" aria-label="Cerrar bolsa">×</button></div><div id="cartItems" class="cart-items"><p class="muted">Tu bolsa está vacía.</p></div><div class="cart-bottom"><div><span>Total de muestra</span><strong id="cartTotal">$0</strong></div><p>Demostración: el pago todavía no está habilitado.</p></div></div><div class="scrim" id="scrim"></div><script src="app.js"></script></body></html>
