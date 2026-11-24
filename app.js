@@ -10,13 +10,13 @@ let products=[
 {id:7,name:"Florero Tierra",category:"Decoración",detail:"Accesorio decorativo",price:95000,icon:"🏺",tag:"DETALLE",tone:"#ded5c8",video:""},
 {id:8,name:"Escritorio Línea",category:"Habitaciones",detail:"Espacio de trabajo",price:1150000,icon:"🪵",tag:"FUNCIONAL",tone:"#d8d4c9",video:""}
 ];
-let cart=[],activePage=0;
+let cart=[],activePage=0,catalogIsLive=false;
 const money=n=>new Intl.NumberFormat("es-CO",{style:"currency",currency:"COP",maximumFractionDigits:0}).format(n);
 const grid=document.getElementById("productGrid"),deck=document.getElementById("pageDeck");
 const pages=[...document.querySelectorAll(".page-panel")],dots=[...document.querySelectorAll("#pageDots button")];
 function safeText(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));}
 function renderProducts(list=products){grid.innerHTML=list.length?list.map(p=>`<article class="product-card"><button type="button" class="product-open" data-open-product="${safeText(p.id)}" aria-label="Ver detalles de ${safeText(p.name)}"><div class="product-art" style="background:${p.tone}"><span class="product-tag">${safeText(p.tag)}</span>${p.image_url?`<img class="product-photo" src="${safeText(p.image_url)}" alt="${safeText(p.name)}" loading="lazy">`:`<span class="shape" aria-hidden="true">${safeText(p.icon)}</span>`}</div><span class="product-open-label">VER PRODUCTO ↗</span></button><div class="product-info"><h3>${safeText(p.name)}</h3><p>${safeText(p.detail)}</p><div class="product-bottom"><span class="price">${money(p.price)}</span><button class="add-button" data-add="${safeText(p.id)}">Agregar +</button></div></div></article>`).join(""):'<p class="no-results">No encontramos productos con esa búsqueda.</p>'}
-async function loadLiveCatalog(){try{const {data,error}=await catalogClient.from("products").select("id,name,short_description,price,is_featured,categories(name),product_media(media_type,storage_path,is_primary,sort_order)").eq("status","published").order("created_at",{ascending:false});if(error)throw error;if(!data?.length)return;products=data.map(p=>{const media=p.product_media||[];const photo=media.find(m=>m.media_type==="image"&&m.is_primary)||media.find(m=>m.media_type==="image");const clip=media.find(m=>m.media_type==="video");const url=path=>path?catalogClient.storage.from("mubira-products").getPublicUrl(path).data.publicUrl:"";return{id:p.id,name:p.name,category:p.categories?.name||"Muebles",detail:p.short_description||"Mueble de MUBIRA",price:Number(p.price)||0,icon:"🛋️",tag:p.is_featured?"DESTACADO":"MUBIRA",tone:"#e6dce8",image_url:url(photo?.storage_path),video:url(clip?.storage_path)};});}catch(error){console.warn("Catálogo de MUBIRA: se mantienen los productos de muestra.",error.message);}}
+async function loadLiveCatalog(){try{const {data,error}=await catalogClient.from("products").select("id,name,short_description,price,is_featured,categories(name),product_media(media_type,storage_path,is_primary,sort_order)").eq("status","published").order("created_at",{ascending:false});if(error)throw error;if(!data?.length)return;catalogIsLive=true;products=data.map(p=>{const media=p.product_media||[];const photo=media.find(m=>m.media_type==="image"&&m.is_primary)||media.find(m=>m.media_type==="image");const clip=media.find(m=>m.media_type==="video");const url=path=>path?catalogClient.storage.from("mubira-products").getPublicUrl(path).data.publicUrl:"";return{id:p.id,name:p.name,category:p.categories?.name||"Muebles",detail:p.short_description||"Mueble de MUBIRA",price:Number(p.price)||0,icon:"🛋️",tag:p.is_featured?"DESTACADO":"MUBIRA",tone:"#e6dce8",image_url:url(photo?.storage_path),video:url(clip?.storage_path)};});}catch(error){console.warn("Catálogo de MUBIRA: se mantienen los productos de muestra.",error.message);}}
 function renderCart(){document.getElementById("cartCount").textContent=cart.reduce((n,p)=>n+p.qty,0);document.getElementById("cartTotal").textContent=money(cart.reduce((n,p)=>n+p.price*p.qty,0));const box=document.getElementById("cartItems");box.innerHTML=cart.length?cart.map(p=>`<div class="cart-row"><span>${p.name} × ${p.qty}<br><b>${money(p.price*p.qty)}</b></span><button data-remove="${p.id}">Quitar</button></div>`).join(""):'<p class="muted">Tu bolsa está vacía.</p>'}
 function openCart(){document.getElementById("cartPanel").classList.add("open");document.getElementById("cartPanel").setAttribute("aria-hidden","false");document.getElementById("scrim").classList.add("show")}
 function closeCart(){document.getElementById("cartPanel").classList.remove("open");document.getElementById("cartPanel").setAttribute("aria-hidden","true");document.getElementById("scrim").classList.remove("show")}
@@ -30,6 +30,34 @@ function openProductModal(product,trigger){modalProduct=product;lastProductFocus
 productModal.addEventListener("click",e=>{if(e.target.closest("[data-close-product]"))closeProductModal();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!productModal.hidden)closeProductModal();});
 document.getElementById("productModalAdd").addEventListener("click",()=>{if(!modalProduct)return;const found=cart.find(x=>x.id===modalProduct.id);found?found.qty++:cart.push({...modalProduct,qty:1});renderCart();closeProductModal();});
+
+
+const checkoutForm=document.getElementById("checkoutForm");
+const checkoutStatus=document.getElementById("checkoutStatus");
+const whatsappLink=document.getElementById("orderWhatsAppLink");
+checkoutForm.addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!cart.length){checkoutStatus.textContent="Agrega al menos un producto.";return;}
+ if(!catalogIsLive){checkoutStatus.textContent="El catálogo todavía muestra productos de demostración. Publica tus productos propios antes de recibir pedidos.";return;}
+ const submit=document.getElementById("checkoutSubmit");
+ const formData=new FormData(checkoutForm);
+ const items=cart.map(p=>({product_id:p.id,name:p.name,category:p.category,quantity:p.qty,unit_price:Number(p.price),line_total:Number(p.price)*p.qty}));
+ const total=items.reduce((sum,item)=>sum+item.line_total,0);
+ submit.disabled=true;submit.textContent="Guardando pedido…";checkoutStatus.textContent="Estamos registrando tu pedido en MUBIRA…";whatsappLink.hidden=true;
+ try{
+  const payload={customer_name:String(formData.get("customer_name")||"").trim(),customer_phone:String(formData.get("customer_phone")||"").trim(),customer_city:String(formData.get("customer_city")||"").trim(),customer_address:String(formData.get("customer_address")||"").trim(),customer_notes:String(formData.get("customer_notes")||"").trim()||null,items,subtotal:total,total,payment_method:"cash_on_delivery",status:"new",source:"storefront"};
+  const {data,error}=await catalogClient.from("orders").insert(payload).select("id,order_number").single();
+  if(error)throw error;
+  const lines=items.map(x=>x.quantity+" × "+x.name+" — "+money(x.line_total)).join("\n");
+  const message=["Hola, MUBIRA. Acabo de registrar el pedido #"+data.order_number+".","Nombre: "+payload.customer_name,"Celular: "+payload.customer_phone,"Ciudad: "+payload.customer_city,"Dirección: "+payload.customer_address,"Productos:",lines,"Total: "+money(total),"Pago: contra entrega",payload.customer_notes?"Notas: "+payload.customer_notes:""].filter(Boolean).join("\n");
+  whatsappLink.href="https://wa.me/?text="+encodeURIComponent(message);
+  whatsappLink.hidden=false;
+  checkoutStatus.textContent="¡Pedido #"+data.order_number+" guardado! Ya está en el administrador comercial de MUBIRA.";
+  cart=[];renderCart();
+  checkoutForm.reset();
+ }catch(error){console.error("MUBIRA pedido:",error);checkoutStatus.textContent="No pudimos guardar el pedido. Revisa tu conexión e inténtalo de nuevo.";}
+ finally{submit.disabled=false;submit.textContent="Confirmar pedido";}
+});
 
 document.getElementById("cartItems").addEventListener("click",e=>{const id=e.target.dataset.remove;if(id){cart=cart.filter(p=>String(p.id)!==String(id));renderCart();}});
 document.getElementById("cartButton").addEventListener("click",openCart);document.getElementById("closeCart").addEventListener("click",closeCart);document.getElementById("scrim").addEventListener("click",closeCart);
