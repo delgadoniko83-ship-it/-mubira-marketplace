@@ -110,7 +110,7 @@ body { overflow-x: hidden; }
 
 
 /* Editor de contenido de las cuatro secciones */
-#content .section-editor-panel{max-width:760px}#content textarea{min-height:86px;line-height:1.45}#sectionImagePreview img{display:block;width:100%;max-height:230px;object-fit:contain;border-radius:10px;background:#f0ebf3}
+#content .section-editor-panel{max-width:760px}#content .space-items-panel{margin-top:16px}#spaceItemImagePreview img{display:block;width:100%;max-height:230px;object-fit:contain;border-radius:10px;background:#f0ebf3}#content textarea{min-height:86px;line-height:1.45}#sectionImagePreview img{display:block;width:100%;max-height:230px;object-fit:contain;border-radius:10px;background:#f0ebf3}
 @media(max-width:760px){#content .section-editor-panel{padding:15px}#content .actions button{width:100%;min-height:48px}}
 </style>
 </head>
@@ -182,6 +182,23 @@ body { overflow-x: hidden; }
     <div class="actions"><button class="primary" id="saveSectionContent">Guardar cambios de esta sección</button></div>
     <p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
     <p class="sub">Los cambios se guardan en MUBIRA. Puedes volver a editar cada sección cuando quieras. Límite de imagen: 35 MB.</p>
+   </section>
+   <section class="panel section-editor-panel space-items-panel">
+    <h2>Editar tarjetas de Espacios</h2>
+    <p class="sub">Cambia cada tarjeta por separado: fotografía, texto pequeño, nombre y descripción. Las tarjetas de Colección se administran desde Productos.</p>
+    <label for="spaceItemKey">¿Qué tarjeta quieres editar?</label>
+    <select id="spaceItemKey">
+     <option value="salas">Salas</option><option value="comedores">Comedores</option><option value="habitaciones">Habitaciones</option><option value="decoracion">Decoración</option>
+    </select>
+    <label for="spaceItemEyebrow">Texto pequeño superior</label><input id="spaceItemEyebrow" maxlength="100" placeholder="Ej. 01 / RELAJARSE">
+    <label for="spaceItemTitle">Nombre de la tarjeta</label><input id="spaceItemTitle" maxlength="80" placeholder="Ej. Salas">
+    <label for="spaceItemDescription">Descripción corta</label><textarea id="spaceItemDescription" rows="2" maxlength="240" placeholder="Una frase para presentar este espacio"></textarea>
+    <label for="spaceItemImage">Fotografía de esta tarjeta (puedes tomarla con el celular)</label><input id="spaceItemImage" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+    <div class="file-preview" id="spaceItemImagePreview" hidden></div>
+    <div class="check"><input type="checkbox" id="removeSpaceItemImage"><label for="removeSpaceItemImage">Quitar la fotografía personalizada</label></div>
+    <div class="actions"><button class="primary" id="saveSpaceItem">Guardar esta tarjeta</button></div>
+    <p class="message" id="spaceItemMessage" aria-live="polite">Cargando tarjetas...</p>
+    <p class="sub">Las fotos se guardan en el almacenamiento actual de MUBIRA. Límite: 35 MB por imagen.</p>
    </section>
   </section>
   <section class="admin-screen" id="products">
@@ -370,4 +387,5 @@ const {data:{session:s},error}=await supabase.auth.getSession();if(error)setMess
 })();
 </script>
 <script type="module" src="site-editor-admin.js"></script>
+<script type="module" src="site-items-editor-admin.js"></script>
 </body></html>
