@@ -528,3 +528,40 @@ body[data-era="present"] .era-switch button.selected{background:linear-gradient(
   .header-actions .auth-button span { max-width: 68px; }
   .header-actions .cart-button { margin-right: 82px; }
 }
+
+
+/* Ajuste fino: distribuir los controles móviles sin superponerlos */
+@media (max-width: 760px) {
+  .site-header {
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    grid-template-rows: 42px 36px;
+    grid-template-areas: none;
+  }
+  .site-header > .brand { grid-column: 1; grid-row: 1; }
+  .site-header > .header-actions { display: contents; }
+  .header-actions .auth-button {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .header-actions .cart-button {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    margin: 0;
+  }
+  .header-actions .menu-toggle {
+    grid-column: 4;
+    grid-row: 1;
+    justify-self: end;
+    margin: 0;
+  }
+  .header-actions .search {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+@media (max-width: 380px) {
+  .site-header { grid-template-columns: minmax(0, 1fr) auto auto auto; }
+  .header-actions .auth-button span { max-width: 62px; }
+}
