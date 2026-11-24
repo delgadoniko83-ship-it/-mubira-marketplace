@@ -133,6 +133,18 @@ body { overflow-x: hidden; }
  .deck-controls{padding:7px 2px max(7px,env(safe-area-inset-bottom))}
 }
 @media(max-width:390px){header{padding-left:9px;padding-right:9px}.brand{font-size:17px}.head-actions{gap:4px}.admin-nav button{padding:9px 11px}}
+
+/* MUBIRA · navegación móvil sin paneles internos que atrapan el desplazamiento */
+@media (max-width:760px) {
+ html,body { height:auto !important; min-height:100%; overflow-x:hidden !important; overflow-y:auto !important; }
+ main { height:auto !important; min-height:calc(100dvh - var(--head)); display:block !important; overflow:visible !important; padding-bottom:max(28px,env(safe-area-inset-bottom)); }
+ .admin-deck { display:block !important; height:auto !important; min-height:0 !important; overflow:visible !important; scroll-snap-type:none !important; }
+ .admin-screen { display:block !important; width:100% !important; height:auto !important; min-height:0 !important; overflow:visible !important; scroll-snap-align:none !important; padding-bottom:20px !important; scroll-margin-top:12px; }
+ .admin-nav { position:sticky; top:0; z-index:8; }
+ .admin-screen .actions { position:static !important; padding:8px 0 max(10px,env(safe-area-inset-bottom)) !important; background:transparent !important; }
+ .admin-screen .actions button { min-height:48px; }
+ .admin-screen input[type=file] { max-width:100%; }
+}
 </style>
 </head>
 <body>
