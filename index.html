@@ -160,8 +160,8 @@ async function showPromoWelcome() {
     if (!error && data) promoSettings = data;
   } catch (err) { console.warn("MUBIRA promociones:", err); }
   if (!promoSettings.is_active || localStorage.getItem(promoChoiceKey)) return;
-  document.getElementById("promoWelcomeTitle").innerHTML =
-    (promoSettings.headline || "¡MUBIRA te premia!") + ' <span id="promoWelcomeBenefit">' + formatPromoBenefit(promoSettings) + "</span>";
+  document.getElementById("promoWelcomeTitle").textContent =
+    (promoSettings.headline || "¡MUBIRA te premia!") + " " + formatPromoBenefit(promoSettings);
   document.getElementById("promoWelcomeMessage").textContent = promoSettings.message || "Activa las promociones de MUBIRA y recibe beneficios especiales.";
   promoModal.hidden = false;
 }
@@ -202,10 +202,7 @@ async function choosePromo(accepted) {
 }
 document.getElementById("promoWelcomeAccept")?.addEventListener("click", () => choosePromo(true));
 document.getElementById("promoWelcomeReject")?.addEventListener("click", () => choosePromo(false));
-document.getElementById("promoWelcomeClose")?.addEventListener("click", () => {
-  localStorage.setItem(promoChoiceKey, "dismissed");
-  closePromoModal();
-});
+document.getElementById("promoWelcomeClose")?.addEventListener("click", () => choosePromo(false));
 
 supabase.auth.onAuthStateChange(async (_event, session) => {\n  paintAuth(session);\n  if (session?.user && localStorage.getItem(promoChoiceKey) === "accepted_pending_account") {\n    try { await savePromoConsent(true); localStorage.setItem(promoChoiceKey, "accepted"); closePromoModal(); }\n    catch (err) { console.error("MUBIRA: no se pudo registrar el consentimiento", err); }\n  }\n});
 const { data: { session }, error } = await supabase.auth.getSession();
