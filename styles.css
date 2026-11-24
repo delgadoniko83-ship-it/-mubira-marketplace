@@ -411,3 +411,11 @@ body[data-era="present"] .era-switch button.selected{background:linear-gradient(
  .product-modal-close{right:12px;top:12px}
 }
 @media(prefers-reduced-motion:reduce){.product-open-label{transition:none}.product-card:hover{transform:none}}
+
+
+/* MUBIRA · acceso seguro con Google */
+.auth-button{border:1px solid #c78acb;border-radius:999px;padding:10px 14px;background:linear-gradient(110deg,#f4e8f7,#e8dff8);color:#56365f;font:800 9px 'Manrope',sans-serif;letter-spacing:.04em;white-space:nowrap;cursor:pointer}
+.auth-button:hover{box-shadow:0 5px 18px #bd67c733;transform:translateY(-1px)}
+.auth-button:disabled{opacity:.6;cursor:wait}
+.auth-status{max-width:130px;overflow:hidden;color:#74627d;font-size:8px;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:760px){.auth-button{padding:8px 10px;font-size:8px}.auth-status{display:none}}
