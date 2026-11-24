@@ -61,7 +61,8 @@ $("saveSpaceItem").addEventListener("click",async()=>{
 });
 async function init(){
  const {data:{session:s}}=await db.auth.getSession();session=s;
- if(!s?.user){msg("Inicia sesión primero con la cuenta propietaria de MUBIRA.");return;}
+ if(!s?.user){msg("Inicia sesión con una cuenta autorizada para el administrador técnico.");return;}
+ await db.rpc("claim_technical_admin_invite");
  const [{data:profile,error:profileError},{data:roles,error:rolesError}]=await Promise.all([
   db.from("admin_profiles").select("role").eq("user_id",s.user.id).maybeSingle(),
   db.from("admin_access").select("role").eq("user_id",s.user.id)
