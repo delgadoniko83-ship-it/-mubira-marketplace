@@ -3,13 +3,36 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#30263a;--muted:#81748b;--line:#e8dfec;--pink:#c934a6;--lilac:#8e78d7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0,#f7e4f5,transparent 36%),linear-gradient(145deg,#f2f0f5,#fbf8fc 55%,#eee9f4);color:var(--ink);font-family:'DM Sans',sans-serif}header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px clamp(14px,4vw,48px);background:#ffffffdf;border-bottom:1px solid white;position:sticky;top:0;z-index:4}.brand{font:800 21px Manrope;letter-spacing:.1em;color:inherit;text-decoration:none}.brand small{display:block;font:700 8px 'DM Sans';letter-spacing:.2em;color:#a17ca6}.head-actions{display:flex;gap:10px;align-items:center}.head-actions a{color:inherit;text-decoration:none;font-size:12px}button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:800;min-height:44px}.primary{color:#fff;background:linear-gradient(110deg,var(--pink),var(--lilac));box-shadow:0 8px 20px #a24baf30}.secondary{background:white;border:1px solid var(--line);color:var(--ink)}main{width:min(1000px,100%);margin:0 auto;padding:22px 14px 50px}.intro{margin:8px 0 20px}.eyebrow{font-size:9px;letter-spacing:.2em;color:var(--pink);font-weight:900}.intro h1{font:800 clamp(26px,4vw,38px)/1.05 Manrope;margin:8px 0}.intro p,.sub{color:var(--muted);font-size:12px;line-height:1.55}.panel{background:#ffffffdf;border:1px solid white;border-radius:20px;padding:clamp(15px,3vw,24px);box-shadow:0 12px 35px #36203c0a;margin:14px 0}.panel h2{font:800 19px Manrope;margin:0 0 7px}label{display:block;font-size:11px;font-weight:800;color:#695a73;margin:14px 0 7px}input,select,textarea{font:inherit;font-size:16px;width:100%;border:1px solid #e4dbe9;background:white;border-radius:11px;padding:12px;color:var(--ink)}textarea{min-height:85px;resize:vertical}.check{display:flex;align-items:center;gap:9px;margin:14px 0}.check input{width:auto}.actions{margin-top:16px}.actions button{width:100%}.message{min-height:18px;color:#8e3984;font-size:12px;margin-top:10px}.file-preview{margin:9px 0 14px;padding:10px;border:1px dashed #d9c9df;border-radius:12px;background:#fbf8fc}.file-preview[hidden]{display:none}.file-preview img{display:block;width:100%;max-height:230px;object-fit:contain;border-radius:8px;background:#f0ebf3}.hidden{display:none!important}#loginGate,#denied{max-width:540px;margin:55px auto;text-align:center}.pill{display:inline-flex;padding:7px 11px;border-radius:30px;background:#eee8f7;color:#7955a0;font-size:10px;font-weight:800}footer{text-align:center;color:#9a8fa0;font-size:10px;padding:18px}@media(max-width:480px){header{padding:11px 12px}.brand{font-size:18px}.head-actions{gap:6px}.head-actions a{font-size:10px}.head-actions button{padding:9px 10px;font-size:10px}.panel{border-radius:15px}main{padding:14px 10px 40px}}
-</style></head><body>
+<style>
+#technicalAccessPanel .sub,#technicalAuditPanel .sub{line-height:1.5}
+.access-row,.audit-row{border:1px solid #e8dfec;background:#fff;border-radius:12px;padding:12px;margin:9px 0}
+.access-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.access-row strong,.audit-row strong{font-size:13px;color:#392c43}
+.access-row small,.audit-row small{display:block;color:#887b90;font-size:11px;margin-top:4px}
+.access-row button{min-height:36px;padding:8px 12px;font-size:11px}
+.audit-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.audit-fields{font-size:11px;color:#725c80;margin-top:7px;overflow-wrap:anywhere}
+.audit-action{font-size:10px;font-weight:900;letter-spacing:.08em;color:#a03e91}
+</style></style></head><body>
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN TÉCNICA</small></a><div class="head-actions"><a href="/admin.html">Administración comercial</a><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
 <main>
 <section id="loginGate" class="panel"><p class="eyebrow">ACCESO TÉCNICO SEGURO</p><h1>Diseño y tecnología.</h1><p class="sub">Este espacio controla portadas, imágenes de botones y tarjetas, títulos y textos de las pantallas. No administra productos ni promociones.</p><button class="primary" id="loginButton">Continuar con Google</button><p class="message" id="loginMessage"></p></section>
 <section id="denied" class="panel hidden"><p class="eyebrow">ACCESO RESTRINGIDO</p><h1>Cuenta sin permisos técnicos</h1><p class="sub">La sesión de Google está activa, pero esta cuenta no tiene autorización para cambiar la apariencia de MUBIRA.</p><p id="signedEmail"></p><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
 <div id="techApp" class="hidden">
 <div class="intro"><p class="eyebrow">CENTRO DE DISEÑO · MUBIRA</p><h1>La imagen de tu tienda, bajo control.</h1><p>Modifica una portada o tarjeta, guarda y abre la tienda para revisar el resultado. Las páginas abiertas se sincronizan automáticamente.</p><span class="pill">ADMINISTRACIÓN TÉCNICA</span></div>
+<section class="panel" id="technicalAccessPanel">
+<h2>Personas autorizadas</h2><p class="sub">Agrega los correos de Google que pueden entrar al administrador técnico. La persona debe iniciar sesión con ese mismo correo. Puedes retirar el acceso cuando lo necesites.</p>
+<form id="technicalInviteForm">
+<label for="technicalInviteEmail">Correo de Google que vas a autorizar</label><input id="technicalInviteEmail" type="email" required maxlength="254" placeholder="persona@gmail.com" autocomplete="email">
+<div class="actions"><button class="primary" type="submit" id="technicalInviteSave">Autorizar acceso técnico</button></div>
+</form><p class="message" id="technicalInviteMessage" aria-live="polite"></p>
+<div id="technicalInviteList" class="sub">Cargando accesos...</div>
+</section>
+<section class="panel" id="technicalAuditPanel">
+<h2>Historial y responsabilidad</h2><p class="sub">Cada cambio queda registrado con el correo de la sesión, fecha, tipo de acción y campos modificados. El historial no se puede editar desde estos paneles.</p>
+<div class="actions"><button class="secondary" id="refreshTechnicalAudit" type="button">Actualizar historial</button></div>
+<div id="technicalAuditList" class="sub">Cargando historial...</div>
+</section>
 <section class="panel section-editor-panel">
 <h2>Portadas de las pantallas</h2><p class="sub">Selecciona Inicio, Espacios, Colección o Nuestro mundo. Cambia su portada, títulos, textos y etiqueta del botón.</p>
 <label for="sectionKey">Pantalla que quieres editar</label><select id="sectionKey"><option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option></select>
@@ -41,6 +64,7 @@ const supabase=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publi
 const $=id=>document.getElementById(id);let session=null;
 function show(id){["loginGate","denied","techApp"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
 async function checkAccess(s){session=s;$("authButton").textContent=s?.user?"Cerrar sesión":"Entrar con Google";if(!s?.user){show("loginGate");return;}
+ await supabase.rpc("claim_technical_admin_invite");
  const [{data:p,error:pe},{data:r,error:re}]=await Promise.all([supabase.from("admin_profiles").select("role").eq("user_id",s.user.id).maybeSingle(),supabase.from("admin_access").select("role").eq("user_id",s.user.id)]);
  const allowed=(!pe&&p?.role==="owner")||(!re&&(r||[]).some(x=>x.role==="technical_admin"));
  if(allowed)show("techApp");else{show("denied");$("signedEmail").textContent=s.user.email||"";}
@@ -49,5 +73,5 @@ async function signIn(){ $("loginMessage").textContent="Conectando con Google...
 $("loginButton").addEventListener("click",signIn);$("authButton").addEventListener("click",async()=>{if(session?.user)await supabase.auth.signOut();else signIn();});$("signOutDenied").addEventListener("click",()=>supabase.auth.signOut());
 supabase.auth.onAuthStateChange((_event,s)=>queueMicrotask(()=>checkAccess(s)));const {data:{session:s}}=await supabase.auth.getSession();await checkAccess(s);
 </script>
-<script type="module" src="site-editor-admin.js"></script><script type="module" src="site-items-editor-admin.js"></script>
+<script type="module" src="technical-admin-control.js"></script><script type="module" src="site-editor-admin.js"></script><script type="module" src="site-items-editor-admin.js"></script>
 </body></html>
