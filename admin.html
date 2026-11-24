@@ -239,7 +239,7 @@ $("authButton").addEventListener("click",async()=>{if(session?.user){await supab
 $("signOutDenied").addEventListener("click",()=>supabase.auth.signOut());
 
 const moneyCOP=value=>new Intl.NumberFormat("es-CO",{style:"currency",currency:"COP",maximumFractionDigits:0}).format(Number(value)||0);
-const slugify=value=>value.toLocaleLowerCase("es").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"producto";
+const slugify=value=>value.toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"producto";
 
 const previewUrls={photo:null,video:null};
 function showFilePreview(inputId,previewId,type){
