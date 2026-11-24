@@ -54,6 +54,7 @@ footer{text-align:center;color:#9a8fa0;font-size:10px;padding:8px 12px}
   <button class="active" data-panel="overview" aria-current="page">Resumen</button>
   <button data-panel="promotion">Beneficio</button>
   <button data-panel="campaigns">Marketing</button>
+  <button data-panel="products">Productos</button>
  </nav>
  <div class="admin-deck" id="adminDeck">
   <section class="admin-screen" id="overview">
@@ -89,6 +90,29 @@ footer{text-align:center;color:#9a8fa0;font-size:10px;padding:8px 12px}
     <section class="panel"><h2>Campañas guardadas</h2><p class="sub">Historial de borradores y campañas.</p><div id="campaignList"><p class="sub">Cargando...</p></div></section>
    </div>
    <div class="warn">La entrega de notificaciones reales requiere terminar el servicio Web Push y probarlo en dispositivos compatibles.</div>
+  <section class="admin-screen" id="products">
+   <div class="screen-heading"><div><h2>Catálogo de productos</h2><p>Crea muebles, actualiza precios y administra sus archivos.</p></div></div>
+   <div class="columns">
+    <section class="panel">
+     <h2 id="productFormTitle">Nuevo producto</h2><p class="sub">Los cambios se guardan en la base de datos de MUBIRA.</p>
+     <input type="hidden" id="productId">
+     <label for="productName">Nombre del mueble</label><input id="productName" maxlength="140" placeholder="Ej. Sofá Oslo" required>
+     <label for="productCategory">Categoría</label><input id="productCategory" maxlength="80" placeholder="Ej. Salas">
+     <label for="productPrice">Precio en pesos colombianos (COP)</label><input id="productPrice" type="number" min="0" step="1000" placeholder="Ej. 1890000" required>
+     <label for="productShort">Descripción corta</label><input id="productShort" maxlength="180" placeholder="Ej. Sofá de tres puestos">
+     <label for="productDescription">Descripción completa</label><textarea id="productDescription" maxlength="3000" placeholder="Materiales, medidas, acabados y detalles..."></textarea>
+     <label for="productStock">Unidades disponibles</label><input id="productStock" type="number" min="0" step="1" value="0">
+     <label for="productPhoto">Fotografía principal (puedes tomarla con la cámara)</label><input id="productPhoto" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+     <label for="productVideo">Video del producto (puedes grabarlo desde el celular)</label><input id="productVideo" type="file" accept="video/mp4,video/webm" capture="environment">
+     <div class="check"><input type="checkbox" id="productFeatured"><label for="productFeatured">Destacar este producto</label></div>
+     <div class="check"><input type="checkbox" id="productPublish"><label for="productPublish">Publicar en la tienda</label></div>
+     <div class="actions"><button class="primary" id="saveProduct">Guardar producto</button><button class="secondary" id="clearProduct">Limpiar</button></div>
+     <p class="message" id="productMessage" aria-live="polite"></p>
+     <p class="sub">Límite por archivo: 35 MB. Para el video de giro 360° conectaremos la captura de ángulos al mismo producto en el siguiente paso.</p>
+    </section>
+    <section class="panel"><h2>Productos guardados</h2><p class="sub">Toca Editar para cambiar nombre, precio, descripción o archivos.</p><div id="productList"><p class="sub">Cargando catálogo...</p></div></section>
+   </div>
+  </section>
   </section>
  </div>
  <div class="deck-controls"><span>Desliza para cambiar de sección</span><div class="arrows"><button type="button" id="previousPanel" aria-label="Sección anterior">‹</button><button type="button" id="nextPanel" aria-label="Sección siguiente">›</button></div></div>
@@ -109,12 +133,60 @@ async function checkAccess(s){
  if(error){show("denied");$("signedEmail").textContent=s.user.email||"";return;}
  owner=data?.role==="owner";
  if(!owner){show("denied");$("signedEmail").textContent=s.user.email||"";return;}
- show("adminApp");await loadDashboard();
+ show("adminApp");await loadDashboard();await loadProducts();
 }
 async function signIn(){setMessage("loginMessage","Conectando con Google...");const {error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.href.split("?")[0]}});if(error)setMessage("loginMessage","No se pudo iniciar sesión: "+error.message);}
 $("loginButton").addEventListener("click",signIn);
 $("authButton").addEventListener("click",async()=>{if(session?.user){await supabase.auth.signOut();}else signIn();});
 $("signOutDenied").addEventListener("click",()=>supabase.auth.signOut());
+
+const moneyCOP=value=>new Intl.NumberFormat("es-CO",{style:"currency",currency:"COP",maximumFractionDigits:0}).format(Number(value)||0);
+const slugify=value=>value.toLocaleLowerCase("es").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"producto";
+function clearProductForm(){["productId","productName","productCategory","productPrice","productShort","productDescription"].forEach(id=>$(id).value="");$("productStock").value="0";$("productFeatured").checked=false;$("productPublish").checked=false;$("productPhoto").value="";$("productVideo").value="";$("productFormTitle").textContent="Nuevo producto";setMessage("productMessage","");}
+async function loadProducts(){
+ const box=$("productList");box.innerHTML='<p class="sub">Cargando catálogo...</p>';
+ const {data,error}=await supabase.from("products").select("id,name,slug,short_description,price,status,is_featured,stock_quantity,category_id,description,product_media(id,media_type,storage_path,is_primary,sort_order)").order("created_at",{ascending:false});
+ if(error){box.textContent="No se pudo cargar el catálogo: "+error.message;return;}
+ if(!data?.length){box.innerHTML='<p class="sub">Aún no hay productos propios. Crea el primero en este formulario.</p>';return;}
+ box.innerHTML=data.map(p=>'<article class="campaign"><strong>'+escapeHtml(p.name)+'</strong><small>'+moneyCOP(p.price)+' · '+(p.status==="published"?"PUBLICADO":"BORRADOR")+' · '+(p.stock_quantity||0)+' unidades</small><p>'+escapeHtml(p.short_description||"Sin descripción")+'</p><button class="secondary" type="button" data-edit-product="'+p.id+'">Editar</button></article>').join("");
+ box.querySelectorAll("[data-edit-product]").forEach(button=>button.addEventListener("click",()=>{const p=data.find(item=>item.id===button.dataset.editProduct);if(!p)return;$("productId").value=p.id;$("productName").value=p.name||"";$("productCategory").value="";$("productPrice").value=p.price??"";$("productShort").value=p.short_description||"";$("productDescription").value=p.description||"";$("productStock").value=p.stock_quantity||0;$("productFeatured").checked=!!p.is_featured;$("productPublish").checked=p.status==="published";$("productFormTitle").textContent="Editar producto";setMessage("productMessage","Editando "+p.name+". Selecciona nuevos archivos solo si deseas reemplazarlos.");$("productName").focus();}));
+}
+function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));}
+async function uploadProductFile(productId,file,mediaType){
+ if(!file)return null;
+ if(file.size>35*1024*1024)throw new Error("El archivo "+file.name+" supera el límite de 35 MB.");
+ const ext=(file.name.split(".").pop()|| (mediaType==="image"?"jpg":"mp4")).toLowerCase().replace(/[^a-z0-9]/g,"");
+ const path=productId+"/"+mediaType+"-"+Date.now()+"."+ext;
+ const {data,error}=await supabase.storage.from("mubira-products").upload(path,file,{contentType:file.type,upsert:false});
+ if(error)throw error;
+ const {data:{publicUrl}}=supabase.storage.from("mubira-products").getPublicUrl(data.path);
+ const {error:mediaError}=await supabase.from("product_media").insert({product_id:productId,media_type:mediaType,source_type:"upload",storage_path:data.path,original_filename:file.name,mime_type:file.type,file_size_bytes:file.size,is_primary:mediaType==="image"});
+ if(mediaError)throw mediaError;
+ return publicUrl;
+}
+$("clearProduct").addEventListener("click",clearProductForm);
+$("saveProduct").addEventListener("click",async()=>{
+ if(!owner||!session?.user)return;
+ const name=$("productName").value.trim(),price=Number($("productPrice").value);
+ if(!name||!Number.isFinite(price)||price<0){setMessage("productMessage","Escribe el nombre y un precio válido en COP.");return;}
+ const button=$("saveProduct");button.disabled=true;setMessage("productMessage","Guardando ficha del producto...");
+ try{
+  let categoryId=null;const categoryName=$("productCategory").value.trim();
+  if(categoryName){const slug=slugify(categoryName);const found=await supabase.from("categories").select("id").eq("slug",slug).maybeSingle();if(found.error)throw found.error;if(found.data)categoryId=found.data.id;else{const made=await supabase.from("categories").insert({name:categoryName,slug,is_active:true}).select("id").single();if(made.error)throw made.error;categoryId=made.data.id;}}
+  const id=$("productId").value;
+  const payload={name,slug:slugify(name),category_id:categoryId,price,currency_code:"COP",short_description:$("productShort").value.trim()||null,description:$("productDescription").value.trim()||null,stock_quantity:Math.max(0,Math.floor(Number($("productStock").value)||0)),is_featured:$("productFeatured").checked,status:$("productPublish").checked?"published":"draft",published_at:$("productPublish").checked?new Date().toISOString():null,updated_at:new Date().toISOString()};
+  let productId=id;
+  if(id){const {error}=await supabase.from("products").update(payload).eq("id",id);if(error)throw error;}
+  else{const {data,error}=await supabase.from("products").insert(payload).select("id").single();if(error)throw error;productId=data.id;}
+  setMessage("productMessage","Ficha guardada. Subiendo archivos...");
+  await uploadProductFile(productId,$("productPhoto").files[0],"image");
+  await uploadProductFile(productId,$("productVideo").files[0],"video");
+  setMessage("productMessage","Producto guardado correctamente. La fotografía y el video seleccionados quedaron almacenados.");
+  clearProductForm();await loadProducts();
+ }catch(error){setMessage("productMessage","No se pudo completar: "+error.message);}
+ finally{button.disabled=false;}
+});
+
 async function loadDashboard(){
  const [settings,consents,push,campaigns]=await Promise.all([
   supabase.from("promotion_settings").select("*").eq("id",1).maybeSingle(),
