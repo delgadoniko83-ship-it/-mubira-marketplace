@@ -145,11 +145,11 @@ const slugify=value=>value.toLocaleLowerCase("es").normalize("NFD").replace(/[\\
 function clearProductForm(){["productId","productName","productCategory","productPrice","productShort","productDescription"].forEach(id=>$(id).value="");$("productStock").value="0";$("productFeatured").checked=false;$("productPublish").checked=false;$("productPhoto").value="";$("productVideo").value="";$("productFormTitle").textContent="Nuevo producto";setMessage("productMessage","");}
 async function loadProducts(){
  const box=$("productList");box.innerHTML='<p class="sub">Cargando catálogo...</p>';
- const {data,error}=await supabase.from("products").select("id,name,slug,short_description,price,status,is_featured,stock_quantity,category_id,description,product_media(id,media_type,storage_path,is_primary,sort_order)").order("created_at",{ascending:false});
+ const {data,error}=await supabase.from("products").select("id,name,slug,short_description,price,status,is_featured,stock_quantity,category_id,description,categories(name),product_media(id,media_type,storage_path,is_primary,sort_order)").order("created_at",{ascending:false});
  if(error){box.textContent="No se pudo cargar el catálogo: "+error.message;return;}
  if(!data?.length){box.innerHTML='<p class="sub">Aún no hay productos propios. Crea el primero en este formulario.</p>';return;}
  box.innerHTML=data.map(p=>'<article class="campaign"><strong>'+escapeHtml(p.name)+'</strong><small>'+moneyCOP(p.price)+' · '+(p.status==="published"?"PUBLICADO":"BORRADOR")+' · '+(p.stock_quantity||0)+' unidades</small><p>'+escapeHtml(p.short_description||"Sin descripción")+'</p><button class="secondary" type="button" data-edit-product="'+p.id+'">Editar</button></article>').join("");
- box.querySelectorAll("[data-edit-product]").forEach(button=>button.addEventListener("click",()=>{const p=data.find(item=>item.id===button.dataset.editProduct);if(!p)return;$("productId").value=p.id;$("productName").value=p.name||"";$("productCategory").value="";$("productPrice").value=p.price??"";$("productShort").value=p.short_description||"";$("productDescription").value=p.description||"";$("productStock").value=p.stock_quantity||0;$("productFeatured").checked=!!p.is_featured;$("productPublish").checked=p.status==="published";$("productFormTitle").textContent="Editar producto";setMessage("productMessage","Editando "+p.name+". Selecciona nuevos archivos solo si deseas reemplazarlos.");$("productName").focus();}));
+ box.querySelectorAll("[data-edit-product]").forEach(button=>button.addEventListener("click",()=>{const p=data.find(item=>item.id===button.dataset.editProduct);if(!p)return;$("productId").value=p.id;$("productName").value=p.name||"";$("productCategory").value=p.categories?.name||"";$("productPrice").value=p.price??"";$("productShort").value=p.short_description||"";$("productDescription").value=p.description||"";$("productStock").value=p.stock_quantity||0;$("productFeatured").checked=!!p.is_featured;$("productPublish").checked=p.status==="published";$("productFormTitle").textContent="Editar producto";setMessage("productMessage","Editando "+p.name+". Selecciona nuevos archivos solo si deseas reemplazarlos.");$("productName").focus();}));
 }
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));}
 async function uploadProductFile(productId,file,mediaType){
@@ -157,6 +157,7 @@ async function uploadProductFile(productId,file,mediaType){
  if(file.size>35*1024*1024)throw new Error("El archivo "+file.name+" supera el límite de 35 MB.");
  const ext=(file.name.split(".").pop()|| (mediaType==="image"?"jpg":"mp4")).toLowerCase().replace(/[^a-z0-9]/g,"");
  const path=productId+"/"+mediaType+"-"+Date.now()+"."+ext;
+ await supabase.from("product_media").delete().eq("product_id",productId).eq("media_type",mediaType);
  const {data,error}=await supabase.storage.from("mubira-products").upload(path,file,{contentType:file.type,upsert:false});
  if(error)throw error;
  const {data:{publicUrl}}=supabase.storage.from("mubira-products").getPublicUrl(data.path);
