@@ -108,6 +108,10 @@ body { overflow-x: hidden; }
   .stat, .panel { padding: 11px; }
 }
 
+
+/* Editor de contenido de las cuatro secciones */
+#content .section-editor-panel{max-width:760px}#content textarea{min-height:86px;line-height:1.45}#sectionImagePreview img{display:block;width:100%;max-height:230px;object-fit:contain;border-radius:10px;background:#f0ebf3}
+@media(max-width:760px){#content .section-editor-panel{padding:15px}#content .actions button{width:100%;min-height:48px}}
 </style>
 </head>
 <body>
@@ -124,7 +128,7 @@ body { overflow-x: hidden; }
   <button class="active" data-panel="overview" aria-current="page">Resumen</button>
   <button data-panel="promotion">Beneficio</button>
   <button data-panel="campaigns">Marketing</button>
-  <button data-panel="products">Productos</button>
+  <button data-panel="content">Contenido</button><button data-panel="products">Productos</button>
  </nav>
  <div class="admin-deck" id="adminDeck">
   <section class="admin-screen" id="overview">
@@ -160,6 +164,26 @@ body { overflow-x: hidden; }
     <section class="panel"><h2>Campañas guardadas</h2><p class="sub">Historial de borradores y campañas.</p><div id="campaignList"><p class="sub">Cargando...</p></div></section>
    </div>
    <div class="warn">La entrega de notificaciones reales requiere terminar el servicio Web Push y probarlo en dispositivos compatibles.</div>
+  <section class="admin-screen" id="content">
+   <div class="screen-heading"><div><h2>Editar la página</h2><p>Cambia textos, títulos, botones e imagen de cada sección sin tocar código.</p></div></div>
+   <section class="panel section-editor-panel">
+    <label for="sectionKey">¿Qué sección quieres editar?</label>
+    <select id="sectionKey">
+     <option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option>
+    </select>
+    <label for="sectionNavLabel">Nombre que aparece en el menú</label><input id="sectionNavLabel" maxlength="60" placeholder="Ej. Inicio">
+    <label for="sectionEyebrow">Texto pequeño superior</label><input id="sectionEyebrow" maxlength="120" placeholder="Frase corta">
+    <label for="sectionTitle">Título principal</label><textarea id="sectionTitle" rows="3" maxlength="240" placeholder="Escribe el título. Puedes usar saltos de línea."></textarea>
+    <label for="sectionDescription">Descripción</label><textarea id="sectionDescription" rows="4" maxlength="1200" placeholder="Texto que verá el cliente"></textarea>
+    <label for="sectionButtonText">Texto del botón o etiqueta</label><input id="sectionButtonText" maxlength="80" placeholder="Ej. Explorar MUBIRA">
+    <label for="sectionImage">Fotografía de esta sección (puedes tomarla con el celular)</label><input id="sectionImage" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+    <div class="file-preview" id="sectionImagePreview" hidden></div>
+    <div class="check"><input type="checkbox" id="removeSectionImage"><label for="removeSectionImage">Quitar la fotografía personalizada y volver al diseño original</label></div>
+    <div class="actions"><button class="primary" id="saveSectionContent">Guardar cambios de esta sección</button></div>
+    <p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
+    <p class="sub">Los cambios se guardan en MUBIRA. Puedes volver a editar cada sección cuando quieras. Límite de imagen: 35 MB.</p>
+   </section>
+  </section>
   <section class="admin-screen" id="products">
    <div class="screen-heading"><div><h2>Catálogo de productos</h2><p>Crea muebles, actualiza precios y administra sus archivos.</p></div></div>
    <div class="columns">
@@ -345,4 +369,5 @@ const {data:{session:s},error}=await supabase.auth.getSession();if(error)setMess
  document.getElementById('nextPanel').addEventListener('click',()=>deck.scrollBy({left:deck.clientWidth,behavior:'smooth'}));
 })();
 </script>
+<script type="module" src="site-editor-admin.js"></script>
 </body></html>
