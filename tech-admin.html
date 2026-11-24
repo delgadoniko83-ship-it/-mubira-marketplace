@@ -10,7 +10,30 @@
 <section id="denied" class="panel hidden"><p class="eyebrow">ACCESO RESTRINGIDO</p><h1>Cuenta sin permisos técnicos</h1><p class="sub">La sesión de Google está activa, pero esta cuenta no tiene autorización para cambiar la apariencia de MUBIRA.</p><p id="signedEmail"></p><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
 <div id="techApp" class="hidden">
 <div class="intro"><p class="eyebrow">CENTRO DE DISEÑO · MUBIRA</p><h1>La imagen de tu tienda, bajo control.</h1><p>Modifica una portada o tarjeta, guarda y abre la tienda para revisar el resultado. Las páginas abiertas se sincronizan automáticamente.</p><span class="pill">ADMINISTRACIÓN TÉCNICA</span></div>
-
+<section class="panel section-editor-panel">
+<h2>Portadas de las pantallas</h2><p class="sub">Selecciona Inicio, Espacios, Colección o Nuestro mundo. Cambia su portada, títulos, textos y etiqueta del botón.</p>
+<label for="sectionKey">Pantalla que quieres editar</label><select id="sectionKey"><option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option></select>
+<label for="sectionNavLabel">Nombre en el menú</label><input id="sectionNavLabel" maxlength="60" placeholder="Nombre de la pantalla">
+<label for="sectionEyebrow">Texto pequeño superior</label><input id="sectionEyebrow" maxlength="120" placeholder="Frase corta">
+<label for="sectionTitle">Título principal</label><textarea id="sectionTitle" rows="3" maxlength="240" placeholder="Puedes escribir saltos de línea"></textarea>
+<label for="sectionDescription">Descripción</label><textarea id="sectionDescription" rows="4" maxlength="1200" placeholder="Texto que verá el cliente"></textarea>
+<label for="sectionButtonText">Texto del botón o etiqueta</label><input id="sectionButtonText" maxlength="80" placeholder="Ej. Explorar">
+<label for="sectionImage">Fotografía de portada (cámara o galería)</label><input id="sectionImage" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+<div class="file-preview" id="sectionImagePreview" hidden></div>
+<div class="check"><input type="checkbox" id="removeSectionImage"><label for="removeSectionImage">Quitar fotografía y restaurar el diseño original</label></div>
+<div class="actions"><button class="primary" id="saveSectionContent">Guardar portada y contenido</button></div><p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
+</section>
+<section class="panel section-editor-panel space-items-panel">
+<h2>Imágenes y textos de botones / tarjetas</h2><p class="sub">Edita cada tarjeta de Espacios por separado. Las imágenes de los productos de Colección se administran en el catálogo comercial.</p>
+<label for="spaceItemKey">Tarjeta que quieres editar</label><select id="spaceItemKey"><option value="salas">Salas</option><option value="comedores">Comedores</option><option value="habitaciones">Habitaciones</option><option value="decoracion">Decoración</option></select>
+<label for="spaceItemEyebrow">Texto pequeño superior</label><input id="spaceItemEyebrow" maxlength="100" placeholder="Ej. 01 / RELAJARSE">
+<label for="spaceItemTitle">Nombre del botón o tarjeta</label><input id="spaceItemTitle" maxlength="80" placeholder="Ej. Salas">
+<label for="spaceItemDescription">Descripción</label><textarea id="spaceItemDescription" rows="2" maxlength="240" placeholder="Descripción corta"></textarea>
+<label for="spaceItemImage">Imagen del botón o tarjeta</label><input id="spaceItemImage" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+<div class="file-preview" id="spaceItemImagePreview" hidden></div>
+<div class="check"><input type="checkbox" id="removeSpaceItemImage"><label for="removeSpaceItemImage">Quitar imagen personalizada</label></div>
+<div class="actions"><button class="primary" id="saveSpaceItem">Guardar tarjeta</button></div><p class="message" id="spaceItemMessage" aria-live="polite">Cargando tarjetas...</p>
+</section>
 </div></main><footer>MUBIRA · Administración técnica privada · Colombia</footer>
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.2";
