@@ -210,13 +210,14 @@ body { overflow-x: hidden; }
      <label for="productShort">Descripción corta</label><input id="productShort" maxlength="180" placeholder="Ej. Sofá de tres puestos">
      <label for="productDescription">Descripción completa</label><textarea id="productDescription" maxlength="3000" placeholder="Materiales, medidas, acabados y detalles..."></textarea>
      <label for="productStock">Unidades disponibles</label><input id="productStock" type="number" min="0" step="1" value="0">
-     <label for="productPhoto">Fotografía principal (puedes tomarla con la cámara)</label><input id="productPhoto" type="file" accept="image/jpeg,image/png,image/webp" capture="environment"><div class="file-preview" id="photoPreview" hidden></div>
-     <label for="productVideo">Video del producto (puedes grabarlo desde el celular)</label><input id="productVideo" type="file" accept="video/mp4,video/webm" capture="environment"><div class="file-preview" id="videoPreview" hidden></div>
+     <label for="productPhoto">Fotografía principal (cámara, galería o Archivos)</label><input id="productPhoto" type="file" accept="image/*"><div class="file-preview" id="photoPreview" hidden></div>
+     <label for="productVideo">Vídeo del producto (cámara, galería o Archivos)</label><input id="productVideo" type="file" accept="video/*"><div class="file-preview" id="videoPreview" hidden></div>
+     <div class="check"><input type="checkbox" id="compressMedia" checked><label for="compressMedia">Comprimir foto y vídeo antes de subirlos (recomendado)</label></div>
      <div class="check"><input type="checkbox" id="productFeatured"><label for="productFeatured">Destacar este producto</label></div>
      <div class="check"><input type="checkbox" id="productPublish" checked><label for="productPublish">Publicar en la tienda</label></div>
      <div class="actions"><button class="primary" id="saveProduct">Guardar producto</button><button class="secondary" id="clearProduct">Limpiar</button></div>
      <p class="message" id="productMessage" aria-live="polite"></p>
-     <p class="sub">Límite por archivo: 35 MB. Para el video de giro 360° conectaremos la captura de ángulos al mismo producto en el siguiente paso.</p>
+     <p class="sub">Los archivos se optimizan antes de subirlos cuando la compresión está activada. El archivo final debe pesar máximo 35 MB.</p>
     </section>
     <section class="panel"><h2>Productos guardados</h2><p class="sub">Toca Editar para cambiar nombre, precio, descripción o archivos.</p><div id="productList"><p class="sub">Cargando catálogo...</p></div></section>
    </div>
@@ -259,7 +260,7 @@ function showFilePreview(inputId,previewId,type){
  if(previewUrls[type])URL.revokeObjectURL(previewUrls[type]);
  previewUrls[type]=null;box.replaceChildren();box.hidden=true;
  if(!file)return;
- if(file.size>35*1024*1024){input.value="";setMessage("productMessage","El archivo supera el límite de 35 MB.");return;}
+ if(file.size>200*1024*1024){input.value="";setMessage("productMessage","El archivo original supera el límite de 200 MB.");return;}
  const url=URL.createObjectURL(file);previewUrls[type]=url;box.hidden=false;
  const media=document.createElement(type==="photo"?"img":"video");
  media.src=url;if(type==="video"){media.controls=true;media.muted=true;media.playsInline=true;}
@@ -287,12 +288,62 @@ async function loadProducts(){
  box.querySelectorAll("[data-edit-product]").forEach(button=>button.addEventListener("click",()=>{const p=data.find(item=>item.id===button.dataset.editProduct);if(!p)return;$("productId").value=p.id;$("productName").value=p.name||"";$("productCategory").value=p.category_id||"";$("productPrice").value=p.price??"";$("productShort").value=p.short_description||"";$("productDescription").value=p.description||"";$("productStock").value=p.stock_quantity||0;$("productFeatured").checked=!!p.is_featured;$("productPublish").checked=p.status==="published";$("productFormTitle").textContent="Editar producto";setMessage("productMessage","Editando "+p.name+". Selecciona nuevos archivos solo si deseas reemplazarlos.");$("productName").focus();}));
 }
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));}
+async function prepareMediaFile(file,mediaType,compress){
+ if(!file||!compress)return file;
+ const originalMB=(file.size/1024/1024).toFixed(1);
+ if(mediaType==="image"){
+  try{
+   if(!("createImageBitmap" in window))throw new Error("El navegador no permite optimizar esta imagen.");
+   const bitmap=await createImageBitmap(file);
+   const scale=Math.min(1,1800/Math.max(bitmap.width,bitmap.height));
+   const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+   const ctx=canvas.getContext("2d",{alpha:false});ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close?.();
+   const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/webp",0.84));
+   if(!blob)throw new Error("No se pudo convertir la fotografía.");
+   const result=blob.size<file.size?new File([blob],file.name.replace(/\.[^.]+$/,"")+".webp",{type:"image/webp",lastModified:Date.now()}):file;
+   setMessage("productMessage","Foto optimizada: "+originalMB+" MB → "+(result.size/1024/1024).toFixed(1)+" MB.");
+   return result;
+  }catch(error){setMessage("productMessage","No se pudo comprimir la foto; se conservará el original. "+error.message);return file;}
+ }
+ if(mediaType==="video"){
+  let video,stream,recorder;
+  try{
+   if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream)throw new Error("Este navegador no ofrece compresión de vídeo.");
+   video=document.createElement("video");video.preload="auto";video.muted=true;video.playsInline=true;video.src=URL.createObjectURL(file);
+   await new Promise((resolve,reject)=>{video.onloadedmetadata=resolve;video.onerror=()=>reject(new Error("No se pudo abrir el vídeo."));video.load();});
+   if(!Number.isFinite(video.duration)||video.duration<=0)throw new Error("No se pudo leer la duración del vídeo.");
+   const scale=Math.min(1,1280/Math.max(video.videoWidth,video.videoHeight));
+   const canvas=document.createElement("canvas");canvas.width=Math.max(2,Math.round(video.videoWidth*scale/2)*2);canvas.height=Math.max(2,Math.round(video.videoHeight*scale/2)*2);
+   const ctx=canvas.getContext("2d");
+   stream=canvas.captureStream(24);
+   const sourceStream=video.captureStream?.()||video.mozCaptureStream?.();
+   if(sourceStream)sourceStream.getAudioTracks().forEach(track=>stream.addTrack(track));
+   const mime=["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"].find(type=>MediaRecorder.isTypeSupported(type));
+   if(!mime)throw new Error("No hay un formato de vídeo comprimido compatible.");
+   const chunks=[];recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:1200000,audioBitsPerSecond:96000});
+   recorder.ondataavailable=event=>{if(event.data?.size)chunks.push(event.data);};
+   const finished=new Promise((resolve,reject)=>{recorder.onstop=()=>resolve(new Blob(chunks,{type:mime}));recorder.onerror=()=>reject(new Error("Falló la compresión del vídeo."));});
+   recorder.start(500);
+   const draw=()=>{if(video.paused||video.ended)return;ctx.drawImage(video,0,0,canvas.width,canvas.height);requestAnimationFrame(draw);};
+   await video.play();draw();
+   await new Promise((resolve,reject)=>{video.onended=resolve;video.onerror=()=>reject(new Error("Se interrumpió el vídeo durante la compresión."));});
+   recorder.stop();const blob=await finished;
+   if(!blob.size)throw new Error("El vídeo comprimido quedó vacío.");
+   const result=blob.size<file.size?new File([blob],file.name.replace(/\.[^.]+$/,"")+".webm",{type:"video/webm",lastModified:Date.now()}):file;
+   setMessage("productMessage","Vídeo optimizado: "+originalMB+" MB → "+(result.size/1024/1024).toFixed(1)+" MB.");
+   return result;
+  }catch(error){try{if(recorder&&recorder.state!=="inactive")recorder.stop();}catch{}setMessage("productMessage","No se pudo comprimir el vídeo en este navegador; se conservará el original. "+error.message);return file;}
+  finally{if(stream)stream.getTracks().forEach(track=>track.stop());if(video){video.pause();if(video.src)URL.revokeObjectURL(video.src);video.removeAttribute("src");video.load();}}
+ }
+ return file;
+}
+
 async function uploadProductFile(productId,file,mediaType){
  if(!file)return null;
  if(file.size>35*1024*1024)throw new Error("El archivo "+file.name+" supera el límite de 35 MB.");
  const previous=await supabase.from("product_media").select("id,storage_path").eq("product_id",productId).eq("media_type",mediaType);
  if(previous.error)throw previous.error;
- const ext=(file.name.split(".").pop()||(mediaType==="image"?"jpg":"mp4")).toLowerCase().replace(/[^a-z0-9]/g,"");
+ const ext=(file.type==="image/webp"?"webp":file.type==="image/png"?"png":file.type==="image/jpeg"?"jpg":file.type==="video/webm"?"webm":(file.name.split(".").pop()||(mediaType==="image"?"jpg":"mp4"))).toLowerCase().replace(/[^a-z0-9]/g,"");
  const path=productId+"/"+mediaType+"-"+Date.now()+"."+ext;
  const {data,error}=await supabase.storage.from("mubira-products").upload(path,file,{contentType:file.type,upsert:false});
  if(error)throw error;
@@ -321,9 +372,13 @@ $("saveProduct").addEventListener("click",async()=>{
   let productId=id;
   if(id){const {error}=await supabase.from("products").update(payload).eq("id",id);if(error)throw error;}
   else{const {data,error}=await supabase.from("products").insert(payload).select("id").single();if(error)throw error;productId=data.id;}
-  setMessage("productMessage","Ficha guardada. Subiendo archivos...");
-  await uploadProductFile(productId,$("productPhoto").files[0],"image");
-  await uploadProductFile(productId,$("productVideo").files[0],"video");
+  setMessage("productMessage","Ficha guardada. Preparando archivos...");
+  const compress=$("compressMedia").checked;
+  const photo=await prepareMediaFile($("productPhoto").files[0],"image",compress);
+  const video=await prepareMediaFile($("productVideo").files[0],"video",compress);
+  setMessage("productMessage","Subiendo archivos optimizados...");
+  await uploadProductFile(productId,photo,"image");
+  await uploadProductFile(productId,video,"video");
   setMessage("productMessage","Producto guardado correctamente. Ya quedó registrado en el catálogo. Si lo publicaste, aparecerá en la tienda al actualizarla.");
   clearProductForm();await loadProducts();
  }catch(error){setMessage("productMessage","No se pudo completar: "+error.message);}
