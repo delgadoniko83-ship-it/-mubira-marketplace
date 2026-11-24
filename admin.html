@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17151f">
+<title>Administración · MUBIRA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--ink:#30263a;--muted:#81748b;--line:#e8dfec;--pink:#c934a6;--lilac:#8e78d7;--paper:#f8f5fa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0,#f7e4f5,transparent 36%),linear-gradient(145deg,#f2f0f5,#fbf8fc 55%,#eee9f4);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px clamp(18px,5vw,64px);background:#ffffffc9;border-bottom:1px solid #fff;backdrop-filter:blur(14px);position:sticky;top:0;z-index:5}
+.brand{font:800 22px Manrope,sans-serif;letter-spacing:.1em}.brand small{display:block;font:700 8px 'DM Sans';letter-spacing:.2em;color:#a17ca6}
+header a{color:inherit;text-decoration:none;font-size:13px}.head-actions{display:flex;align-items:center;gap:12px}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:800}
+.primary{color:#fff;background:linear-gradient(110deg,var(--pink),var(--lilac));box-shadow:0 8px 20px #a24baf30}.secondary{background:#fff;border:1px solid var(--line);color:var(--ink)}
+main{width:min(1120px,calc(100% - 32px));margin:34px auto 70px}.eyebrow{font-size:9px;letter-spacing:.2em;color:var(--pink);font-weight:900}.intro{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:20px 0 26px}.intro h1{font:800 clamp(28px,5vw,44px)/1.05 Manrope;margin:7px 0}.intro p{color:var(--muted);max-width:560px;line-height:1.6;margin:8px 0}
+.pill{display:inline-flex;padding:7px 11px;border-radius:30px;background:#eee8f7;color:#7955a0;font-size:10px;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:20px}.stat,.panel{background:#ffffffd9;border:1px solid #fff;border-radius:20px;padding:22px;box-shadow:0 12px 35px #36203c0a}.stat small{color:var(--muted);font-size:11px}.stat strong{display:block;font:800 30px Manrope;margin-top:9px}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel h2{font:800 18px Manrope;margin:0 0 7px}.sub{font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 20px}
+label{display:block;font-size:11px;font-weight:800;color:#695a73;margin:14px 0 7px}input,select,textarea{width:100%;border:1px solid #e4dbe9;background:#fff;border-radius:11px;padding:12px;color:var(--ink);outline:none}input:focus,select:focus,textarea:focus{border-color:#bd79bf;box-shadow:0 0 0 3px #dcb6e733}textarea{min-height:94px;resize:vertical}.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.check{display:flex;align-items:center;gap:9px;margin:16px 0}.check input{width:auto}.check label{margin:0}
+.actions{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}.message{min-height:18px;color:#8e3984;font-size:12px;margin-top:10px}.campaign{padding:14px 0;border-top:1px solid var(--line)}.campaign strong{display:block;font-size:13px}.campaign small{color:var(--muted)}.campaign p{font-size:12px;color:#675b70;line-height:1.5;margin:6px 0}
+#loginGate,#denied{max-width:540px;margin:60px auto;text-align:center}.hidden{display:none!important}.warn{background:#fff7e9;border:1px solid #f1dfb9;padding:13px 15px;border-radius:13px;color:#775b29;font-size:12px;line-height:1.55;margin:14px 0}
+footer{text-align:center;color:#9a8fa0;font-size:11px;padding:24px}
+@media(max-width:760px){header{padding:14px 16px}.grid{grid-template-columns:1fr 1fr}.columns{grid-template-columns:1fr}.intro{display:block}.intro .pill{margin-top:10px}}
+@media(max-width:420px){.grid{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}.head-actions{gap:7px}header a{font-size:11px}}
+</style>
+</head>
+<body>
+<header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN PRIVADA</small></a><div class="head-actions"><a href="/">← Volver a la tienda</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
+<main>
+<section id="loginGate" class="panel">
+ <p class="eyebrow">ACCESO SEGURO</p><h1>Panel de control</h1><p class="sub">Inicia sesión con la cuenta autorizada para administrar MUBIRA. Entrar con Google no concede permisos de administrador automáticamente.</p>
+ <button class="primary" id="loginButton">Continuar con Google</button><p class="message" id="loginMessage"></p>
+</section>
+<section id="denied" class="panel hidden"><p class="eyebrow">MUBIRA · ACCESO RESTRINGIDO</p><h1>Cuenta aún no autorizada</h1><p class="sub">La cuenta inició sesión correctamente, pero todavía no tiene el rol de propietario en MUBIRA. No se ha cambiado ningún permiso automáticamente.</p><p id="signedEmail"></p><div class="warn">Para proteger tu tienda, el propietario debe ser habilitado manualmente en la base de datos. Cuando confirmemos la cuenta correcta, se activa el acceso.</div><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
+<section id="adminApp" class="hidden">
+ <div class="intro"><div><p class="eyebrow">CENTRO DE CONTROL · MUBIRA</p><h1>Tu tienda, tus reglas.</h1><p>Configura el beneficio que verán los visitantes y prepara campañas para tus clientes autorizados.</p></div><span class="pill">PROPIETARIO AUTENTICADO</span></div>
+ <div class="grid">
+  <article class="stat"><small>Autorizaciones de marketing</small><strong id="consentCount">—</strong></article>
+  <article class="stat"><small>Suscripciones push guardadas</small><strong id="pushCount">—</strong></article>
+  <article class="stat"><small>Campañas preparadas</small><strong id="campaignCount">—</strong></article>
+ </div>
+ <div class="columns">
+  <section class="panel"><h2>Beneficio de bienvenida</h2><p class="sub">Este contenido alimenta la ventana emergente de la tienda.</p>
+   <div class="check"><input type="checkbox" id="promoActive"><label for="promoActive">Mostrar promoción al entrar</label></div>
+   <label for="incentiveType">Tipo de beneficio</label><select id="incentiveType"><option value="percentage">Descuento porcentual</option><option value="free_shipping">Envío gratis</option><option value="special">Promoción especial</option></select>
+   <label for="incentiveValue">Porcentaje de descuento (si aplica)</label><input id="incentiveValue" type="number" min="0" max="100" step="0.5" value="7">
+   <label for="promoHeadline">Título</label><input id="promoHeadline" maxlength="100" value="¡MUBIRA te premia!">
+   <label for="promoMessage">Mensaje</label><textarea id="promoMessage" maxlength="500">Activa las promociones de MUBIRA y recibe beneficios especiales.</textarea>
+   <div class="actions"><button class="primary" id="saveSettings">Guardar beneficio</button></div><p class="message" id="settingsMessage" aria-live="polite"></p>
+  </section>
+  <section class="panel"><h2>Crear campaña</h2><p class="sub">Prepara una propaganda con texto e imagen. En esta primera etapa se guarda como borrador; el envío todavía no está habilitado.</p>
+   <label for="campaignTitle">Nombre de la campaña</label><input id="campaignTitle" maxlength="120" placeholder="Ej. Semana del diseño">
+   <label for="campaignMessage">Texto de la propaganda</label><textarea id="campaignMessage" maxlength="1000" placeholder="Escribe el mensaje que recibirán tus clientes..."></textarea>
+   <label for="campaignImage">Enlace de imagen (opcional)</label><input id="campaignImage" type="url" placeholder="https://...">
+   <label for="campaignTarget">Enlace al abrir la campaña</label><input id="campaignTarget" type="url" placeholder="https://mubira-prototipo.onrender.com">
+   <div class="actions"><button class="primary" id="saveCampaign">Guardar borrador</button></div><p class="message" id="campaignMessageStatus" aria-live="polite"></p>
+  </section>
+ </div>
+ <section class="panel" style="margin-top:16px"><h2>Campañas guardadas</h2><p class="sub">Historial de borradores y campañas. No se envían notificaciones desde esta pantalla todavía.</p><div id="campaignList"><p class="sub">Cargando...</p></div></section>
+ <div class="warn">Importante: las cifras muestran registros de consentimiento y suscripciones almacenadas. La entrega de notificaciones reales requiere terminar el servicio Web Push y probarlo en dispositivos compatibles.</div>
+</section>
+</main><footer>MUBIRA · Prototipo de administración · Colombia</footer>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.2";
+const supabase=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publishable_01DxOQWRyBJAdrUeXh7_gQ_j_qlTvtz");
+const $=id=>document.getElementById(id);
+let session=null,owner=false;
+function show(id){["loginGate","denied","adminApp"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
+function setMessage(id,msg){$(id).textContent=msg;}
+async function checkAccess(s){
+ session=s;owner=false;
+ $("authButton").textContent=s?.user?"Cerrar sesión":"Entrar con Google";
+ if(!s?.user){show("loginGate");return;}
+ const {data,error}=await supabase.from("admin_profiles").select("role").eq("user_id",s.user.id).maybeSingle();
+ if(error){show("denied");$("signedEmail").textContent=s.user.email||"";return;}
+ owner=data?.role==="owner";
+ if(!owner){show("denied");$("signedEmail").textContent=s.user.email||"";return;}
+ show("adminApp");await loadDashboard();
+}
+async function signIn(){setMessage("loginMessage","Conectando con Google...");const {error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.href.split("?")[0]}});if(error)setMessage("loginMessage","No se pudo iniciar sesión: "+error.message);}
+$("loginButton").addEventListener("click",signIn);
+$("authButton").addEventListener("click",async()=>{if(session?.user){await supabase.auth.signOut();}else signIn();});
+$("signOutDenied").addEventListener("click",()=>supabase.auth.signOut());
+async function loadDashboard(){
+ const [settings,consents,push,campaigns]=await Promise.all([
+  supabase.from("promotion_settings").select("*").eq("id",1).maybeSingle(),
+  supabase.from("marketing_consents").select("id",{count:"exact",head:true}).eq("accepted",true),
+  supabase.from("push_subscriptions").select("id",{count:"exact",head:true}),
+  supabase.from("promotion_campaigns").select("id,title,message,status,created_at").order("created_at",{ascending:false}).limit(20)
+ ]);
+ if(settings.error)setMessage("settingsMessage","No se pudo cargar la promoción: "+settings.error.message);
+ if(settings.data){$("promoActive").checked=!!settings.data.is_active;$("incentiveType").value=settings.data.incentive_type;$("incentiveValue").value=settings.data.incentive_value;$("promoHeadline").value=settings.data.headline||"";$("promoMessage").value=settings.data.message||"";}
+ $("consentCount").textContent=consents.count??"—";$("pushCount").textContent=push.count??"—";$("campaignCount").textContent=campaigns.data?.length??"—";
+ const list=$("campaignList");list.replaceChildren();
+ if(campaigns.error){list.textContent="No se pudieron cargar las campañas: "+campaigns.error.message;return;}
+ if(!campaigns.data?.length){const p=document.createElement("p");p.className="sub";p.textContent="Todavía no hay campañas guardadas.";list.append(p);return;}
+ campaigns.data.forEach(c=>{const el=document.createElement("article");el.className="campaign";const title=document.createElement("strong");title.textContent=c.title;const meta=document.createElement("small");meta.textContent=(c.status||"draft").toUpperCase()+" · "+new Date(c.created_at).toLocaleString("es-CO");const msg=document.createElement("p");msg.textContent=c.message||"";el.append(title,meta,msg);list.append(el);});
+}
+$("saveSettings").addEventListener("click",async()=>{
+ if(!owner)return;const value=Number($("incentiveValue").value);
+ if($("incentiveType").value==="percentage"&&(!Number.isFinite(value)||value<0||value>100)){setMessage("settingsMessage","El descuento debe estar entre 0 y 100.");return;}
+ $("saveSettings").disabled=true;setMessage("settingsMessage","Guardando...");
+ const {error}=await supabase.from("promotion_settings").update({is_active:$("promoActive").checked,incentive_type:$("incentiveType").value,incentive_value:Number.isFinite(value)?value:7,headline:$("promoHeadline").value.trim(),message:$("promoMessage").value.trim(),updated_by:session.user.id,updated_at:new Date().toISOString()}).eq("id",1);
+ $("saveSettings").disabled=false;setMessage("settingsMessage",error?"No se guardó: "+error.message:"Beneficio actualizado. La ventana de la tienda leerá estos datos.");
+});
+$("saveCampaign").addEventListener("click",async()=>{
+ if(!owner)return;const title=$("campaignTitle").value.trim(),message=$("campaignMessage").value.trim();
+ if(!title||!message){setMessage("campaignMessageStatus","Escribe el nombre y el texto de la campaña.");return;}
+ const validUrl=v=>!v||/^https:\/\//i.test(v);
+ if(!validUrl($("campaignImage").value.trim())||!validUrl($("campaignTarget").value.trim())){setMessage("campaignMessageStatus","Los enlaces deben comenzar con https://");return;}
+ $("saveCampaign").disabled=true;setMessage("campaignMessageStatus","Guardando borrador...");
+ const {error}=await supabase.from("promotion_campaigns").insert({title,message,image_url:$("campaignImage").value.trim()||null,target_url:$("campaignTarget").value.trim()||"https://mubira-prototipo.onrender.com",status:"draft",created_by:session.user.id});
+ $("saveCampaign").disabled=false;
+ if(error){setMessage("campaignMessageStatus","No se pudo guardar: "+error.message);return;}
+ $("campaignTitle").value="";$("campaignMessage").value="";$("campaignImage").value="";setMessage("campaignMessageStatus","Borrador guardado correctamente.");await loadDashboard();
+});
+supabase.auth.onAuthStateChange((_event,s)=>{queueMicrotask(()=>checkAccess(s));});
+const {data:{session:s},error}=await supabase.auth.getSession();if(error)setMessage("loginMessage",error.message);await checkAccess(s);
+</script>
+</body></html>
