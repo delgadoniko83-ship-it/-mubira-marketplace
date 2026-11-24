@@ -174,12 +174,16 @@ async function choosePromo(accepted) {
   }
   if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
     promoStatus.textContent = "Este navegador no admite notificaciones web. Puedes entrar a la tienda normalmente.";
+    localStorage.setItem(promoChoiceKey, "accepted_without_push_support");
+    closePromoModal();
     return;
   }
   try {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") {
-      promoStatus.textContent = "No se activaron las notificaciones. Puedes entrar a la tienda sin aceptar promociones.";
+      promoStatus.textContent = "No se activaron las notificaciones. Puedes entrar a la tienda normalmente.";
+      localStorage.setItem(promoChoiceKey, "accepted_without_push_permission");
+      closePromoModal();
       return;
     }
     localStorage.setItem(promoChoiceKey, "accepted_pending_account");
@@ -198,6 +202,8 @@ async function choosePromo(accepted) {
   } catch (err) {
     promoStatus.textContent = "No pudimos guardar tu autorización. Puedes entrar a la tienda normalmente.";
     console.error("MUBIRA promo consent:", err);
+    localStorage.setItem(promoChoiceKey, "accepted_pending_retry");
+    closePromoModal();
   }
 }
 document.getElementById("promoWelcomeAccept")?.addEventListener("click", () => choosePromo(true));
