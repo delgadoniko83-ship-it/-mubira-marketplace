@@ -641,3 +641,64 @@ body.authenticated .page-deck {
 
 /* Catálogo conectado a Supabase: fotografías de producto */
 .product-photo{width:100%;height:100%;object-fit:cover;display:block}.product-modal-photo{width:100%;height:100%;max-height:100%;object-fit:contain;display:block}
+
+
+/* MUBIRA · adaptación universal: móviles compactos, tabletas y escritorio */
+html { -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; }
+img, video, canvas, svg { max-width: 100%; }
+button, a, input, select, textarea { touch-action: manipulation; }
+button, .add-button, .product-open { -webkit-tap-highlight-color: transparent; }
+@media (min-width: 761px) and (max-width: 1024px) {
+  .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .section-heading { align-items: flex-start; }
+  .studio-page { gap: 4vw; }
+}
+@media (max-width: 760px) {
+  html, body { width: 100%; max-width: 100%; }
+  .site-header { width: 100%; min-width: 0; }
+  .site-header > .brand { min-width: 0; }
+  .header-actions .auth-button,
+  .header-actions .cart-button,
+  .header-actions .menu-toggle { min-height: 40px; }
+  .header-actions .cart-button { padding: 8px 9px; }
+  .header-actions .menu-toggle { width: 40px; padding: 0; }
+  .header-actions .search input { min-width: 0; font-size: 16px; }
+  .main-nav.open { max-height: min(45dvh, 260px); overflow-y: auto; }
+  .page-deck { width: 100%; min-width: 0; overflow-x: auto; }
+  .page-panel { min-width: 0; }
+  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .product-card, .product-info, .product-bottom { min-width: 0; }
+  .product-info h3, .product-info p { overflow-wrap: anywhere; }
+  .product-bottom { flex-wrap: wrap; }
+  .add-button { min-height: 36px; font-size: 9px; }
+  .product-modal-panel { width: 100%; min-width: 0; }
+  .product-modal-info .button { min-height: 46px; width: 100%; }
+  .studio360-modal, .studio360-viewer { padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom)); }
+  .studio360-shell, .studio360-viewer-box { width: 100%; max-width: 100%; max-height: 94dvh; overflow-y: auto; }
+  .studio360-actions button { min-height: 44px; flex: 1 1 130px; }
+}
+@media (max-width: 380px) {
+  .site-header { padding-left: 9px; padding-right: 9px; column-gap: 5px; }
+  .brand { font-size: 18px; }
+  .header-actions .auth-button { padding: 6px 6px; }
+  .header-actions .auth-button span { max-width: 54px; }
+  .header-actions .cart-button { padding: 7px 6px; font-size: 8px; }
+  .header-actions .menu-toggle { width: 34px; }
+  .product-grid { gap: 7px; }
+  .product-info { padding: 8px; }
+  .product-bottom { align-items: flex-start; }
+  .price { font-size: 9px; }
+}
+@media (max-height: 720px) and (max-width: 760px) {
+  .hero { padding-top: 16px; padding-bottom: 70px; }
+  .hero-visual { min-height: 150px; max-height: 28vh; }
+  .spaces-page, .collection, .studio-page { padding-top: 18px; }
+}
+@media (orientation: landscape) and (max-height: 520px) and (max-width: 900px) {
+  .site-header { --header-h: 82px; }
+  .page-deck { height: calc(100dvh - var(--header-h)); }
+  .hero { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; padding: 14px 22px 62px; }
+  .hero-visual { min-height: 0; max-height: 70vh; height: 100%; }
+  .spaces-page, .collection, .studio-page { padding-top: 14px; padding-bottom: 65px; }
+}
