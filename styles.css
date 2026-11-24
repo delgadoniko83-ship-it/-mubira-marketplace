@@ -782,3 +782,27 @@ button, .add-button, .product-open { -webkit-tap-highlight-color: transparent; }
  .product-modal-info h2{font-size:28px}
  .product-modal-price{font-size:23px}
 }
+
+/* MUBIRA · checkout contra entrega y confirmación */
+.checkout-form{max-height:58dvh;overflow-y:auto;padding-bottom:max(18px,env(safe-area-inset-bottom));}
+.checkout-form label{display:block;margin:9px 0 5px;color:#65556f;font-size:10px;font-weight:800}
+.checkout-form input,.checkout-form textarea{display:block;width:100%;min-width:0;border:1px solid #ded2e6;border-radius:10px;padding:10px 11px;background:#fff;color:#30243c;font:inherit;font-size:13px}
+.checkout-form textarea{resize:vertical}
+.checkout-payment{margin:8px 0;color:#665875!important;font-size:10px!important}
+.checkout-submit{width:100%;margin-top:12px;border:0;min-height:46px}
+.checkout-status{font-size:10px!important;line-height:1.45;overflow-wrap:anywhere}
+.checkout-whatsapp{display:block;padding:11px;border-radius:12px;text-align:center;text-decoration:none;background:#e8f7ec;color:#176b36;font-size:12px;font-weight:800}
+.checkout-whatsapp[hidden]{display:none}
+@media(max-width:480px){.cart-panel{padding:17px}.checkout-form{max-height:62dvh}}
+/* Pedidos del administrador comercial */
+.orders-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:#fff;color:#a22a91;font-size:10px}
+.orders-badge[hidden]{display:none}
+.order-card{padding:15px 0;border-top:1px solid #e8dfec;overflow-wrap:anywhere}
+.order-card-head,.order-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.order-card-head strong{font:800 15px Manrope}.order-card-head span,.order-card p{font-size:11px;color:#74677e;line-height:1.5}
+.order-lines{padding:8px 0;border-top:1px dashed #e8dfec;border-bottom:1px dashed #e8dfec}
+.order-lines div{display:flex;justify-content:space-between;gap:10px;padding:5px 0;font-size:11px}
+.order-total{font-weight:900;color:#392747!important}
+.order-actions label{margin:5px 0;font-size:10px}
+.order-actions select{width:auto;min-width:150px;flex:1}
+.order-actions a{font-size:11px;color:#a22a91;font-weight:800;text-decoration:none}
