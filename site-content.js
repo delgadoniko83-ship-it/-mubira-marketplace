@@ -26,15 +26,17 @@ async function loadEditableSections(){
         else if(row.section_key==="nuestro_mundo") button.childNodes[0].nodeValue=row.button_text+" ";
         else setText(button,row.button_text);
       }
+      const host=document.querySelector(t.image);
       if(row.image_path){
         const image=db.storage.from("mubira-products").getPublicUrl(row.image_path).data.publicUrl;
-        const host=document.querySelector(t.image);
         if(host){
           host.classList.add("has-editor-image");
           host.style.backgroundImage="linear-gradient(90deg,rgba(20,16,28,.18),rgba(20,16,28,.04)),url('"+image.replace(/'/g,"%27")+"')";
           host.style.backgroundSize="cover";
           host.style.backgroundPosition="center";
         }
+      } else if(host){
+        host.classList.remove("has-editor-image");host.style.removeProperty("background-image");host.style.removeProperty("background-size");host.style.removeProperty("background-position");
       }
     }
     const spacesCta=document.querySelector(".page-intro .section-edit-cta");
@@ -71,9 +73,12 @@ async function loadEditableSpaceCards(){
         card.style.backgroundImage="linear-gradient(0deg,rgba(28,19,43,.76),rgba(28,19,43,.04) 78%),url('"+url.replace(/'/g,"%27")+"')";
         card.style.backgroundSize="cover";
         card.style.backgroundPosition="center";
-      }
+      }else{card.classList.remove("has-editor-image");card.style.removeProperty("background-image");card.style.removeProperty("background-size");card.style.removeProperty("background-position");}
     }
   }catch(error){console.warn("Tarjetas editables de MUBIRA:",error.message);}
 }
 loadEditableSections();
 loadEditableSpaceCards();
+
+// Sincronización ligera: la tienda abierta refleja cambios de administración sin tener que cerrarla.
+setInterval(()=>{loadEditableSections();loadEditableSpaceCards();},12000);
