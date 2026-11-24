@@ -162,6 +162,7 @@ body { overflow-x: hidden; }
   <button data-panel="promotion">Beneficio</button>
   <button data-panel="campaigns">Marketing</button>
   <button data-panel="products">Productos</button>
+  <button data-panel="orders">Pedidos <span id="newOrdersBadge" class="orders-badge" hidden>0</span></button>
  </nav>
  <div class="admin-deck" id="adminDeck">
   <section class="admin-screen" id="overview">
@@ -197,6 +198,11 @@ body { overflow-x: hidden; }
     <section class="panel"><h2>Campañas guardadas</h2><p class="sub">Historial de borradores y campañas.</p><div id="campaignList"><p class="sub">Cargando...</p></div></section>
    </div>
    <div class="warn">La entrega de notificaciones reales requiere terminar el servicio Web Push y probarlo en dispositivos compatibles.</div>
+  </section>
+  <section class="admin-screen" id="orders">
+   <div class="screen-heading"><div><h2>Pedidos recibidos</h2><p>Los pedidos de la tienda aparecen aquí automáticamente.</p></div><button type="button" class="secondary" id="refreshOrders">Actualizar</button></div>
+   <div class="grid"><article class="stat"><small>Pedidos nuevos</small><strong id="newOrdersCount">0</strong></article><article class="stat"><small>En gestión</small><strong id="activeOrdersCount">0</strong></article><article class="stat"><small>Pedidos entregados</small><strong id="deliveredOrdersCount">0</strong></article></div>
+   <section class="panel"><h2>Bandeja comercial</h2><p class="sub">Confirma el pedido y actualiza su estado a medida que avanza.</p><div id="ordersList"><p class="sub">Cargando pedidos…</p></div><p class="message" id="ordersMessage" aria-live="polite"></p></section>
   </section>
   <section class="admin-screen" id="products">
    <div class="screen-heading"><div><h2>Catálogo de productos</h2><p>Crea muebles, actualiza precios y administra sus archivos.</p></div></div>
@@ -244,7 +250,7 @@ async function checkAccess(s){
  ]);
  owner=(!profileError&&profile?.role==="owner")||(!rolesError&&(roles||[]).some(r=>r.role==="commercial_admin"));
  if(!owner){show("denied");$("signedEmail").textContent=s.user.email||"";return;}
- show("adminApp");await loadDashboard();await loadCategories();await loadProducts();
+ show("adminApp");await loadDashboard();await loadCategories();await loadProducts();await loadOrders();
 }
 async function signIn(){setMessage("loginMessage","Conectando con Google...");const {error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.href.split("?")[0]}});if(error)setMessage("loginMessage","No se pudo iniciar sesión: "+error.message);}
 $("loginButton").addEventListener("click",signIn);
@@ -279,6 +285,28 @@ async function loadCategories(){
  categories=data||[];
  select.innerHTML='<option value="">Selecciona una categoría</option>'+categories.map(item=>'<option value="'+item.id+'">'+escapeHtml(item.name)+'</option>').join("");
 }
+
+const orderStatusLabels={new:"Nuevo",contacted:"Contactado",confirmed:"Confirmado",preparing:"Preparando",shipped:"En camino",delivered:"Entregado",cancelled:"Cancelado"};
+async function loadOrders(){
+ const box=$("ordersList");if(!box)return;box.innerHTML='<p class="sub">Cargando pedidos…</p>';
+ const {data,error}=await supabase.from("orders").select("*").order("created_at",{ascending:false}).limit(100);
+ if(error){box.textContent="No se pudieron cargar los pedidos: "+error.message;setMessage("ordersMessage","Comprueba la conexión y los permisos comerciales.");return;}
+ const orders=data||[];
+ $("newOrdersCount").textContent=orders.filter(o=>o.status==="new").length;
+ $("activeOrdersCount").textContent=orders.filter(o=>["contacted","confirmed","preparing","shipped"].includes(o.status)).length;
+ $("deliveredOrdersCount").textContent=orders.filter(o=>o.status==="delivered").length;
+ const newCount=orders.filter(o=>o.status==="new").length;$("newOrdersBadge").textContent=newCount;$("newOrdersBadge").hidden=!newCount;
+ if(!orders.length){box.innerHTML='<p class="sub">Todavía no han llegado pedidos. Cuando un cliente confirme desde la tienda, aparecerá aquí.</p>';return;}
+ box.innerHTML=orders.map(o=>'<article class="order-card"><div class="order-card-head"><strong>Pedido #'+o.order_number+'</strong><span>'+new Date(o.created_at).toLocaleString("es-CO")+'</span></div><p><b>'+escapeHtml(o.customer_name)+'</b> · '+escapeHtml(o.customer_phone)+'</p><p>'+escapeHtml(o.customer_city)+' · '+escapeHtml(o.customer_address)+'</p><div class="order-lines">'+(o.items||[]).map(it=>'<div>'+Number(it.quantity)+' × '+escapeHtml(it.name)+' <b>'+moneyCOP(it.line_total)+'</b></div>').join("")+'</div><p class="order-total">Total: '+moneyCOP(o.total)+' · Contra entrega</p>'+(o.customer_notes?'<p class="sub">Nota: '+escapeHtml(o.customer_notes)+'</p>':'')+'<div class="order-actions"><label for="orderStatus-'+o.id+'">Estado</label><select id="orderStatus-'+o.id+'" data-order-status="'+o.id+'">'+Object.entries(orderStatusLabels).map(([value,label])=>'<option value="'+value+'" '+(o.status===value?"selected":"")+'>'+label+'</option>').join("")+'</select><a href="https://wa.me/'+String(o.customer_phone).replace(/[^0-9]/g,"")+'?text='+encodeURIComponent("Hola "+o.customer_name+", te contactamos de MUBIRA por tu pedido #"+o.order_number+".")+'" target="_blank" rel="noopener">Contactar por WhatsApp ↗</a></div></article>').join("");
+ box.querySelectorAll("[data-order-status]").forEach(select=>select.addEventListener("change",async()=>{
+  select.disabled=true;const {error:updateError}=await supabase.from("orders").update({status:select.value,updated_at:new Date().toISOString()}).eq("id",select.dataset.orderStatus);
+  select.disabled=false;if(updateError){setMessage("ordersMessage","No se pudo actualizar el pedido: "+updateError.message);return;}setMessage("ordersMessage","Estado actualizado.");await loadOrders();
+ }));
+ setMessage("ordersMessage",orders.length+" pedido(s) cargado(s).");
+}
+$("refreshOrders")?.addEventListener("click",loadOrders);
+setInterval(()=>{if(session?.user&&!$("adminApp").classList.contains("hidden"))loadOrders();},20000);
+
 async function loadProducts(){
  const box=$("productList");box.innerHTML='<p class="sub">Cargando catálogo...</p>';
  const {data,error}=await supabase.from("products").select("id,name,slug,short_description,price,status,is_featured,stock_quantity,category_id,description,categories(name),product_media(id,media_type,storage_path,is_primary,sort_order)").order("created_at",{ascending:false});
