@@ -34,6 +34,22 @@
  </article>
 </section>
 <div class="page-controls" aria-label="Cambiar de página"><button id="prevPage" aria-label="Página anterior">←</button><div id="pageDots" class="page-dots"><button aria-label="Ir a inicio" class="active"></button><button aria-label="Ir a espacios"></button><button aria-label="Ir a colección"></button><button aria-label="Ir a nuestro mundo"></button></div><button id="nextPage" aria-label="Página siguiente">→</button><span class="swipe-hint">DESLIZA PARA EXPLORAR</span></div>
+<section class="promo-welcome" id="promoWelcomeModal" role="dialog" aria-modal="true" aria-labelledby="promoWelcomeTitle" hidden>
+  <div class="promo-welcome-card">
+    <button class="promo-welcome-close" id="promoWelcomeClose" type="button" aria-label="Cerrar">×</button>
+    <p class="promo-welcome-kicker">MUBIRA · BENEFICIOS EXCLUSIVOS</p>
+    <div class="promo-welcome-mark">M</div>
+    <p class="promo-welcome-eyebrow">UNA BIENVENIDA ESPECIAL PARA TI</p>
+    <h2 id="promoWelcomeTitle">¡Recibe un <span id="promoWelcomeBenefit">7%</span> de descuento!</h2>
+    <p class="promo-welcome-message" id="promoWelcomeMessage">Activa las promociones de MUBIRA y recibe beneficios especiales, novedades y ofertas seleccionadas.</p>
+    <p class="promo-welcome-note">Tú decides. Puedes rechazar y entrar a la tienda normalmente. Si aceptas, podrás cancelar las promociones cuando quieras.</p>
+    <div class="promo-welcome-actions">
+      <button type="button" class="promo-welcome-accept" id="promoWelcomeAccept">Aceptar promociones</button>
+      <button type="button" class="promo-welcome-reject" id="promoWelcomeReject">No, gracias. Ir a la tienda</button>
+    </div>
+    <p class="promo-welcome-status" id="promoWelcomeStatus" aria-live="polite"></p>
+  </div>
+</section>
 <div class="cart-panel" id="cartPanel" aria-hidden="true"><div class="cart-head"><h3>Tu bolsa</h3><button id="closeCart" aria-label="Cerrar bolsa">×</button></div><div id="cartItems" class="cart-items"><p class="muted">Tu bolsa está vacía.</p></div><div class="cart-bottom"><div><span>Total de muestra</span><strong id="cartTotal">$0</strong></div><p>Demostración: el pago todavía no está habilitado.</p></div></div><div class="scrim" id="scrim"></div>
 <section class="studio360-modal" id="studio360Modal" role="dialog" aria-modal="true" aria-labelledby="studio360Title" hidden>
   <div class="studio360-shell">
