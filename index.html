@@ -121,7 +121,93 @@ button.addEventListener("click", async () => {
   }
 });
 
-supabase.auth.onAuthStateChange((_event, session) => paintAuth(session));
+
+/* MUBIRA promotional consent flow */
+const promoModal = document.getElementById("promoWelcomeModal");
+const promoStatus = document.getElementById("promoWelcomeStatus");
+const promoChoiceKey = "mubiraPromoChoiceV1";
+const promoConsentText = "Acepto recibir promociones y ofertas de MUBIRA mediante notificaciones web. Puedo retirar mi autorización cuando quiera.";
+let promoSettings = { is_active: true, incentive_type: "percentage", incentive_value: 7, headline: "¡MUBIRA te premia!", message: "Activa las promociones de MUBIRA y recibe beneficios especiales." };
+
+function closePromoModal() {
+  if (promoModal) promoModal.hidden = true;
+}
+async function savePromoConsent(accepted) {
+  if (!currentSession?.user) return;
+  const now = new Date().toISOString();
+  const { error: consentError } = await supabase.from("marketing_consents").upsert({
+    user_id: currentSession.user.id,
+    channel: "web_push",
+    accepted,
+    consent_text: promoConsentText,
+    consent_version: "v1",
+    granted_at: now,
+    revoked_at: accepted ? null : now
+  }, { onConflict: "user_id,channel" });
+  if (consentError) throw consentError;
+}
+function formatPromoBenefit(settings) {
+  if (settings.incentive_type === "free_shipping") return "ENVÍO GRATIS";
+  if (settings.incentive_type === "special") return "PROMOCIÓN ESPECIAL";
+  return Number(settings.incentive_value || 7).toLocaleString("es-CO") + "%";
+}
+async function showPromoWelcome() {
+  if (!promoModal) return;
+  try {
+    const { data, error } = await supabase.from("promotion_settings")
+      .select("is_active,incentive_type,incentive_value,headline,message")
+      .eq("id", 1).maybeSingle();
+    if (!error && data) promoSettings = data;
+  } catch (err) { console.warn("MUBIRA promociones:", err); }
+  if (!promoSettings.is_active || localStorage.getItem(promoChoiceKey)) return;
+  document.getElementById("promoWelcomeTitle").innerHTML =
+    (promoSettings.headline || "¡MUBIRA te premia!") + ' <span id="promoWelcomeBenefit">' + formatPromoBenefit(promoSettings) + "</span>";
+  document.getElementById("promoWelcomeMessage").textContent = promoSettings.message || "Activa las promociones de MUBIRA y recibe beneficios especiales.";
+  promoModal.hidden = false;
+}
+async function choosePromo(accepted) {
+  if (!accepted) {
+    localStorage.setItem(promoChoiceKey, "rejected");
+    try { await savePromoConsent(false); } catch (err) { console.warn("No se pudo registrar el rechazo:", err); }
+    closePromoModal();
+    return;
+  }
+  if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+    promoStatus.textContent = "Este navegador no admite notificaciones web. Puedes entrar a la tienda normalmente.";
+    return;
+  }
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      promoStatus.textContent = "No se activaron las notificaciones. Puedes entrar a la tienda sin aceptar promociones.";
+      return;
+    }
+    localStorage.setItem(promoChoiceKey, "accepted_pending_account");
+    if (currentSession?.user) {
+      await savePromoConsent(true);
+      localStorage.setItem(promoChoiceKey, "accepted");
+      closePromoModal();
+      return;
+    }
+    promoStatus.textContent = "Permiso concedido. Inicia sesión con Google para registrar tu autorización.";
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin }
+    });
+    if (error) throw error;
+  } catch (err) {
+    promoStatus.textContent = "No pudimos guardar tu autorización. Puedes entrar a la tienda normalmente.";
+    console.error("MUBIRA promo consent:", err);
+  }
+}
+document.getElementById("promoWelcomeAccept")?.addEventListener("click", () => choosePromo(true));
+document.getElementById("promoWelcomeReject")?.addEventListener("click", () => choosePromo(false));
+document.getElementById("promoWelcomeClose")?.addEventListener("click", () => {
+  localStorage.setItem(promoChoiceKey, "dismissed");
+  closePromoModal();
+});
+
+supabase.auth.onAuthStateChange(async (_event, session) => {\n  paintAuth(session);\n  if (session?.user && localStorage.getItem(promoChoiceKey) === "accepted_pending_account") {\n    try { await savePromoConsent(true); localStorage.setItem(promoChoiceKey, "accepted"); closePromoModal(); }\n    catch (err) { console.error("MUBIRA: no se pudo registrar el consentimiento", err); }\n  }\n});
 const { data: { session }, error } = await supabase.auth.getSession();
 if (error) console.error("MUBIRA Auth:", error.message);
 paintAuth(session);
