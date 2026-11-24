@@ -565,3 +565,56 @@ body[data-era="present"] .era-switch button.selected{background:linear-gradient(
   .site-header { grid-template-columns: minmax(0, 1fr) auto auto auto; }
   .header-actions .auth-button span { max-width: 62px; }
 }
+
+
+/* MUBIRA · saludo personal al iniciar sesión */
+.user-welcome[hidden] { display: none !important; }
+.user-welcome {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 5px 18px;
+  color: #51445e;
+  background: linear-gradient(100deg, #f8f4fb 0%, #eee6f5 48%, #fceefa 100%);
+  border-bottom: 1px solid #ffffff;
+  box-shadow: inset 0 -1px 0 #c9b5d533;
+}
+.welcome-avatar {
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  color: white;
+  background: linear-gradient(135deg, #e735ad, #9879ec);
+  font: 800 11px 'Manrope', sans-serif;
+  box-shadow: 0 3px 9px #bd67c744;
+}
+.welcome-copy { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.welcome-copy small {
+  color: #9a6b9b;
+  font: 800 7px 'DM Sans', sans-serif;
+  letter-spacing: .16em;
+}
+.welcome-copy strong {
+  max-width: min(62vw, 360px);
+  overflow: hidden;
+  color: #392b47;
+  font: 800 11px 'Manrope', sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.welcome-spark { color: #d83eac; font-size: 12px; }
+body.authenticated .page-deck {
+  height: calc(100dvh - var(--header-h) - 34px);
+}
+@media (max-width: 760px) {
+  .user-welcome { min-height: 30px; gap: 7px; padding: 4px 12px; }
+  .welcome-avatar { width: 21px; height: 21px; font-size: 10px; }
+  .welcome-copy { gap: 6px; }
+  .welcome-copy small { font-size: 6px; }
+  .welcome-copy strong { max-width: 58vw; font-size: 10px; }
+  body.authenticated .page-deck { height: calc(100dvh - var(--header-h) - 30px); }
+}
