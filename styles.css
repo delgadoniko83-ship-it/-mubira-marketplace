@@ -702,3 +702,22 @@ button, .add-button, .product-open { -webkit-tap-highlight-color: transparent; }
   .hero-visual { min-height: 0; max-height: 70vh; height: 100%; }
   .spaces-page, .collection, .studio-page { padding-top: 14px; padding-bottom: 65px; }
 }
+
+
+/* MUBIRA: contenido editable desde el administrador */
+.hero-copy h1,.page-intro h2,.section-heading h2,.studio-copy h2{white-space:pre-line}
+.hero-visual.has-editor-image .hero-window,
+.hero-visual.has-editor-image .hero-sun,
+.hero-visual.has-editor-image .hero-plant,
+.hero-visual.has-editor-image .hero-sofa,
+.hero-visual.has-editor-image .hero-table,
+.hero-visual.has-editor-image .hero-vase,
+.hero-visual.has-editor-image .hero-rug{display:none}
+.hero-visual.has-editor-image{background-repeat:no-repeat;background-size:cover;background-position:center}
+.page-intro.has-editor-image,.section-heading.has-editor-image,.studio-art.has-editor-image{background-repeat:no-repeat;background-size:cover;background-position:center;border-radius:22px;padding:clamp(18px,3vw,34px)}
+.page-intro.has-editor-image{color:#fff;background-color:#51435a}
+.page-intro.has-editor-image .eyebrow,.page-intro.has-editor-image p{color:#fff}
+.section-heading.has-editor-image{background-color:#51435a;color:#fff}
+.section-heading.has-editor-image .muted,.section-heading.has-editor-image .eyebrow{color:#fff}
+.studio-art.has-editor-image{min-height:320px;background-color:#51435a}
+.section-edit-cta{display:inline-flex;margin-top:16px}
