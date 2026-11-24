@@ -55,7 +55,7 @@ async function loadAudit(){
  const {data,error}=await db.from("admin_change_log").select("id,table_name,record_id,action,actor_id,actor_email,changed_at,old_data,new_data").order("changed_at",{ascending:false}).limit(100);
  if(error){box.textContent="No se pudo cargar el historial: "+error.message;return;}
  if(!data?.length){box.textContent="Aún no hay modificaciones registradas.";return;}
- const labels={site_sections:"Portada o pantalla",site_section_items:"Tarjeta de Espacios",products:"Producto / precio / inventario",promotion_settings:"Configuración de promoción",promotion_campaigns:"Campaña de marketing"};
+ const labels={site_sections:"Portada o pantalla",site_section_items:"Tarjeta de Espacios",products:"Producto / precio / inventario",product_media:"Foto o video de producto",categories:"Categoría del catálogo",promotion_settings:"Configuración de promoción",promotion_campaigns:"Campaña de marketing",technical_admin_invites:"Autorización de acceso técnico",admin_access:"Permisos de administrador"};
  box.innerHTML=data.map(x=>'<article class="audit-row"><div class="audit-top"><span class="audit-action">'+esc(x.action)+'</span><small>'+new Date(x.changed_at).toLocaleString("es-CO")+'</small></div><strong>'+esc(labels[x.table_name]||x.table_name)+'</strong><small>Responsable: '+esc(x.actor_email||x.actor_id||"Cuenta no identificada")+'</small><div class="audit-fields">Campos: '+esc(changedFields(x.old_data,x.new_data))+'</div></article>').join("");
 }
 $("refreshTechnicalAudit").addEventListener("click",loadAudit);
