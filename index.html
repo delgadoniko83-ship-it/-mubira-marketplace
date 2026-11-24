@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body data-era="future">
 <header class="site-header"><a class="brand" href="#inicio">MUBIRA<span>®</span><small>OBJETOS · ESPACIOS · VIDA</small></a>
 <nav class="main-nav" aria-label="Navegación principal"><a href="#inicio" data-page-link="0">Inicio</a><a href="#espacios" data-page-link="1">Espacios</a><a href="#coleccion" data-page-link="2">Colección</a><a href="#estudio" data-page-link="3">Nuestro mundo</a></nav>
-<div class="header-actions"><div class="era-switch" role="group" aria-label="Cambiar época visual"><span class="era-label">VIAJE VISUAL</span><button type="button" data-era-choice="past">PASADO</button><button type="button" data-era-choice="present">AHORA</button><button type="button" data-era-choice="future" class="selected">FUTURO</button></div><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar una pieza..." aria-label="Buscar productos"></label><button class="cart-button" id="cartButton">Bolsa <b id="cartCount">0</b></button><button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button></div></header>
+<div class="header-actions"><div class="era-switch" role="group" aria-label="Cambiar época visual"><span class="era-label">VIAJE VISUAL</span><button type="button" data-era-choice="past">PASADO</button><button type="button" data-era-choice="present">AHORA</button><button type="button" data-era-choice="future" class="selected">FUTURO</button></div><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar una pieza..." aria-label="Buscar productos"></label><button class="auth-button" id="authButton" type="button">Entrar con Google</button><span class="auth-status" id="authStatus" aria-live="polite"></span><button class="cart-button" id="cartButton">Bolsa <b id="cartCount">0</b></button><button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button></div></header>
 <main class="page-deck" id="pageDeck" aria-label="Páginas de MUBIRA">
 <section class="page-panel hero" id="inicio" data-page="0"><div class="hero-copy"><p class="eyebrow">UNA NUEVA FORMA DE HABITAR</p><h1>El diseño<br>se siente<br><em>en casa.</em></h1><p class="hero-text">Piezas con carácter. Espacios que hablan de ti. Descubre una nueva manera de imaginar tu hogar.</p><a class="button button-light" href="#espacios" data-go="1">Explorar MUBIRA <span>↗</span></a><div class="hero-note"><span class="note-line"></span> Diseño colombiano · Inspiración sin límites</div></div>
 <div class="hero-visual"><div class="hero-kicker">COLECCIÓN / 001 <span>—</span> VIVIR BONITO</div><div class="hero-window"></div><div class="hero-sun"></div><div class="hero-plant">♧</div><div class="hero-sofa"><i></i><b></b><em></em></div><div class="hero-table"></div><div class="hero-vase">⌁</div><div class="hero-rug"></div><div class="hero-caption">Un lugar para<br><strong>sentirte tú.</strong></div><div class="era-stamp">MUBIRA / FUTURE LIVING</div></div><div class="hero-index">01 <span>/ 04</span></div></section>
@@ -54,4 +54,49 @@
 <section class="studio360-viewer" id="studio360Viewer" role="dialog" aria-modal="true" aria-label="Visor 360 grados" hidden>
  <div class="studio360-viewer-box"><button type="button" id="closeStudio360Viewer" class="studio360-close" aria-label="Cerrar">×</button><p class="studio360-kicker">MUBIRA · VISTA INTERACTIVA</p><h2 id="studio360ViewerName">Producto</h2><div class="studio360-turntable" id="studio360Turntable"><img id="studio360ViewerImage" alt="Vista giratoria del mueble"><span>ARRASTRA PARA GIRAR</span></div><p class="studio360-viewer-help">Desliza el dedo o el ratón horizontalmente para girar el mueble.</p></div>
 </section>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.2";
+
+const supabase = createClient(
+  "https://ncfjussqankxpmcrhhij.supabase.co",
+  "sb_publishable_01DxOQWRyBJAdrUeXh7_gQ_j_qlTvtz"
+);
+const button = document.getElementById("authButton");
+const status = document.getElementById("authStatus");
+let currentSession = null;
+
+function paintAuth(session) {
+  currentSession = session;
+  const user = session?.user;
+  button.textContent = user ? "Cerrar sesión" : "Entrar con Google";
+  status.textContent = user?.email || "";
+  button.setAttribute("aria-label", user ? "Cerrar sesión de MUBIRA" : "Iniciar sesión con Google");
+}
+
+button.addEventListener("click", async () => {
+  button.disabled = true;
+  try {
+    if (currentSession) {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin }
+      });
+      if (error) throw error;
+    }
+  } catch (error) {
+    alert("No fue posible completar el acceso: " + (error.message || "Inténtalo de nuevo."));
+  } finally {
+    button.disabled = false;
+  }
+});
+
+supabase.auth.onAuthStateChange((_event, session) => paintAuth(session));
+const { data: { session }, error } = await supabase.auth.getSession();
+if (error) console.error("MUBIRA Auth:", error.message);
+paintAuth(session);
+</script>
 <script src="app.js"></script></body></html>
