@@ -204,15 +204,22 @@ function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,char=>({"
 async function uploadProductFile(productId,file,mediaType){
  if(!file)return null;
  if(file.size>35*1024*1024)throw new Error("El archivo "+file.name+" supera el límite de 35 MB.");
- const ext=(file.name.split(".").pop()|| (mediaType==="image"?"jpg":"mp4")).toLowerCase().replace(/[^a-z0-9]/g,"");
+ const previous=await supabase.from("product_media").select("id,storage_path").eq("product_id",productId).eq("media_type",mediaType);
+ if(previous.error)throw previous.error;
+ const ext=(file.name.split(".").pop()||(mediaType==="image"?"jpg":"mp4")).toLowerCase().replace(/[^a-z0-9]/g,"");
  const path=productId+"/"+mediaType+"-"+Date.now()+"."+ext;
- await supabase.from("product_media").delete().eq("product_id",productId).eq("media_type",mediaType);
  const {data,error}=await supabase.storage.from("mubira-products").upload(path,file,{contentType:file.type,upsert:false});
  if(error)throw error;
- const {data:{publicUrl}}=supabase.storage.from("mubira-products").getPublicUrl(data.path);
  const {error:mediaError}=await supabase.from("product_media").insert({product_id:productId,media_type:mediaType,source_type:"upload",storage_path:data.path,original_filename:file.name,mime_type:file.type,file_size_bytes:file.size,is_primary:mediaType==="image"});
- if(mediaError)throw mediaError;
- return publicUrl;
+ if(mediaError){await supabase.storage.from("mubira-products").remove([data.path]);throw mediaError;}
+ const oldRows=previous.data||[];
+ if(oldRows.length){
+  const {error:deleteError}=await supabase.from("product_media").delete().in("id",oldRows.map(row=>row.id));
+  if(deleteError)throw deleteError;
+  const oldPaths=oldRows.map(row=>row.storage_path).filter(Boolean);
+  if(oldPaths.length)await supabase.storage.from("mubira-products").remove(oldPaths);
+ }
+ return supabase.storage.from("mubira-products").getPublicUrl(data.path).data.publicUrl;
 }
 $("clearProduct").addEventListener("click",clearProductForm);
 $("saveProduct").addEventListener("click",async()=>{
