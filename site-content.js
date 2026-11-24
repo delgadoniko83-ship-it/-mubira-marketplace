@@ -46,4 +46,34 @@ if(spacesIntro && !spacesIntro.querySelector(".section-edit-cta")){
  const a=document.createElement("a");a.className="button button-light section-edit-cta";a.href="#coleccion";a.dataset.go="2";a.textContent="Ver espacios ↗";a.hidden=true;spacesIntro.append(a);
  a.addEventListener("click",e=>{e.preventDefault();document.getElementById("pageDeck")?.scrollTo({left:2*document.getElementById("pageDeck").clientWidth,behavior:"smooth"});});
 }
+
+const spaceCardTargets = {
+  salas: ".category-card.cat-living",
+  comedores: ".category-card.cat-dining",
+  habitaciones: ".category-card.cat-bedroom",
+  decoracion: ".category-card.cat-decor"
+};
+async function loadEditableSpaceCards(){
+  try{
+    const {data,error}=await db.from("site_section_items").select("*").eq("section_key","espacios").order("sort_order");
+    if(error) throw error;
+    for(const item of data||[]){
+      const card=document.querySelector(spaceCardTargets[item.item_key]);
+      if(!card) continue;
+      const eyebrow=card.querySelector("span"),title=card.querySelector("strong"),description=card.querySelector("small");
+      if(eyebrow) eyebrow.textContent=item.eyebrow||"";
+      if(title) title.textContent=item.title||"";
+      if(description) description.textContent=item.description||"";
+      if(item.title) card.dataset.category=item.title;
+      if(item.image_path){
+        const url=db.storage.from("mubira-products").getPublicUrl(item.image_path).data.publicUrl;
+        card.classList.add("has-editor-image");
+        card.style.backgroundImage="linear-gradient(0deg,rgba(28,19,43,.76),rgba(28,19,43,.04) 78%),url('"+url.replace(/'/g,"%27")+"')";
+        card.style.backgroundSize="cover";
+        card.style.backgroundPosition="center";
+      }
+    }
+  }catch(error){console.warn("Tarjetas editables de MUBIRA:",error.message);}
+}
 loadEditableSections();
+loadEditableSpaceCards();
