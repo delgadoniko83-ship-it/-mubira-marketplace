@@ -62,8 +62,12 @@ $("saveSpaceItem").addEventListener("click",async()=>{
 async function init(){
  const {data:{session:s}}=await db.auth.getSession();session=s;
  if(!s?.user){msg("Inicia sesión primero con la cuenta propietaria de MUBIRA.");return;}
- const {data,error}=await db.from("admin_profiles").select("role").eq("user_id",s.user.id).maybeSingle();
- if(error||data?.role!=="owner"){msg("Esta cuenta no tiene permisos de propietario.");return;}
+ const [{data:profile,error:profileError},{data:roles,error:rolesError}]=await Promise.all([
+  db.from("admin_profiles").select("role").eq("user_id",s.user.id).maybeSingle(),
+  db.from("admin_access").select("role").eq("user_id",s.user.id)
+ ]);
+ const allowed=(!profileError&&profile?.role==="owner")||(!rolesError&&(roles||[]).some(r=>r.role==="technical_admin"));
+ if(!allowed){msg("Esta cuenta no tiene permisos técnicos.");return;}
  await loadRows();
 }
 db.auth.onAuthStateChange((_event,s)=>{session=s;if(s?.user)loadRows();});
