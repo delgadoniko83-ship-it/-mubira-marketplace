@@ -721,3 +721,29 @@ button, .add-button, .product-open { -webkit-tap-highlight-color: transparent; }
 .section-heading.has-editor-image .muted,.section-heading.has-editor-image .eyebrow{color:#fff}
 .studio-art.has-editor-image{min-height:320px;background-color:#51435a}
 .section-edit-cta{display:inline-flex;margin-top:16px}
+
+
+/* MUBIRA · ajustes finales de navegación y lectura en móviles */
+@media (max-width: 760px) {
+  html, body { width:100%; max-width:100%; overflow-x:hidden; }
+  .page-deck { width:100%; min-width:0; max-width:100%; }
+  .page-panel { flex:0 0 100%; width:100%; min-width:100%; max-width:100%; }
+  .product-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .product-card { min-width:0; }
+  .product-info { min-width:0; padding:11px; }
+  .product-info h3 { font-size:13px; overflow-wrap:anywhere; }
+  .product-info p { font-size:10px; overflow-wrap:anywhere; }
+  .product-bottom { align-items:center; gap:8px; }
+  .price { font-size:11px; }
+  .add-button { min-height:40px; padding:8px 10px; font-size:10px; }
+  .category-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .hero-copy, .page-intro, .section-heading, .studio-copy { min-width:0; overflow-wrap:anywhere; }
+  .page-controls { max-width:100%; }
+}
+@media (max-width: 360px) {
+  .product-grid { gap:7px; }
+  .product-info { padding:8px; }
+  .product-info h3 { font-size:12px; }
+  .add-button { font-size:9px; padding:7px; }
+  .category-card { min-width:0; padding:14px; }
+}
