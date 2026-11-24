@@ -13,7 +13,28 @@
 .audit-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .audit-fields{font-size:11px;color:#725c80;margin-top:7px;overflow-wrap:anywhere}
 .audit-action{font-size:10px;font-weight:900;letter-spacing:.08em;color:#a03e91}
-</style></style></head><body>
+</style></style>
+/* MUBIRA técnico · uso cómodo desde teléfonos */
+@media (max-width:760px) {
+ html,body { width:100%; min-height:100%; height:auto; overflow-x:hidden; overflow-y:auto; }
+ header { position:sticky; top:0; padding-top:max(10px,env(safe-area-inset-top)); flex-wrap:wrap; }
+ .head-actions { flex-wrap:wrap; justify-content:flex-end; }
+ .head-actions a { padding:7px 0; }
+ main { width:100%; padding:14px 10px max(30px,env(safe-area-inset-bottom)); }
+ #techApp { display:block; }
+ #techApp .intro { padding:0 4px; }
+ #techApp .panel { width:100%; max-width:100%; margin:12px 0; padding:16px 14px; scroll-margin-top:90px; }
+ #techApp input,#techApp select,#techApp textarea { width:100%; max-width:100%; min-height:46px; font-size:16px; }
+ #techApp textarea { min-height:100px; }
+ #techApp input[type=file] { min-height:52px; padding:10px; }
+ #techApp .actions { display:flex; flex-wrap:wrap; }
+ #techApp .actions button { width:100%; min-height:48px; }
+ #techApp .check { align-items:flex-start; }
+ #techApp .check label { line-height:1.45; }
+ .file-preview img { max-height:190px; }
+ footer { padding-bottom:max(18px,env(safe-area-inset-bottom)); }
+}
+</head><body>
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN TÉCNICA</small></a><div class="head-actions"><a href="/admin.html">Administración comercial</a><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
 <main>
 <section id="loginGate" class="panel"><p class="eyebrow">ACCESO TÉCNICO SEGURO</p><h1>Diseño y tecnología.</h1><p class="sub">Este espacio controla portadas, imágenes de botones y tarjetas, títulos y textos de las pantallas. No administra productos ni promociones.</p><button class="primary" id="loginButton">Continuar con Google</button><p class="message" id="loginMessage"></p></section>
