@@ -204,9 +204,25 @@ document.getElementById("promoWelcomeAccept")?.addEventListener("click", () => c
 document.getElementById("promoWelcomeReject")?.addEventListener("click", () => choosePromo(false));
 document.getElementById("promoWelcomeClose")?.addEventListener("click", () => choosePromo(false));
 
-supabase.auth.onAuthStateChange(async (_event, session) => {\n  paintAuth(session);\n  if (session?.user && localStorage.getItem(promoChoiceKey) === "accepted_pending_account") {\n    try { await savePromoConsent(true); localStorage.setItem(promoChoiceKey, "accepted"); closePromoModal(); }\n    catch (err) { console.error("MUBIRA: no se pudo registrar el consentimiento", err); }\n  }\n});
+supabase.auth.onAuthStateChange((_event, session) => {
+  paintAuth(session);
+  if (session?.user && localStorage.getItem(promoChoiceKey) === "accepted_pending_account") {
+    // Evita esperar otra llamada de Supabase dentro del callback de autenticación.
+    queueMicrotask(async () => {
+      try {
+        await savePromoConsent(true);
+        localStorage.setItem(promoChoiceKey, "accepted");
+        closePromoModal();
+      } catch (err) {
+        console.error("MUBIRA: no se pudo registrar el consentimiento", err);
+        promoStatus.textContent = "No pudimos registrar tu autorización. Puedes entrar a la tienda normalmente.";
+      }
+    });
+  }
+});
 const { data: { session }, error } = await supabase.auth.getSession();
 if (error) console.error("MUBIRA Auth:", error.message);
 paintAuth(session);
+showPromoWelcome();
 </script>
 <script src="app.js"></script></body></html>
