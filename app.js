@@ -31,7 +31,7 @@ productModal.addEventListener("click",e=>{if(e.target.closest("[data-close-produ
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!productModal.hidden)closeProductModal();});
 document.getElementById("productModalAdd").addEventListener("click",()=>{if(!modalProduct)return;const found=cart.find(x=>x.id===modalProduct.id);found?found.qty++:cart.push({...modalProduct,qty:1});renderCart();closeProductModal();});
 
-document.getElementById("cartItems").addEventListener("click",e=>{const id=Number(e.target.dataset.remove);if(id){cart=cart.filter(p=>p.id!==id);renderCart();}});
+document.getElementById("cartItems").addEventListener("click",e=>{const id=e.target.dataset.remove;if(id){cart=cart.filter(p=>String(p.id)!==String(id));renderCart();}});
 document.getElementById("cartButton").addEventListener("click",openCart);document.getElementById("closeCart").addEventListener("click",closeCart);document.getElementById("scrim").addEventListener("click",closeCart);
 document.getElementById("searchInput").addEventListener("input",e=>{const q=e.target.value.trim().toLocaleLowerCase("es");renderProducts(products.filter(p=>(p.name+" "+p.category+" "+p.detail).toLocaleLowerCase("es").includes(q)));if(q)goToPage(2);});
 document.querySelectorAll("[data-category]").forEach(a=>a.addEventListener("click",()=>{renderProducts(products.filter(p=>p.category===a.dataset.category));goToPage(2);}));
