@@ -193,7 +193,7 @@ body { overflow-x: hidden; }
      <h2 id="productFormTitle">Nuevo producto</h2><p class="sub">Los cambios se guardan en la base de datos de MUBIRA.</p>
      <input type="hidden" id="productId">
      <label for="productName">Nombre del mueble</label><input id="productName" maxlength="140" placeholder="Ej. Sofá Oslo" required>
-     <label for="productCategory">Categoría</label><input id="productCategory" maxlength="80" placeholder="Ej. Salas">
+     <label for="productCategory">Categoría</label><select id="productCategory" required><option value="">Selecciona una categoría</option></select>
      <label for="productPrice">Precio en pesos colombianos (COP)</label><input id="productPrice" type="number" min="0" step="1000" placeholder="Ej. 1890000" required>
      <label for="productShort">Descripción corta</label><input id="productShort" maxlength="180" placeholder="Ej. Sofá de tres puestos">
      <label for="productDescription">Descripción completa</label><textarea id="productDescription" maxlength="3000" placeholder="Materiales, medidas, acabados y detalles..."></textarea>
@@ -218,7 +218,7 @@ body { overflow-x: hidden; }
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.2";
 const supabase=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publishable_01DxOQWRyBJAdrUeXh7_gQ_j_qlTvtz");
 const $=id=>document.getElementById(id);
-let session=null,owner=false;
+let session=null,owner=false,categories=[];
 function show(id){["loginGate","denied","adminApp"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
 function setMessage(id,msg){$(id).textContent=msg;}
 async function checkAccess(s){
@@ -231,7 +231,7 @@ async function checkAccess(s){
  ]);
  owner=(!profileError&&profile?.role==="owner")||(!rolesError&&(roles||[]).some(r=>r.role==="commercial_admin"));
  if(!owner){show("denied");$("signedEmail").textContent=s.user.email||"";return;}
- show("adminApp");await loadDashboard();await loadProducts();
+ show("adminApp");await loadDashboard();await loadCategories();await loadProducts();
 }
 async function signIn(){setMessage("loginMessage","Conectando con Google...");const {error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.href.split("?")[0]}});if(error)setMessage("loginMessage","No se pudo iniciar sesión: "+error.message);}
 $("loginButton").addEventListener("click",signIn);
@@ -259,13 +259,20 @@ $("productPhoto").addEventListener("change",()=>showFilePreview("productPhoto","
 $("productVideo").addEventListener("change",()=>showFilePreview("productVideo","videoPreview","video"));
 
 function clearProductForm(){["productId","productName","productCategory","productPrice","productShort","productDescription"].forEach(id=>$(id).value="");$("productStock").value="0";$("productFeatured").checked=false;$("productPublish").checked=true;$("productPhoto").value="";$("productVideo").value="";showFilePreview("productPhoto","photoPreview","photo");showFilePreview("productVideo","videoPreview","video");$("productFormTitle").textContent="Nuevo producto";setMessage("productMessage","");}
+async function loadCategories(){
+ const select=$("productCategory");
+ const {data,error}=await supabase.from("categories").select("id,name").eq("is_active",true).order("sort_order",{ascending:true}).order("name",{ascending:true});
+ if(error){setMessage("productMessage","No se pudieron cargar las categorías: "+error.message);return;}
+ categories=data||[];
+ select.innerHTML='<option value="">Selecciona una categoría</option>'+categories.map(item=>'<option value="'+item.id+'">'+escapeHtml(item.name)+'</option>').join("");
+}
 async function loadProducts(){
  const box=$("productList");box.innerHTML='<p class="sub">Cargando catálogo...</p>';
  const {data,error}=await supabase.from("products").select("id,name,slug,short_description,price,status,is_featured,stock_quantity,category_id,description,categories(name),product_media(id,media_type,storage_path,is_primary,sort_order)").order("created_at",{ascending:false});
  if(error){box.textContent="No se pudo cargar el catálogo: "+error.message;return;}
  if(!data?.length){box.innerHTML='<p class="sub">Aún no hay productos propios. Crea el primero en este formulario.</p>';return;}
  box.innerHTML=data.map(p=>'<article class="campaign"><strong>'+escapeHtml(p.name)+'</strong><small>'+moneyCOP(p.price)+' · '+(p.status==="published"?"PUBLICADO":"BORRADOR")+' · '+(p.stock_quantity||0)+' unidades</small><p>'+escapeHtml(p.short_description||"Sin descripción")+'</p><button class="secondary" type="button" data-edit-product="'+p.id+'">Editar</button></article>').join("");
- box.querySelectorAll("[data-edit-product]").forEach(button=>button.addEventListener("click",()=>{const p=data.find(item=>item.id===button.dataset.editProduct);if(!p)return;$("productId").value=p.id;$("productName").value=p.name||"";$("productCategory").value=p.categories?.name||"";$("productPrice").value=p.price??"";$("productShort").value=p.short_description||"";$("productDescription").value=p.description||"";$("productStock").value=p.stock_quantity||0;$("productFeatured").checked=!!p.is_featured;$("productPublish").checked=p.status==="published";$("productFormTitle").textContent="Editar producto";setMessage("productMessage","Editando "+p.name+". Selecciona nuevos archivos solo si deseas reemplazarlos.");$("productName").focus();}));
+ box.querySelectorAll("[data-edit-product]").forEach(button=>button.addEventListener("click",()=>{const p=data.find(item=>item.id===button.dataset.editProduct);if(!p)return;$("productId").value=p.id;$("productName").value=p.name||"";$("productCategory").value=p.category_id||"";$("productPrice").value=p.price??"";$("productShort").value=p.short_description||"";$("productDescription").value=p.description||"";$("productStock").value=p.stock_quantity||0;$("productFeatured").checked=!!p.is_featured;$("productPublish").checked=p.status==="published";$("productFormTitle").textContent="Editar producto";setMessage("productMessage","Editando "+p.name+". Selecciona nuevos archivos solo si deseas reemplazarlos.");$("productName").focus();}));
 }
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));}
 async function uploadProductFile(productId,file,mediaType){
@@ -295,8 +302,8 @@ $("saveProduct").addEventListener("click",async()=>{
  if(!name||!Number.isFinite(price)||price<0){setMessage("productMessage","Escribe el nombre y un precio válido en COP.");return;}
  const button=$("saveProduct");button.disabled=true;setMessage("productMessage","Guardando ficha del producto...");
  try{
-  let categoryId=null;const categoryName=$("productCategory").value.trim();
-  if(categoryName){const slug=slugify(categoryName);const found=await supabase.from("categories").select("id").eq("slug",slug).maybeSingle();if(found.error)throw found.error;if(found.data)categoryId=found.data.id;else{const made=await supabase.from("categories").insert({name:categoryName,slug,is_active:true}).select("id").single();if(made.error)throw made.error;categoryId=made.data.id;}}
+  const categoryId=$("productCategory").value||null;
+  if(!categoryId)throw new Error("Selecciona una categoría de la lista antes de guardar.");
   const id=$("productId").value;
   const payload={name,slug:slugify(name),category_id:categoryId,price,currency_code:"COP",short_description:$("productShort").value.trim()||null,description:$("productDescription").value.trim()||null,stock_quantity:Math.max(0,Math.floor(Number($("productStock").value)||0)),is_featured:$("productFeatured").checked,status:$("productPublish").checked?"published":"draft",published_at:$("productPublish").checked?new Date().toISOString():null,updated_at:new Date().toISOString()};
   let productId=id;
