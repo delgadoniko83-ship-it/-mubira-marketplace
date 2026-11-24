@@ -118,17 +118,17 @@ body { overflow-x: hidden; }
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN PRIVADA</small></a><div class="head-actions"><a href="/">← Tienda</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
 <main>
 <section id="loginGate" class="panel">
- <p class="eyebrow">ACCESO SEGURO</p><h1>Panel de control</h1><p class="sub">Inicia sesión con la cuenta autorizada para administrar MUBIRA. Entrar con Google no concede permisos de administrador automáticamente.</p>
+ <p class="eyebrow">ACCESO SEGURO</p><h1>Panel de control</h1><p class="sub">Inicia sesión con la cuenta autorizada para administrar MUBIRA. Este acceso es exclusivo para el equipo comercial autorizado.</p>
  <button class="primary" id="loginButton">Continuar con Google</button><p class="message" id="loginMessage"></p>
 </section>
-<section id="denied" class="panel hidden"><p class="eyebrow">MUBIRA · ACCESO RESTRINGIDO</p><h1>Cuenta aún no autorizada</h1><p class="sub">La cuenta inició sesión correctamente, pero todavía no tiene el rol de propietario en MUBIRA.</p><p id="signedEmail"></p><div class="warn">Para proteger tu tienda, el propietario debe ser habilitado manualmente en la base de datos.</div><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
+<section id="denied" class="panel hidden"><p class="eyebrow">MUBIRA · ACCESO RESTRINGIDO</p><h1>Cuenta aún no autorizada</h1><p class="sub">La cuenta inició sesión correctamente, pero no tiene permisos comerciales en MUBIRA.</p><p id="signedEmail"></p><div class="warn">Para proteger tu tienda, el propietario debe autorizar el acceso comercial.</div><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
 <section id="adminApp" class="hidden">
- <div class="intro"><div><p class="eyebrow">CENTRO DE CONTROL · MUBIRA</p><h1>Tu tienda, en orden.</h1><p>Entra a cada espacio desde las pestañas o desliza la pantalla hacia los lados.</p></div><span class="pill">PROPIETARIO AUTENTICADO</span></div>
+ <div class="intro"><div><p class="eyebrow">CENTRO DE CONTROL · MUBIRA</p><h1>Tu tienda, en orden.</h1><p>Productos, precios, inventario, promociones y campañas. Las portadas se gestionan en el administrador técnico.</p></div><span class="pill">ADMINISTRACIÓN COMERCIAL</span></div>
  <nav class="admin-nav" aria-label="Secciones del administrador">
   <button class="active" data-panel="overview" aria-current="page">Resumen</button>
   <button data-panel="promotion">Beneficio</button>
   <button data-panel="campaigns">Marketing</button>
-  <button data-panel="content">Contenido</button><button data-panel="products">Productos</button>
+  <button data-panel="products">Productos</button>
  </nav>
  <div class="admin-deck" id="adminDeck">
   <section class="admin-screen" id="overview">
@@ -164,42 +164,6 @@ body { overflow-x: hidden; }
     <section class="panel"><h2>Campañas guardadas</h2><p class="sub">Historial de borradores y campañas.</p><div id="campaignList"><p class="sub">Cargando...</p></div></section>
    </div>
    <div class="warn">La entrega de notificaciones reales requiere terminar el servicio Web Push y probarlo en dispositivos compatibles.</div>
-  <section class="admin-screen" id="content">
-   <div class="screen-heading"><div><h2>Editar la página</h2><p>Cambia textos, títulos, botones e imagen de cada sección sin tocar código.</p></div></div>
-   <section class="panel section-editor-panel">
-    <label for="sectionKey">¿Qué sección quieres editar?</label>
-    <select id="sectionKey">
-     <option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option>
-    </select>
-    <label for="sectionNavLabel">Nombre que aparece en el menú</label><input id="sectionNavLabel" maxlength="60" placeholder="Ej. Inicio">
-    <label for="sectionEyebrow">Texto pequeño superior</label><input id="sectionEyebrow" maxlength="120" placeholder="Frase corta">
-    <label for="sectionTitle">Título principal</label><textarea id="sectionTitle" rows="3" maxlength="240" placeholder="Escribe el título. Puedes usar saltos de línea."></textarea>
-    <label for="sectionDescription">Descripción</label><textarea id="sectionDescription" rows="4" maxlength="1200" placeholder="Texto que verá el cliente"></textarea>
-    <label for="sectionButtonText">Texto del botón o etiqueta</label><input id="sectionButtonText" maxlength="80" placeholder="Ej. Explorar MUBIRA">
-    <label for="sectionImage">Fotografía de esta sección (puedes tomarla con el celular)</label><input id="sectionImage" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
-    <div class="file-preview" id="sectionImagePreview" hidden></div>
-    <div class="check"><input type="checkbox" id="removeSectionImage"><label for="removeSectionImage">Quitar la fotografía personalizada y volver al diseño original</label></div>
-    <div class="actions"><button class="primary" id="saveSectionContent">Guardar cambios de esta sección</button></div>
-    <p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
-    <p class="sub">Los cambios se guardan en MUBIRA. Puedes volver a editar cada sección cuando quieras. Límite de imagen: 35 MB.</p>
-   </section>
-   <section class="panel section-editor-panel space-items-panel">
-    <h2>Editar tarjetas de Espacios</h2>
-    <p class="sub">Cambia cada tarjeta por separado: fotografía, texto pequeño, nombre y descripción. Las tarjetas de Colección se administran desde Productos.</p>
-    <label for="spaceItemKey">¿Qué tarjeta quieres editar?</label>
-    <select id="spaceItemKey">
-     <option value="salas">Salas</option><option value="comedores">Comedores</option><option value="habitaciones">Habitaciones</option><option value="decoracion">Decoración</option>
-    </select>
-    <label for="spaceItemEyebrow">Texto pequeño superior</label><input id="spaceItemEyebrow" maxlength="100" placeholder="Ej. 01 / RELAJARSE">
-    <label for="spaceItemTitle">Nombre de la tarjeta</label><input id="spaceItemTitle" maxlength="80" placeholder="Ej. Salas">
-    <label for="spaceItemDescription">Descripción corta</label><textarea id="spaceItemDescription" rows="2" maxlength="240" placeholder="Una frase para presentar este espacio"></textarea>
-    <label for="spaceItemImage">Fotografía de esta tarjeta (puedes tomarla con el celular)</label><input id="spaceItemImage" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
-    <div class="file-preview" id="spaceItemImagePreview" hidden></div>
-    <div class="check"><input type="checkbox" id="removeSpaceItemImage"><label for="removeSpaceItemImage">Quitar la fotografía personalizada</label></div>
-    <div class="actions"><button class="primary" id="saveSpaceItem">Guardar esta tarjeta</button></div>
-    <p class="message" id="spaceItemMessage" aria-live="polite">Cargando tarjetas...</p>
-    <p class="sub">Las fotos se guardan en el almacenamiento actual de MUBIRA. Límite: 35 MB por imagen.</p>
-   </section>
   </section>
   <section class="admin-screen" id="products">
    <div class="screen-heading"><div><h2>Catálogo de productos</h2><p>Crea muebles, actualiza precios y administra sus archivos.</p></div></div>
@@ -240,9 +204,11 @@ async function checkAccess(s){
  session=s;owner=false;
  $("authButton").textContent=s?.user?"Cerrar sesión":"Entrar con Google";
  if(!s?.user){show("loginGate");return;}
- const {data,error}=await supabase.from("admin_profiles").select("role").eq("user_id",s.user.id).maybeSingle();
- if(error){show("denied");$("signedEmail").textContent=s.user.email||"";return;}
- owner=data?.role==="owner";
+ const [{data:profile,error:profileError},{data:roles,error:rolesError}]=await Promise.all([
+  supabase.from("admin_profiles").select("role").eq("user_id",s.user.id).maybeSingle(),
+  supabase.from("admin_access").select("role").eq("user_id",s.user.id)
+ ]);
+ owner=(!profileError&&profile?.role==="owner")||(!rolesError&&(roles||[]).some(r=>r.role==="commercial_admin"));
  if(!owner){show("denied");$("signedEmail").textContent=s.user.email||"";return;}
  show("adminApp");await loadDashboard();await loadProducts();
 }
@@ -386,6 +352,4 @@ const {data:{session:s},error}=await supabase.auth.getSession();if(error)setMess
  document.getElementById('nextPanel').addEventListener('click',()=>deck.scrollBy({left:deck.clientWidth,behavior:'smooth'}));
 })();
 </script>
-<script type="module" src="site-editor-admin.js"></script>
-<script type="module" src="site-items-editor-admin.js"></script>
 </body></html>
