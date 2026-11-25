@@ -35,7 +35,7 @@ $("spaceItemImage").addEventListener("change",()=>{
  const img=document.createElement("img");img.src=URL.createObjectURL(file);img.alt="Vista previa";box.append(img);
 });
 $("saveSpaceItem").addEventListener("click",async()=>{
- if(!session?.user){msg("Inicia sesión como propietario para guardar.");return;}
+ if(!session?.user){msg("Inicia sesión con una cuenta autorizada para guardar.");return;}
  const key=$("spaceItemKey").value,item=items[key],existing=rows.find(r=>r.item_key===key);
  const button=$("saveSpaceItem");button.disabled=true;msg("Guardando tarjeta...");
  let nextPath=currentImage,uploadedPath=null;
