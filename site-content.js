@@ -77,8 +77,39 @@ async function loadEditableSpaceCards(){
     }
   }catch(error){console.warn("Tarjetas editables de MUBIRA:",error.message);}
 }
-loadEditableSections();
-loadEditableSpaceCards();
-
-// Sincronización ligera: la tienda abierta refleja cambios de administración sin tener que cerrarla.
+async function loadPublishedVisualTheme(){
+  try{
+    const {data,error}=await db.from("site_themes").select("theme_key,name,settings").eq("is_active",true).maybeSingle();
+    if(error)throw error;
+    if(!data)return;
+    const settings=data.settings||{},g=settings.global||{},root=document.documentElement;
+    const vars={primary:g.primary,secondary:g.secondary,background:g.background,surface:g.surface,text:g.text};
+    Object.entries(vars).forEach(([key,value])=>{if(value)root.style.setProperty("--mubira-"+key,value)});
+    const fonts={"Manrope":"'Manrope',sans-serif","DM Sans":"'DM Sans',sans-serif","serif":"'Playfair Display',serif"};
+    root.style.setProperty("--mubira-font",fonts[g.font]||fonts.Manrope);
+    document.body.dataset.mubiraButtonStyle=g.buttonStyle||"gradient";
+    document.body.dataset.mubiraTheme=data.theme_key||"";
+    const imageTargets={
+      inicio:document.querySelector(".hero-visual"),
+      espacios:document.querySelector(".spaces-page"),
+      coleccion:document.querySelector(".collection"),
+      nuestro_mundo:document.querySelector(".studio-art")
+    };
+    for(const [key,host] of Object.entries(imageTargets)){
+      if(!host)continue;
+      const item=settings.screens?.[key]||{};
+      if(item.image_path){
+        const url=db.storage.from("mubira-products").getPublicUrl(item.image_path).data.publicUrl;
+        const opacity=Math.max(0,Math.min(0.7,Number(item.overlay||0)/100));
+        host.style.backgroundImage="linear-gradient(rgba(22,16,30,"+opacity+"),rgba(22,16,30,"+opacity+")),url("+JSON.stringify(url)+")";
+        host.style.backgroundSize="cover";host.style.backgroundPosition=item.position||"center";
+        host.classList.add("mubira-theme-photo");
+      }else{
+        host.classList.remove("mubira-theme-photo");
+        host.style.removeProperty("background-image");host.style.removeProperty("background-size");host.style.removeProperty("background-position");
+      }
+    }
+  }catch(error){console.warn("Tema visual publicado de MUBIRA:",error.message);}
+}
+Promise.all([loadEditableSections(),loadEditableSpaceCards()]).then(loadPublishedVisualTheme);
 setInterval(()=>{Promise.all([loadEditableSections(),loadEditableSpaceCards()]).then(loadPublishedVisualTheme);},12000);
