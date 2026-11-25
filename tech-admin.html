@@ -66,7 +66,7 @@
  #techApp .tech-screen .actions{max-width:360px}
 }
 
-</style>
+ .theme-color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.theme-color-grid label{margin:10px 0}.theme-color-grid input[type=color]{display:block;width:100%;height:48px;padding:4px;border-radius:10px}@media(max-width:480px){.theme-color-grid{grid-template-columns:1fr 1fr}}\n</style>
 </head><body>
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN TÉCNICA</small></a><div class="head-actions"><a href="/admin.html">Administración comercial</a><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
 <main>
@@ -74,7 +74,7 @@
 <section id="denied" class="panel hidden"><p class="eyebrow">ACCESO RESTRINGIDO</p><h1>Cuenta sin permisos técnicos</h1><p class="sub">La sesión de Google está activa, pero esta cuenta no tiene autorización para cambiar la apariencia de MUBIRA.</p><p id="signedEmail"></p><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
 <div id="techApp" class="hidden">
 <div class="intro"><p class="eyebrow">CENTRO DE DISEÑO · MUBIRA</p><h1>La imagen de tu tienda, bajo control.</h1><p>Modifica una portada o tarjeta, guarda y abre la tienda para revisar el resultado. Las páginas abiertas se sincronizan automáticamente.</p><span class="pill">ADMINISTRACIÓN TÉCNICA</span></div>
-<nav class="tech-nav" aria-label="Secciones del administrador técnico"><button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Accesos</button><button type="button" class="tech-tab" data-tech-target="audit"><span>02</span> Historial</button><button type="button" class="tech-tab" data-tech-target="covers"><span>03</span> Portadas</button><button type="button" class="tech-tab" data-tech-target="cards"><span>04</span> Tarjetas</button></nav><div class="tech-workspace"><section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
+<nav class="tech-nav" aria-label="Secciones del administrador técnico"><button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Accesos</button><button type="button" class="tech-tab" data-tech-target="audit"><span>02</span> Historial</button><button type="button" class="tech-tab" data-tech-target="covers"><span>03</span> Portadas</button><button type="button" class="tech-tab" data-tech-target="cards"><span>04</span> Tarjetas</button><button type="button" class="tech-tab" data-tech-target="themes"><span>05</span> Ambientes</button></nav><div class="tech-workspace"><section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
 <h2>Personas autorizadas</h2><p class="sub">Agrega los correos de Google que pueden entrar al administrador técnico. La persona debe iniciar sesión con ese mismo correo. Puedes retirar el acceso cuando lo necesites.</p>
 <form id="technicalInviteForm">
 <label for="technicalInviteEmail">Correo de Google que vas a autorizar</label><input id="technicalInviteEmail" type="email" required maxlength="254" placeholder="persona@gmail.com" autocomplete="email">
@@ -111,7 +111,35 @@
 <div class="check"><input type="checkbox" id="removeSpaceItemImage"><label for="removeSpaceItemImage">Quitar imagen personalizada</label></div>
 <div class="actions"><button class="primary" id="saveSpaceItem">Guardar tarjeta</button></div><p class="message" id="spaceItemMessage" aria-live="polite">Cargando tarjetas...</p>
 </section>
-</div></div></main><footer>MUBIRA · Administración técnica privada · Colombia</footer>
+<section class="panel tech-screen" data-tech-screen="themes">
+<h2>Estudio visual · Ambientes MUBIRA</h2>
+<p class="sub">Crea temporadas y salas visuales completas. Cada ambiente guarda sus propios colores y portadas por pantalla. Guarda como borrador y publícalo cuando esté listo.</p>
+<div class="pill" id="themeActiveState">CARGANDO AMBIENTES</div>
+<label for="themeSelect">Ambiente guardado</label><select id="themeSelect"></select>
+<div class="actions"><button class="secondary" type="button" id="themeNew">＋ Crear nuevo ambiente</button></div>
+<label for="themeName">Nombre del ambiente</label><input id="themeName" maxlength="80" placeholder="Ej. Navidad elegante">
+<label for="themeDescription">Descripción interna</label><textarea id="themeDescription" rows="2" maxlength="300" placeholder="Describe el concepto de este ambiente"></textarea>
+<h3>Identidad visual general</h3>
+<div class="theme-color-grid">
+<label>Color principal<input id="themePrimary" type="color" value="#c934a6"></label>
+<label>Color secundario<input id="themeSecondary" type="color" value="#8e78d7"></label>
+<label>Fondo general<input id="themeBackground" type="color" value="#f7f3fa"></label>
+<label>Superficies / tarjetas<input id="themeSurface" type="color" value="#ffffff"></label>
+<label>Color de texto<input id="themeText" type="color" value="#30263a"></label>
+</div>
+<label for="themeButtonStyle">Estilo de botones</label><select id="themeButtonStyle"><option value="gradient">Degradado elegante</option><option value="solid">Color sólido</option><option value="outline">Contorno</option></select>
+<label for="themeFont">Tipografía</label><select id="themeFont"><option value="Manrope">Manrope moderna</option><option value="DM Sans">DM Sans limpia</option><option value="serif">Serif editorial</option></select>
+<h3>Diseñar cada pantalla</h3>
+<label for="themeScreen">Pantalla que vas a transformar</label><select id="themeScreen"><option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option></select>
+<label for="themeScreenImage">Fotografía o ambiente de esta pantalla</label><input id="themeScreenImage" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+<div class="file-preview" id="themeScreenImagePreview"><small>Selecciona una imagen para ver la vista previa.</small></div>
+<label for="themeScreenOverlay">Oscurecer imagen para facilitar la lectura</label><select id="themeScreenOverlay"><option value="0">Sin oscurecer</option><option value="15">Suave</option><option value="25" selected>Medio</option><option value="40">Fuerte</option><option value="55">Muy fuerte</option></select>
+<label for="themeScreenPosition">Encuadre de la imagen</label><select id="themeScreenPosition"><option value="center">Centro</option><option value="top">Arriba</option><option value="bottom">Abajo</option><option value="left">Izquierda</option><option value="right">Derecha</option></select>
+<div class="actions"><button class="primary" type="button" id="themeSave">Guardar ambiente</button></div>
+<div class="actions"><button class="secondary" type="button" id="themeActivate">Publicar este ambiente en la tienda</button></div>
+<div class="actions"><button class="secondary" type="button" id="themeRefresh">Actualizar lista</button></div>
+<p class="message" id="themeStudioMessage" aria-live="polite">Preparando estudio visual...</p>
+</section></div></div></main><footer>MUBIRA · Administración técnica privada · Colombia</footer>
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.2";
 const supabase=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publishable_01DxOQWRyBJAdrUeXh7_gQ_j_qlTvtz");
