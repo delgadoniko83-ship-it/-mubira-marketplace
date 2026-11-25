@@ -33,15 +33,20 @@ async function loadEditableSections(){
         if(row.image_path){
           const image=db.storage.from("mubira-products").getPublicUrl(row.image_path).data.publicUrl;
           if(!cover){cover=document.createElement("img");cover.className="hero-editor-cover";cover.alt="Fotografía de portada MUBIRA";host.append(cover);}
+          cover.alt="Portada principal de MUBIRA";
+          cover.loading="eager";cover.decoding="async";
+          cover.style.position="absolute";cover.style.display="block";cover.style.visibility="visible";cover.style.opacity="1";
           cover.src=image;
           const layout={x:72,y:55,size:48,angle:0,shape:"rounded",fit:"contain",...(row.image_settings||{})};
           cover.style.left=Number(layout.x)+"%";cover.style.top=Number(layout.y)+"%";
-          cover.style.right="auto";cover.style.bottom="auto";cover.style.width=Number(layout.size)+"%";
-          cover.style.height="72%";cover.style.maxWidth="90%";cover.style.maxHeight="86%";
+          cover.style.right="auto";cover.style.bottom="auto";cover.style.zIndex="8";
+          cover.style.width=Number(layout.size)+"%";cover.style.height="72%";
+          cover.style.maxWidth="90%";cover.style.maxHeight="86%";
           cover.style.transform="translate(-50%,-50%) rotate("+Number(layout.angle)+"deg)";
-          cover.style.borderRadius=layout.shape==="circle"?"50%":layout.shape==="rectangle"?"4px":"18px";
-          cover.style.objectFit=layout.fit==="cover"?"cover":"contain";
-          cover.style.background=layout.shape==="circle"?"rgba(255,255,255,.16)":"rgba(255,255,255,.10)";
+          cover.style.borderRadius=layout.shape==="circle"?"50%":layout.shape==="rectangle"?"3px":"18px";
+          cover.style.objectFit=layout.fit==="cover"?"cover":"contain";cover.style.objectPosition="center";
+          cover.onerror=()=>{console.warn("MUBIRA: no se pudo cargar la imagen de portada",row.image_path);cover.classList.add("cover-image-error");};
+          cover.onload=()=>cover.classList.remove("cover-image-error");
         }else if(cover){cover.remove();}
       }else if(row.image_path && host){
         const image=db.storage.from("mubira-products").getPublicUrl(row.image_path).data.publicUrl;
