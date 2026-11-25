@@ -823,3 +823,26 @@ body[data-theme-buttons="outline"] .button,body[data-theme-buttons="outline"] .a
 .hero-copy .eyebrow,.page-intro .eyebrow,.section-heading .eyebrow,.studio-copy .eyebrow{color:var(--mubira-primary)}
 
 body{background-color:var(--mubira-background)}
+
+
+/* Temas publicados desde el estudio visual MUBIRA */
+:root{--mubira-primary:#c934a6;--mubira-secondary:#8e78d7;--mubira-background:#f7f3fa;--mubira-surface:#fff;--mubira-text:#30263a;--mubira-font:'Manrope',sans-serif}
+body{font-family:var(--mubira-font);color:var(--mubira-text)}
+.site-header{background:linear-gradient(105deg,var(--mubira-background),color-mix(in srgb,var(--mubira-surface) 65%,var(--mubira-secondary) 35%))}
+.button-light{background:linear-gradient(110deg,var(--mubira-primary),var(--mubira-secondary))}
+body[data-mubira-button-style="solid"] .button-light{background:var(--mubira-primary)}
+body[data-mubira-button-style="outline"] .button-light{background:transparent;color:var(--mubira-primary);border:1px solid var(--mubira-primary);box-shadow:none}
+body[data-mubira-button-style="solid"] .add-button{background:var(--mubira-primary);color:white;border-color:var(--mubira-primary)}
+body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-primary);color:var(--mubira-primary)}
+.hero-visual.mubira-theme-photo>.hero-window,
+.hero-visual.mubira-theme-photo>.hero-sun,
+.hero-visual.mubira-theme-photo>.hero-plant,
+.hero-visual.mubira-theme-photo>.hero-sofa,
+.hero-visual.mubira-theme-photo>.hero-table,
+.hero-visual.mubira-theme-photo>.hero-vase,
+.hero-visual.mubira-theme-photo>.hero-rug,
+.hero-visual.mubira-theme-photo>.hero-kicker,
+.hero-visual.mubira-theme-photo>.hero-caption{display:none!important}
+.studio-art.mubira-theme-photo>.studio-arch,
+.studio-art.mubira-theme-photo>.studio-object,
+.studio-art.mubira-theme-photo>span{display:none!important}
