@@ -854,3 +854,62 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
 /* Foto de portada independiente sobre el ambiente de Inicio */
 .hero-visual .hero-editor-cover{position:absolute;z-index:5;left:50%;bottom:5%;transform:translateX(-50%);width:88%;height:82%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 18px 26px rgba(28,18,38,.24));pointer-events:none}
 .hero-visual:has(.hero-editor-cover) .hero-window,.hero-visual:has(.hero-editor-cover) .hero-sun,.hero-visual:has(.hero-editor-cover) .hero-plant,.hero-visual:has(.hero-editor-cover) .hero-sofa,.hero-visual:has(.hero-editor-cover) .hero-table,.hero-visual:has(.hero-editor-cover) .hero-vase,.hero-visual:has(.hero-editor-cover) .hero-rug{opacity:.12}
+
+
+/* MUBIRA · imágenes de ambiente y portada adaptables a móvil, tableta y escritorio */
+.hero-visual{
+  container-type:inline-size;
+  min-width:0;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center center;
+}
+.hero-visual .hero-editor-cover{
+  display:block;
+  position:absolute;
+  z-index:6;
+  left:50%;
+  bottom:4%;
+  transform:translateX(-50%);
+  width:clamp(58%,82cqw,90%);
+  height:clamp(62%,82%,88%);
+  max-width:94%;
+  max-height:90%;
+  object-fit:contain;
+  object-position:center bottom;
+  filter:drop-shadow(0 1.5cqw 2.4cqw rgba(28,18,38,.24));
+  pointer-events:none;
+}
+@media (min-width:1100px){
+  .hero-visual{height:min(68vh,650px);min-height:420px;background-position:center center}
+  .hero-visual .hero-editor-cover{width:78%;height:84%;bottom:3%}
+}
+@media (min-width:761px) and (max-width:1099px){
+  .hero-visual{height:clamp(340px,54vh,520px);min-height:340px;background-position:center center}
+  .hero-visual .hero-editor-cover{width:84%;height:82%;bottom:4%}
+}
+@media (max-width:760px){
+  .hero{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(230px,42svh);align-content:center;gap:16px;padding:20px 18px 76px}
+  .hero-copy{max-width:100%;width:100%}
+  .hero-copy .eyebrow{margin-bottom:10px;font-size:8px}
+  .hero h1{font-size:clamp(38px,10vw,62px);line-height:.94}
+  .hero-text{max-width:100%;margin:12px 0 15px;font-size:12px;line-height:1.55}
+  .hero-note{margin-top:14px;font-size:8px}
+  .hero-visual{height:clamp(230px,42svh,390px);min-height:230px;max-height:44svh;width:100%;border-radius:16px;background-position:center center}
+  .hero-visual .hero-editor-cover{width:92%;height:86%;max-width:96%;bottom:3%;object-fit:contain}
+}
+@media (max-width:380px){
+  .hero{padding-left:12px;padding-right:12px;gap:12px}
+  .hero-visual{height:clamp(210px,38svh,310px);min-height:210px}
+  .hero-visual .hero-editor-cover{width:95%;height:84%}
+}
+@media (orientation:landscape) and (max-height:520px) and (max-width:900px){
+  .hero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-rows:1fr;gap:14px;padding:12px 18px 58px}
+  .hero-visual{height:calc(100dvh - var(--header-h) - 90px);min-height:180px;max-height:none}
+  .hero-visual .hero-editor-cover{width:86%;height:88%}
+}
+/* Las vistas previas del administrador conservan proporción sin deformar imágenes. */
+#sectionImagePreview img,#themeScreenImagePreview img{
+  display:block;width:100%;max-width:100%;max-height:min(52vh,420px);
+  object-fit:contain;object-position:center;border-radius:14px;background:#f1edf4;
+}
