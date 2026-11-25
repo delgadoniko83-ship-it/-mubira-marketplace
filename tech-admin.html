@@ -32,6 +32,40 @@
  .file-preview img { max-height:190px; }
  footer { padding-bottom:max(18px,env(safe-area-inset-bottom)); }
 }
+
+/* Panel técnico organizado por espacios de trabajo */
+#techApp .intro{margin:4px 0 18px}
+#techApp .intro h1{max-width:720px;letter-spacing:-.045em}
+.tech-nav{display:flex;gap:8px;padding:7px;background:#ffffffb8;border:1px solid #fff;border-radius:17px;box-shadow:0 10px 28px #36203c0a;position:sticky;top:76px;z-index:3;overflow-x:auto;scrollbar-width:none}
+.tech-nav::-webkit-scrollbar{display:none}
+.tech-tab{flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:9px;background:transparent;color:#76677f;border:1px solid transparent;border-radius:12px;padding:11px 15px;min-height:48px;font-size:12px;white-space:nowrap}
+.tech-tab span{font-size:9px;color:#ad8cb5;letter-spacing:.08em}
+.tech-tab.active{color:#fff;background:linear-gradient(110deg,#c934a6,#8e78d7);box-shadow:0 7px 18px #a24baf30}
+.tech-tab.active span{color:#fff9}
+.tech-workspace{min-height:430px}
+.tech-screen{display:none;animation:techIn .22s ease both}
+.tech-screen.active{display:block}
+@keyframes techIn{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+#techApp .tech-screen{margin-top:14px}
+#techApp .tech-screen h2{font-size:20px;letter-spacing:-.025em}
+#techApp .tech-screen>.sub{max-width:720px;margin-bottom:18px}
+#techApp .tech-screen label{margin-top:17px}
+#techApp .tech-screen .actions{max-width:420px}
+#techApp .tech-screen .actions button{min-height:48px}
+#techApp .file-preview{margin-top:12px}
+@media(max-width:760px){
+ .tech-nav{top:66px;margin:0 -1px;border-radius:14px;justify-content:flex-start}
+ .tech-tab{flex:0 0 auto;padding:10px 14px;min-height:46px}
+ .tech-workspace{min-height:0}
+ #techApp .tech-screen{margin-top:10px}
+}
+@media(min-width:900px){
+ #techApp{max-width:920px;margin:0 auto}
+ .tech-nav{top:76px}
+ #techApp .tech-screen{padding:26px 30px}
+ #techApp .tech-screen .actions{max-width:360px}
+}
+
 </style>
 </head><body>
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN TÉCNICA</small></a><div class="head-actions"><a href="/admin.html">Administración comercial</a><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
@@ -40,7 +74,7 @@
 <section id="denied" class="panel hidden"><p class="eyebrow">ACCESO RESTRINGIDO</p><h1>Cuenta sin permisos técnicos</h1><p class="sub">La sesión de Google está activa, pero esta cuenta no tiene autorización para cambiar la apariencia de MUBIRA.</p><p id="signedEmail"></p><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
 <div id="techApp" class="hidden">
 <div class="intro"><p class="eyebrow">CENTRO DE DISEÑO · MUBIRA</p><h1>La imagen de tu tienda, bajo control.</h1><p>Modifica una portada o tarjeta, guarda y abre la tienda para revisar el resultado. Las páginas abiertas se sincronizan automáticamente.</p><span class="pill">ADMINISTRACIÓN TÉCNICA</span></div>
-<section class="panel" id="technicalAccessPanel">
+<nav class="tech-nav" aria-label="Secciones del administrador técnico"><button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Accesos</button><button type="button" class="tech-tab" data-tech-target="audit"><span>02</span> Historial</button><button type="button" class="tech-tab" data-tech-target="covers"><span>03</span> Portadas</button><button type="button" class="tech-tab" data-tech-target="cards"><span>04</span> Tarjetas</button></nav><div class="tech-workspace"><section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
 <h2>Personas autorizadas</h2><p class="sub">Agrega los correos de Google que pueden entrar al administrador técnico. La persona debe iniciar sesión con ese mismo correo. Puedes retirar el acceso cuando lo necesites.</p>
 <form id="technicalInviteForm">
 <label for="technicalInviteEmail">Correo de Google que vas a autorizar</label><input id="technicalInviteEmail" type="email" required maxlength="254" placeholder="persona@gmail.com" autocomplete="email">
@@ -48,12 +82,12 @@
 </form><p class="message" id="technicalInviteMessage" aria-live="polite"></p>
 <div id="technicalInviteList" class="sub">Cargando accesos...</div>
 </section>
-<section class="panel" id="technicalAuditPanel">
+<section class="panel tech-screen" id="technicalAuditPanel" data-tech-screen="audit">
 <h2>Historial y responsabilidad</h2><p class="sub">Cada cambio queda registrado con el correo de la sesión, fecha, tipo de acción y campos modificados. El historial no se puede editar desde estos paneles.</p>
 <div class="actions"><button class="secondary" id="refreshTechnicalAudit" type="button">Actualizar historial</button></div>
 <div id="technicalAuditList" class="sub">Cargando historial...</div>
 </section>
-<section class="panel section-editor-panel">
+<section class="panel section-editor-panel tech-screen" data-tech-screen="covers">
 <h2>Portadas de las pantallas</h2><p class="sub">Selecciona Inicio, Espacios, Colección o Nuestro mundo. Cambia su portada, títulos, textos y etiqueta del botón.</p>
 <label for="sectionKey">Pantalla que quieres editar</label><select id="sectionKey"><option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option></select>
 <label for="sectionNavLabel">Nombre en el menú</label><input id="sectionNavLabel" maxlength="60" placeholder="Nombre de la pantalla">
@@ -66,7 +100,7 @@
 <div class="check"><input type="checkbox" id="removeSectionImage"><label for="removeSectionImage">Quitar fotografía y restaurar el diseño original</label></div>
 <div class="actions"><button class="primary" id="saveSectionContent">Guardar portada y contenido</button></div><p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
 </section>
-<section class="panel section-editor-panel space-items-panel">
+<section class="panel section-editor-panel space-items-panel tech-screen" data-tech-screen="cards">
 <h2>Imágenes y textos de botones / tarjetas</h2><p class="sub">Edita cada tarjeta de Espacios por separado. Las imágenes de los productos de Colección se administran en el catálogo comercial.</p>
 <label for="spaceItemKey">Tarjeta que quieres editar</label><select id="spaceItemKey"><option value="salas">Salas</option><option value="comedores">Comedores</option><option value="habitaciones">Habitaciones</option><option value="decoracion">Decoración</option></select>
 <label for="spaceItemEyebrow">Texto pequeño superior</label><input id="spaceItemEyebrow" maxlength="100" placeholder="Ej. 01 / RELAJARSE">
@@ -77,7 +111,7 @@
 <div class="check"><input type="checkbox" id="removeSpaceItemImage"><label for="removeSpaceItemImage">Quitar imagen personalizada</label></div>
 <div class="actions"><button class="primary" id="saveSpaceItem">Guardar tarjeta</button></div><p class="message" id="spaceItemMessage" aria-live="polite">Cargando tarjetas...</p>
 </section>
-</div></main><footer>MUBIRA · Administración técnica privada · Colombia</footer>
+</div></div></main><footer>MUBIRA · Administración técnica privada · Colombia</footer>
 <script type="module">
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.2";
 const supabase=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publishable_01DxOQWRyBJAdrUeXh7_gQ_j_qlTvtz");
@@ -92,6 +126,26 @@ async function checkAccess(s){session=s;$("authButton").textContent=s?.user?"Cer
 async function signIn(){ $("loginMessage").textContent="Conectando con Google...";const {error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.href.split("?")[0]}});if(error)$("loginMessage").textContent="No se pudo iniciar sesión: "+error.message;}
 $("loginButton").addEventListener("click",signIn);$("authButton").addEventListener("click",async()=>{if(session?.user)await supabase.auth.signOut();else signIn();});$("signOutDenied").addEventListener("click",()=>supabase.auth.signOut());
 supabase.auth.onAuthStateChange((_event,s)=>queueMicrotask(()=>checkAccess(s)));const {data:{session:s}}=await supabase.auth.getSession();await checkAccess(s);
+</script>
+
+<script>
+document.querySelectorAll("[data-tech-target]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  const target=button.dataset.techTarget;
+  document.querySelectorAll("[data-tech-target]").forEach(item=>{
+   const active=item===button;
+   item.classList.toggle("active",active);
+   item.setAttribute("aria-current",active?"page":"false");
+  });
+  document.querySelectorAll("[data-tech-screen]").forEach(screen=>{
+   screen.classList.toggle("active",screen.dataset.techScreen===target);
+  });
+  const nav=button.closest(".tech-nav");
+  if(nav && window.matchMedia("(max-width:760px)").matches){
+   button.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
+  }
+ });
+});
 </script>
 <script type="module" src="technical-admin-control.js"></script><script type="module" src="site-editor-admin.js"></script><script type="module" src="site-items-editor-admin.js"></script>
 </body></html>
