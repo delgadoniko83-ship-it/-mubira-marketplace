@@ -1032,3 +1032,16 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
  background:transparent!important;box-shadow:none!important;pointer-events:none
 }
 .hero-visual.has-cover-image>.hero-editor-cover{object-fit:cover}
+
+
+/* MUBIRA · Portada realmente móvil y redimensionable, independiente del Ambiente */
+.hero-visual.has-cover-image>.hero-editor-cover{
+ position:absolute!important;inset:auto!important;
+ left:var(--mubira-cover-x,50%)!important;top:var(--mubira-cover-y,50%)!important;
+ right:auto!important;bottom:auto!important;
+ width:var(--mubira-cover-size,48%)!important;height:auto!important;
+ max-width:none!important;max-height:none!important;
+ transform:translate(-50%,-50%) rotate(var(--mubira-cover-angle,0deg))!important;
+ object-fit:contain!important;object-position:center!important;
+ padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+}
