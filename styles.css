@@ -821,3 +821,5 @@ body[data-theme-buttons="solid"] .button,body[data-theme-buttons="solid"] .add-b
 body[data-theme-buttons="outline"] .button,body[data-theme-buttons="outline"] .add-button,body[data-theme-buttons="outline"] .product-open{color:var(--mubira-primary);background:transparent;border:1px solid var(--mubira-primary);box-shadow:none}
 .category-card,.product-card,.section-heading,.page-intro{border-color:color-mix(in srgb,var(--mubira-secondary) 24%,transparent)}
 .hero-copy .eyebrow,.page-intro .eyebrow,.section-heading .eyebrow,.studio-copy .eyebrow{color:var(--mubira-primary)}
+
+body{background-color:var(--mubira-background)}
