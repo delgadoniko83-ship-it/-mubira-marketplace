@@ -3,7 +3,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#30263a;--muted:#81748b;--line:#e8dfec;--pink:#c934a6;--lilac:#8e78d7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0,#f7e4f5,transparent 36%),linear-gradient(145deg,#f2f0f5,#fbf8fc 55%,#eee9f4);color:var(--ink);font-family:'DM Sans',sans-serif}header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px clamp(14px,4vw,48px);background:#ffffffdf;border-bottom:1px solid white;position:sticky;top:0;z-index:4}.brand{font:800 21px Manrope;letter-spacing:.1em;color:inherit;text-decoration:none}.brand small{display:block;font:700 8px 'DM Sans';letter-spacing:.2em;color:#a17ca6}.head-actions{display:flex;gap:10px;align-items:center}.head-actions a{color:inherit;text-decoration:none;font-size:12px}button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:800;min-height:44px}.primary{color:#fff;background:linear-gradient(110deg,var(--pink),var(--lilac));box-shadow:0 8px 20px #a24baf30}.secondary{background:white;border:1px solid var(--line);color:var(--ink)}main{width:min(1000px,100%);margin:0 auto;padding:22px 14px 50px}.intro{margin:8px 0 20px}.eyebrow{font-size:9px;letter-spacing:.2em;color:var(--pink);font-weight:900}.intro h1{font:800 clamp(26px,4vw,38px)/1.05 Manrope;margin:8px 0}.intro p,.sub{color:var(--muted);font-size:12px;line-height:1.55}.panel{background:#ffffffdf;border:1px solid white;border-radius:20px;padding:clamp(15px,3vw,24px);box-shadow:0 12px 35px #36203c0a;margin:14px 0}.panel h2{font:800 19px Manrope;margin:0 0 7px}label{display:block;font-size:11px;font-weight:800;color:#695a73;margin:14px 0 7px}input,select,textarea{font:inherit;font-size:16px;width:100%;border:1px solid #e4dbe9;background:white;border-radius:11px;padding:12px;color:var(--ink)}textarea{min-height:85px;resize:vertical}.check{display:flex;align-items:center;gap:9px;margin:14px 0}.check input{width:auto}.actions{margin-top:16px}.actions button{width:100%}.message{min-height:18px;color:#8e3984;font-size:12px;margin-top:10px}.file-preview{margin:9px 0 14px;padding:10px;border:1px dashed #d9c9df;border-radius:12px;background:#fbf8fc}.file-preview[hidden]{display:none}.file-preview img{display:block;width:100%;max-height:230px;object-fit:contain;border-radius:8px;background:#f0ebf3}.hidden{display:none!important}#loginGate,#denied{max-width:540px;margin:55px auto;text-align:center}.pill{display:inline-flex;padding:7px 11px;border-radius:30px;background:#eee8f7;color:#7955a0;font-size:10px;font-weight:800}footer{text-align:center;color:#9a8fa0;font-size:10px;padding:18px}@media(max-width:480px){header{padding:11px 12px}.brand{font-size:18px}.head-actions{gap:6px}.head-actions a{font-size:10px}.head-actions button{padding:9px 10px;font-size:10px}.panel{border-radius:15px}main{padding:14px 10px 40px}}
-<style>
 #technicalAccessPanel .sub,#technicalAuditPanel .sub{line-height:1.5}
 .access-row,.audit-row{border:1px solid #e8dfec;background:#fff;border-radius:12px;padding:12px;margin:9px 0}
 .access-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -13,7 +12,6 @@
 .audit-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .audit-fields{font-size:11px;color:#725c80;margin-top:7px;overflow-wrap:anywhere}
 .audit-action{font-size:10px;font-weight:900;letter-spacing:.08em;color:#a03e91}
-</style></style>
 /* MUBIRA técnico · uso cómodo desde teléfonos */
 @media (max-width:760px) {
  html,body { width:100%; min-height:100%; height:auto; overflow-x:hidden; overflow-y:auto; }
@@ -34,6 +32,7 @@
  .file-preview img { max-height:190px; }
  footer { padding-bottom:max(18px,env(safe-area-inset-bottom)); }
 }
+</style>
 </head><body>
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN TÉCNICA</small></a><div class="head-actions"><a href="/admin.html">Administración comercial</a><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
 <main>
