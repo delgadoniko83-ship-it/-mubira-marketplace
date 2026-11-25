@@ -977,3 +977,58 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
  .hero>.hero-environment{background-position:center}
  .hero-visual.has-cover-image{min-height:260px}
 }
+
+
+/* MUBIRA · menú premium plata, lila y fucsia */
+.site-header{
+ background:linear-gradient(112deg,rgba(249,247,252,.97) 0%,rgba(224,220,235,.96) 48%,rgba(250,231,247,.97) 100%);
+ border-bottom:1px solid rgba(255,255,255,.88);
+ box-shadow:0 8px 28px rgba(42,27,58,.16),inset 0 1px 0 rgba(255,255,255,.9);
+ backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
+}
+.main-nav a{
+ position:relative;padding:0 4px;color:#65576f;
+ transition:color .22s ease,transform .22s ease,text-shadow .22s ease
+}
+.main-nav a:hover,.main-nav a:focus-visible{
+ color:#c02d9b;transform:translateY(-1px);text-shadow:0 4px 18px rgba(207,54,171,.18)
+}
+.main-nav a.active,[data-page-link].active{
+ color:#a52b91;border-bottom-color:#d83cac
+}
+.main-nav a:after{
+ content:"";position:absolute;left:50%;right:50%;bottom:8px;height:2px;border-radius:8px;
+ background:linear-gradient(90deg,#d936a9,#a78af2);transition:left .22s ease,right .22s ease
+}
+.main-nav a:hover:after,.main-nav a.active:after{left:0;right:0}
+.menu-toggle{
+ border:1px solid rgba(176,145,197,.42);border-radius:12px;
+ background:linear-gradient(135deg,#fff,#eee6f5 58%,#f9e6f4);
+ color:#8e348e;box-shadow:0 5px 14px rgba(71,43,91,.12)
+}
+@media(max-width:760px){
+ .site-header>.main-nav,.main-nav{
+  background:linear-gradient(118deg,rgba(250,248,253,.985),rgba(225,218,239,.985) 54%,rgba(251,232,247,.985))!important;
+  border-top:1px solid rgba(255,255,255,.9);
+  border-bottom:1px solid rgba(190,160,208,.38);
+  box-shadow:0 16px 30px rgba(36,23,48,.2),inset 0 1px 0 #fff;
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)
+ }
+ .main-nav.open{padding:16px 14px;gap:8px}
+ .main-nav a{
+  min-height:34px;padding:0 12px;border:1px solid rgba(174,146,194,.22);
+  border-radius:999px;background:rgba(255,255,255,.48);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8)
+ }
+ .main-nav a:after{display:none}
+ .main-nav a.active{background:linear-gradient(105deg,#f9e5f4,#e9e0fb);border-color:rgba(205,76,171,.48);color:#a52b91}
+}
+/* Portada: mantener la fotografía visible dentro del panel protagonista */
+.hero-visual{position:relative;isolation:isolate}
+.hero-visual>.hero-editor-cover{
+ position:absolute!important;display:block!important;visibility:visible!important;opacity:1!important;
+ z-index:8!important;inset:0!important;width:100%!important;height:100%!important;
+ max-width:none!important;max-height:none!important;padding:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;pointer-events:none
+}
+.hero-visual.has-cover-image>.hero-editor-cover{object-fit:cover}
