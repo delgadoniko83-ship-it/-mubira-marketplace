@@ -27,15 +27,20 @@ async function loadEditableSections(){
         else setText(button,row.button_text);
       }
       const host=document.querySelector(t.image);
-      if(row.image_path){
+      if(row.section_key==="inicio" && host){
+        // La foto de portada es una capa independiente; el ambiente sigue como fondo del tema.
+        let cover=host.querySelector(".hero-editor-cover");
+        if(row.image_path){
+          const image=db.storage.from("mubira-products").getPublicUrl(row.image_path).data.publicUrl;
+          if(!cover){cover=document.createElement("img");cover.className="hero-editor-cover";cover.alt="Fotografía de portada MUBIRA";host.append(cover);}
+          cover.src=image;
+        }else if(cover){cover.remove();}
+      }else if(row.image_path && host){
         const image=db.storage.from("mubira-products").getPublicUrl(row.image_path).data.publicUrl;
-        if(host){
-          host.classList.add("has-editor-image");
-          host.style.backgroundImage="linear-gradient(90deg,rgba(20,16,28,.18),rgba(20,16,28,.04)),url('"+image.replace(/'/g,"%27")+"')";
-          host.style.backgroundSize="cover";
-          host.style.backgroundPosition="center";
-        }
-      } else if(host){
+        host.classList.add("has-editor-image");
+        host.style.backgroundImage="linear-gradient(90deg,rgba(20,16,28,.18),rgba(20,16,28,.04)),url('"+image.replace(/'/g,"%27")+"')";
+        host.style.backgroundSize="cover";host.style.backgroundPosition="center";
+      }else if(host){
         host.classList.remove("has-editor-image");host.style.removeProperty("background-image");host.style.removeProperty("background-size");host.style.removeProperty("background-position");
       }
     }
