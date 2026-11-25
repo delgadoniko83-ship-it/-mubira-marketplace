@@ -25,7 +25,7 @@ function fill(key){
  const row=rows.find(r=>r.section_key===key)||{};
  $("sectionNavLabel").value=row.nav_label||labels[key];$("sectionEyebrow").value=row.eyebrow||"";
  $("sectionTitle").value=row.title||"";$("sectionDescription").value=row.description||"";$("sectionButtonText").value=row.button_text||"";
- currentImage=row.image_path||null;writeCoverControls(coverSettings(row));$("coverLayoutControls").hidden=key!=="inicio";
+ currentImage=row.image_path||null;writeCoverControls(coverSettings(row));$("coverLayoutControls").hidden=key!=="inicio";$("sectionImagePreview").classList.toggle("cover-preview-mode",key==="inicio");
  $("sectionImage").value="";$("removeSectionImage").checked=false;preview(currentImage);
  msg("Editando "+labels[key]+". Los cambios solo se publican cuando toques Guardar.");
 }
