@@ -48,7 +48,7 @@ async function loadEditableSections(){
           cover.style.setProperty("--mubira-cover-angle",Number(layout.angle)+"deg");
           cover.style.inset="auto";cover.style.left=Number(layout.x)+"%";cover.style.top=Number(layout.y)+"%";
           cover.style.right="auto";cover.style.bottom="auto";
-          cover.style.zIndex="8";cover.style.width=Math.max(18,Math.min(90,Number(layout.size))+"%");cover.style.height="auto";
+          cover.style.zIndex="8";cover.style.width=Math.max(18,Math.min(90,Number(layout.size)))+"%";cover.style.height="auto";
           cover.style.maxWidth="none";cover.style.maxHeight="none";
           cover.style.transform="translate(-50%,-50%) rotate("+Number(layout.angle)+"deg)";
           cover.style.transformOrigin="center";cover.style.borderRadius=layout.shape==="circle"?"50%":layout.shape==="rounded"?"12px":"0";
