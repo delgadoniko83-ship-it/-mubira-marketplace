@@ -850,3 +850,7 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
 .hero-visual.mubira-theme-photo:before{display:none!important}
 .hero-visual.mubira-theme-photo{background-repeat:no-repeat!important;background-size:cover!important;background-position:center!important}
 .spaces-page.mubira-theme-photo,.collection.mubira-theme-photo,.studio-art.mubira-theme-photo{background-repeat:no-repeat!important;background-size:cover!important;background-position:center!important}
+
+/* Foto de portada independiente sobre el ambiente de Inicio */
+.hero-visual .hero-editor-cover{position:absolute;z-index:5;left:50%;bottom:5%;transform:translateX(-50%);width:88%;height:82%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 18px 26px rgba(28,18,38,.24));pointer-events:none}
+.hero-visual:has(.hero-editor-cover) .hero-window,.hero-visual:has(.hero-editor-cover) .hero-sun,.hero-visual:has(.hero-editor-cover) .hero-plant,.hero-visual:has(.hero-editor-cover) .hero-sofa,.hero-visual:has(.hero-editor-cover) .hero-table,.hero-visual:has(.hero-editor-cover) .hero-vase,.hero-visual:has(.hero-editor-cover) .hero-rug{opacity:.12}
