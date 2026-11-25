@@ -962,3 +962,18 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
 .hero-visual>.hero-editor-cover{position:absolute!important;z-index:8!important;display:block!important;visibility:visible!important;opacity:1!important;object-position:center!important;pointer-events:none!important;padding:8px!important;border:1px solid rgba(255,255,255,.55)!important;background:rgba(255,255,255,.08)!important;box-shadow:0 16px 42px rgba(20,12,30,.25)!important}
 .hero-visual.mubira-theme-photo:before{display:none!important}
 .hero-visual.mubira-theme-photo>.hero-window,.hero-visual.mubira-theme-photo>.hero-sun,.hero-visual.mubira-theme-photo>.hero-plant,.hero-visual.mubira-theme-photo>.hero-sofa,.hero-visual.mubira-theme-photo>.hero-table,.hero-visual.mubira-theme-photo>.hero-vase,.hero-visual.mubira-theme-photo>.hero-rug,.hero-visual.mubira-theme-photo>.hero-kicker,.hero-visual.mubira-theme-photo>.hero-caption{display:none!important}
+
+/* MUBIRA · composición correcta: Ambiente en toda la pantalla, Portada en el panel protagonista */
+.hero{position:relative;isolation:isolate}
+.hero>.hero-environment{position:absolute;inset:0;z-index:0;pointer-events:none;background-size:cover;background-position:center;background-repeat:no-repeat}
+.hero-copy,.hero-visual,.hero-index{position:relative;z-index:2}
+.hero-visual{background:transparent;isolation:isolate}
+.hero-visual.has-cover-image{background:transparent}
+.hero-visual.has-cover-image:before{display:none!important}
+.hero-visual.has-cover-image>.hero-editor-cover{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;display:block!important;visibility:visible!important;opacity:1!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;object-fit:cover;z-index:5}
+.hero-visual.has-cover-image>.hero-kicker,.hero-visual.has-cover-image>.hero-window,.hero-visual.has-cover-image>.hero-sun,.hero-visual.has-cover-image>.hero-plant,.hero-visual.has-cover-image>.hero-sofa,.hero-visual.has-cover-image>.hero-table,.hero-visual.has-cover-image>.hero-vase,.hero-visual.has-cover-image>.hero-rug,.hero-visual.has-cover-image>.hero-caption,.hero-visual.has-cover-image>.era-stamp{display:none!important}
+.hero-visual>.hero-editor-cover.cover-image-error{display:none!important}
+@media(max-width:760px){
+ .hero>.hero-environment{background-position:center}
+ .hero-visual.has-cover-image{min-height:260px}
+}
