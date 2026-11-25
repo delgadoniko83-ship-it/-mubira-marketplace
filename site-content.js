@@ -42,9 +42,13 @@ async function loadEditableSections(){
           host.classList.add("has-cover-image");
           // La posición x/y mueve el centro de la portada; size controla su ancho.
           // El ambiente permanece intacto detrás de esta capa independiente.
+          cover.style.setProperty("--mubira-cover-x",Number(layout.x)+"%");
+          cover.style.setProperty("--mubira-cover-y",Number(layout.y)+"%");
+          cover.style.setProperty("--mubira-cover-size",Math.max(18,Math.min(90,Number(layout.size)))+"%");
+          cover.style.setProperty("--mubira-cover-angle",Number(layout.angle)+"deg");
           cover.style.inset="auto";cover.style.left=Number(layout.x)+"%";cover.style.top=Number(layout.y)+"%";
           cover.style.right="auto";cover.style.bottom="auto";
-          cover.style.zIndex="8";cover.style.width=Math.max(18,Math.min(90,Number(layout.size)))+"%";cover.style.height="auto";
+          cover.style.zIndex="8";cover.style.width=Math.max(18,Math.min(90,Number(layout.size))+"%");cover.style.height="auto";
           cover.style.maxWidth="none";cover.style.maxHeight="none";
           cover.style.transform="translate(-50%,-50%) rotate("+Number(layout.angle)+"deg)";
           cover.style.transformOrigin="center";cover.style.borderRadius=layout.shape==="circle"?"50%":layout.shape==="rounded"?"12px":"0";
