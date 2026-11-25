@@ -40,13 +40,16 @@ async function loadEditableSections(){
           const layout={x:50,y:50,size:48,angle:0,shape:"rectangle",fit:"cover",...(row.image_settings||{})};
           // La portada es la fotografía protagonista del panel visual, no una tarjeta flotante.
           host.classList.add("has-cover-image");
-          cover.style.inset="0";cover.style.left="0";cover.style.top="0";cover.style.right="0";cover.style.bottom="0";
-          cover.style.zIndex="5";cover.style.width="100%";cover.style.height="100%";
+          // La posición x/y mueve el centro de la portada; size controla su ancho.
+          // El ambiente permanece intacto detrás de esta capa independiente.
+          cover.style.inset="auto";cover.style.left=Number(layout.x)+"%";cover.style.top=Number(layout.y)+"%";
+          cover.style.right="auto";cover.style.bottom="auto";
+          cover.style.zIndex="8";cover.style.width=Math.max(18,Math.min(90,Number(layout.size)))+"%";cover.style.height="auto";
           cover.style.maxWidth="none";cover.style.maxHeight="none";
-          cover.style.transform="rotate("+Number(layout.angle)+"deg) scale("+Math.max(.7,Math.min(1.35,0.7+Number(layout.size)/100))+")";
+          cover.style.transform="translate(-50%,-50%) rotate("+Number(layout.angle)+"deg)";
           cover.style.transformOrigin="center";cover.style.borderRadius=layout.shape==="circle"?"50%":layout.shape==="rounded"?"12px":"0";
           cover.style.objectFit=layout.fit==="contain"?"contain":"cover";
-          cover.style.objectPosition=Number(layout.x)+"% "+Number(layout.y)+"%";
+          cover.style.objectPosition="center";
           cover.onerror=()=>{console.warn("MUBIRA: no se pudo cargar la imagen de portada",row.image_path);cover.classList.add("cover-image-error");host.classList.remove("has-cover-image");};
           cover.onload=()=>cover.classList.remove("cover-image-error");
         }else if(cover){cover.remove();host.classList.remove("has-cover-image");}
