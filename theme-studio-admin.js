@@ -57,7 +57,7 @@ $("themeSelect").addEventListener("change",()=>{const t=themes.find(x=>x.id===$(
 $("themeNew").addEventListener("click",()=>{
  const name=prompt("Nombre del nuevo ambiente (ej. Navidad elegante):");if(!name?.trim())return;
  current={id:null,theme_key:"",name:name.trim().slice(0,80),description:"Nuevo ambiente visual",settings:collect(),is_active:false};
- $("themeName").value=current.name;$("themeDescription").value=current.description;$("themeActiveState").textContent="NUEVO AMBIENTE · AÚN NO GUARDADO";$("themeActivate").disabled=true;$("themeDelete").disabled=true;
+ $("themeName").value=current.name;$("themeDescription").value=current.description;$("themeActiveState").textContent="NUEVO AMBIENTE · AÚN NO GUARDADO";$("themeSave").disabled=false;$("themeActivate").disabled=true;$("themeDelete").disabled=true;
  $("themeScreenImage").value="";$("themeScreenImagePreview").innerHTML="<small>Elige una imagen para esta pantalla o guarda el ambiente primero.</small>";
  msg("Ahora pulsa Guardar ambiente para que aparezca en tu biblioteca.");
 });
