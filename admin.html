@@ -405,9 +405,10 @@ $("productCategoryFilter").addEventListener("change",renderProducts);
 
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));}
 async function prepareMediaFile(file,mediaType,compress){
- if(!file||!compress)return file;
+ if(!file)return file;
  const originalMB=(file.size/1024/1024).toFixed(1);
  if(mediaType==="image"){
+  if(!compress)return file;
   try{
    if(!("createImageBitmap" in window))throw new Error("El navegador no permite optimizar esta imagen.");
    const bitmap=await createImageBitmap(file);
@@ -422,34 +423,62 @@ async function prepareMediaFile(file,mediaType,compress){
   }catch(error){setMessage("productMessage","No se pudo comprimir la foto; se conservará el original. "+error.message);return file;}
  }
  if(mediaType==="video"){
-  let video,stream,recorder;
+  let video,stream,recorder,sourceStream,objectUrl;
   try{
-   if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream)throw new Error("Este navegador no ofrece compresión de vídeo.");
-   video=document.createElement("video");video.preload="auto";video.muted=true;video.playsInline=true;video.src=URL.createObjectURL(file);
+   video=document.createElement("video");video.preload="auto";video.muted=true;video.playsInline=true;objectUrl=URL.createObjectURL(file);video.src=objectUrl;
    await new Promise((resolve,reject)=>{video.onloadedmetadata=resolve;video.onerror=()=>reject(new Error("No se pudo abrir el vídeo."));video.load();});
    if(!Number.isFinite(video.duration)||video.duration<=0)throw new Error("No se pudo leer la duración del vídeo.");
+   const clipDuration=Math.min(video.duration,10);
+   const needsTrim=video.duration>10.05;
+   if(!compress&&!needsTrim){
+    setMessage("productMessage","Vídeo listo: "+clipDuration.toFixed(1)+" segundos.");
+    return file;
+   }
+   if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){
+    if(needsTrim)throw new Error("Este navegador no permite recortar automáticamente. Activa un navegador compatible para limitarlo a 10 segundos.");
+    setMessage("productMessage","No se pudo comprimir el vídeo; se conservará el original de "+clipDuration.toFixed(1)+" segundos.");
+    return file;
+   }
    const scale=Math.min(1,1280/Math.max(video.videoWidth,video.videoHeight));
    const canvas=document.createElement("canvas");canvas.width=Math.max(2,Math.round(video.videoWidth*scale/2)*2);canvas.height=Math.max(2,Math.round(video.videoHeight*scale/2)*2);
    const ctx=canvas.getContext("2d");
    stream=canvas.captureStream(24);
-   const sourceStream=video.captureStream?.()||video.mozCaptureStream?.();
+   sourceStream=video.captureStream?.()||video.mozCaptureStream?.();
    if(sourceStream)sourceStream.getAudioTracks().forEach(track=>stream.addTrack(track));
    const mime=["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"].find(type=>MediaRecorder.isTypeSupported(type));
-   if(!mime)throw new Error("No hay un formato de vídeo comprimido compatible.");
+   if(!mime)throw new Error("No hay un formato de vídeo compatible para recortar y optimizar.");
    const chunks=[];recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:1200000,audioBitsPerSecond:96000});
    recorder.ondataavailable=event=>{if(event.data?.size)chunks.push(event.data);};
-   const finished=new Promise((resolve,reject)=>{recorder.onstop=()=>resolve(new Blob(chunks,{type:mime}));recorder.onerror=()=>reject(new Error("Falló la compresión del vídeo."));});
+   const finished=new Promise((resolve,reject)=>{recorder.onstop=()=>resolve(new Blob(chunks,{type:mime}));recorder.onerror=()=>reject(new Error("Falló el procesamiento del vídeo."));});
    recorder.start(500);
-   const draw=()=>{if(video.paused||video.ended)return;ctx.drawImage(video,0,0,canvas.width,canvas.height);requestAnimationFrame(draw);};
+   let raf=0;
+   const draw=()=>{
+    if(video.paused||video.ended)return;
+    ctx.drawImage(video,0,0,canvas.width,canvas.height);
+    if(video.currentTime>=clipDuration-0.04){video.pause();if(recorder.state!=="inactive")recorder.stop();return;}
+    raf=requestAnimationFrame(draw);
+   };
    await video.play();draw();
-   await new Promise((resolve,reject)=>{video.onended=resolve;video.onerror=()=>reject(new Error("Se interrumpió el vídeo durante la compresión."));});
-   recorder.stop();const blob=await finished;
-   if(!blob.size)throw new Error("El vídeo comprimido quedó vacío.");
-   const result=blob.size<file.size?new File([blob],file.name.replace(/\.[^.]+$/,"")+".webm",{type:"video/webm",lastModified:Date.now()}):file;
-   setMessage("productMessage","Vídeo optimizado: "+originalMB+" MB → "+(result.size/1024/1024).toFixed(1)+" MB.");
+   if(video.paused&&video.currentTime===0)throw new Error("No se pudo iniciar la lectura del vídeo.");
+   const blob=await Promise.race([finished,new Promise((resolve,reject)=>{
+    const check=()=>{if(video.currentTime>=clipDuration-0.04){video.pause();if(recorder.state!=="inactive")recorder.stop();resolve();}else if(video.ended){if(recorder.state!=="inactive")recorder.stop();resolve();}else requestAnimationFrame(check);};
+    check();
+   })]).then(async value=>value instanceof Blob?value:await finished);
+   if(raf)cancelAnimationFrame(raf);
+   if(!blob?.size)throw new Error("El vídeo procesado quedó vacío.");
+   const processed=new File([blob],file.name.replace(/\.[^.]+$/,"")+".webm",{type:"video/webm",lastModified:Date.now()});
+   const result=(needsTrim||processed.size<file.size)?processed:file;
+   setMessage("productMessage","Vídeo listo: "+Math.min(clipDuration,10).toFixed(1)+" s máximo · "+(needsTrim?"se recortó a 10 segundos · ":"")+(compress?"optimizado · ":"")+(result.size/1024/1024).toFixed(1)+" MB.");
    return result;
-  }catch(error){try{if(recorder&&recorder.state!=="inactive")recorder.stop();}catch{}setMessage("productMessage","No se pudo comprimir el vídeo en este navegador; se conservará el original. "+error.message);return file;}
-  finally{if(stream)stream.getTracks().forEach(track=>track.stop());if(video){video.pause();if(video.src)URL.revokeObjectURL(video.src);video.removeAttribute("src");video.load();}}
+  }catch(error){
+   try{if(recorder&&recorder.state!=="inactive")recorder.stop();}catch{}
+   setMessage("productMessage","No se pudo procesar el vídeo: "+error.message);
+   throw error;
+  }finally{
+   if(stream)stream.getTracks().forEach(track=>track.stop());
+   if(sourceStream)sourceStream.getTracks().forEach(track=>track.stop());
+   if(video){video.pause();if(objectUrl)URL.revokeObjectURL(objectUrl);video.removeAttribute("src");video.load();}
+  }
  }
  return file;
 }
