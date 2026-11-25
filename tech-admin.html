@@ -143,6 +143,15 @@
 #sectionImagePreview.cover-preview-mode{position:relative;height:300px;min-height:220px;overflow:hidden;background:linear-gradient(145deg,#eee8f3,#fff)}
 #sectionImagePreview.cover-preview-mode img{position:absolute;display:block;max-height:none;max-width:none;object-position:center}
 @media(max-width:560px){#sectionImagePreview.cover-preview-mode{height:250px}}
+</style><style>
+.cover-composition-preview{margin:16px 0 20px;padding:12px;border:1px solid #e8ddec;border-radius:18px;background:linear-gradient(145deg,#fbf8fd,#fff);box-shadow:0 8px 24px rgba(52,29,63,.06)}
+.cover-preview-label{font-size:9px;font-weight:900;letter-spacing:.12em;color:#a34b9b;margin:2px 0 10px}
+.cover-preview-stage{position:relative;width:100%;height:clamp(230px,42vw,390px);overflow:hidden;isolation:isolate;border-radius:14px;background:linear-gradient(135deg,#d8d4df,#f4e8f2 55%,#c9c3d7)}
+.cover-preview-stage #coverPreviewEnvironment{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;z-index:0}
+.cover-preview-stage #coverPreviewImage{position:absolute;z-index:2;display:block;max-width:none;max-height:none;padding:8px;border:1px solid #ffffff99;background:#ffffff20;box-shadow:0 12px 30px #20142c35;object-position:center}
+.cover-preview-stage #coverPreviewEmpty{position:absolute;z-index:1;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:#756a80;font-size:12px}
+.cover-preview-stage #coverPreviewEmpty[hidden]{display:none}
+@media(max-width:560px){.cover-composition-preview{padding:9px}.cover-preview-stage{height:260px}}
 </style></head><body>
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN TÉCNICA</small></a><div class="head-actions"><a href="/admin.html">Administración comercial</a><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
 <main>
@@ -172,6 +181,15 @@
 <label for="sectionDescription">Descripción</label><textarea id="sectionDescription" rows="4" maxlength="1200" placeholder="Texto que verá el cliente"></textarea>
 <label for="sectionButtonText">Texto del botón o etiqueta</label><input id="sectionButtonText" maxlength="80" placeholder="Ej. Explorar">
 <label for="sectionImage">PORTADA · Subir imagen frontal desde galería</label><input id="sectionImage" type="file" accept="image/jpeg,image/png,image/webp"><small class="sub">Esta es la imagen que se monta delante del ambiente. Elige un archivo guardado en tu celular. No cambia el fondo ni la fotografía del ambiente.</small>
+<div class="cover-composition-preview" id="coverCompositionPreview">
+<div class="cover-preview-label">VISTA PREVIA · AMBIENTE + PORTADA</div>
+<div class="cover-preview-stage" id="coverPreviewStage">
+<img id="coverPreviewEnvironment" alt="Ambiente de fondo" hidden>
+<img id="coverPreviewImage" alt="Portada frontal" hidden>
+<div id="coverPreviewEmpty">Selecciona o sube una portada para verla sobre el ambiente.</div>
+</div>
+<small class="sub">El fondo y la imagen frontal se muestran en capas independientes, como aparecerán en la tienda.</small>
+</div>
 <div class="file-preview" id="sectionImagePreview" hidden></div>
 <div class="cover-layout-controls" id="coverLayoutControls">
 <h3>Diseño y posición de la portada</h3>
