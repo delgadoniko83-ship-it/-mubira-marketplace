@@ -66,7 +66,7 @@
  #techApp .tech-screen .actions{max-width:360px}
 }
 
- .theme-color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.theme-color-grid label{margin:10px 0}.theme-color-grid input[type=color]{display:block;width:100%;height:48px;padding:4px;border-radius:10px}@media(max-width:480px){.theme-color-grid{grid-template-columns:1fr 1fr}}\n</style>
+ .theme-library{display:grid;gap:10px;margin:14px 0}.theme-library-card{padding:13px;border:1px solid #e8dfec;border-radius:14px;background:#fff}.theme-library-card.is-active{border:2px solid #b34bb4;background:#fffaff}.theme-library-card strong,.theme-library-card small{display:block}.theme-library-card strong{font-size:13px}.theme-library-card small{font-size:11px;color:#81748b;margin-top:4px}.theme-library-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.theme-library-actions button{flex:1;min-width:90px;padding:9px;font-size:11px;min-height:38px}.theme-library-actions button:disabled{opacity:.4;cursor:not-allowed}#themeScreenImage{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.theme-color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.theme-color-grid label{margin:10px 0}.theme-color-grid input[type=color]{display:block;width:100%;height:48px;padding:4px;border-radius:10px}@media(max-width:480px){.theme-color-grid{grid-template-columns:1fr 1fr}}\n</style>
 </head><body>
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN TÉCNICA</small></a><div class="head-actions"><a href="/admin.html">Administración comercial</a><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
 <main>
@@ -117,6 +117,7 @@
 <div class="pill" id="themeActiveState">CARGANDO AMBIENTES</div>
 <label for="themeSelect">Ambiente guardado</label><select id="themeSelect"></select>
 <div class="actions"><button class="secondary" type="button" id="themeNew">＋ Crear nuevo ambiente</button></div>
+<div class="theme-library" id="themeLibrary" aria-live="polite"><p class="sub">Cargando biblioteca de ambientes...</p></div>
 <label for="themeName">Nombre del ambiente</label><input id="themeName" maxlength="80" placeholder="Ej. Navidad elegante">
 <label for="themeDescription">Descripción interna</label><textarea id="themeDescription" rows="2" maxlength="300" placeholder="Describe el concepto de este ambiente"></textarea>
 <h3>Identidad visual general</h3>
@@ -131,13 +132,16 @@
 <label for="themeFont">Tipografía</label><select id="themeFont"><option value="Manrope">Manrope moderna</option><option value="DM Sans">DM Sans limpia</option><option value="serif">Serif editorial</option></select>
 <h3>Diseñar cada pantalla</h3>
 <label for="themeScreen">Pantalla que vas a transformar</label><select id="themeScreen"><option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option></select>
-<label for="themeScreenImage">Subir imagen desde galería o Archivos del teléfono</label><input id="themeScreenImage" type="file" accept="image/jpeg,image/png,image/webp">
+<label for="themeScreenImage">Imagen de portada para esta pantalla</label>
+<input id="themeScreenImage" type="file" accept="image/*">
+<div class="actions"><button class="secondary" type="button" id="themePickImage">Elegir imagen desde galería / Archivos</button></div>
 <div class="file-preview" id="themeScreenImagePreview"><small>Selecciona una imagen para ver la vista previa.</small></div>
 <label for="themeScreenOverlay">Oscurecer imagen para facilitar la lectura</label><select id="themeScreenOverlay"><option value="0">Sin oscurecer</option><option value="15">Suave</option><option value="25" selected>Medio</option><option value="40">Fuerte</option><option value="55">Muy fuerte</option></select>
 <label for="themeScreenPosition">Encuadre de la imagen</label><select id="themeScreenPosition"><option value="center">Centro</option><option value="top">Arriba</option><option value="bottom">Abajo</option><option value="left">Izquierda</option><option value="right">Derecha</option></select>
 <div class="actions"><button class="primary" type="button" id="themeSave">Guardar ambiente</button></div>
 <div class="actions"><button class="secondary" type="button" id="themeActivate">Publicar este ambiente en la tienda</button></div>
-<div class="actions"><button class="secondary" type="button" id="themeRefresh">Actualizar lista</button></div>
+<div class="actions"><button class="secondary" type="button" id="themeDelete" disabled>Eliminar ambiente seleccionado</button></div>
+<div class="actions"><button class="secondary" type="button" id="themeRefresh">Actualizar biblioteca</button></div>
 <p class="message" id="themeStudioMessage" aria-live="polite">Preparando estudio visual...</p>
 </section></div></div></main><footer>MUBIRA · Administración técnica privada · Colombia</footer>
 <script type="module">
