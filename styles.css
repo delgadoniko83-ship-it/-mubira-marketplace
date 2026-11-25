@@ -954,3 +954,11 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
 @media (max-width:380px){
   .hero-visual .hero-editor-cover{width:72%;max-width:72%;height:68%;right:3%;bottom:4%;padding:5px}
 }
+
+
+/* MUBIRA FIX · composición real de ambiente + portada, sin estilos heredados */
+.hero-visual{position:relative!important;isolation:isolate!important;overflow:hidden!important}
+.hero-visual>.hero-environment{position:absolute!important;inset:0!important;z-index:0!important;display:block!important;background-repeat:no-repeat!important;background-size:cover!important;pointer-events:none!important}
+.hero-visual>.hero-editor-cover{position:absolute!important;z-index:8!important;display:block!important;visibility:visible!important;opacity:1!important;object-position:center!important;pointer-events:none!important;padding:8px!important;border:1px solid rgba(255,255,255,.55)!important;background:rgba(255,255,255,.08)!important;box-shadow:0 16px 42px rgba(20,12,30,.25)!important}
+.hero-visual.mubira-theme-photo:before{display:none!important}
+.hero-visual.mubira-theme-photo>.hero-window,.hero-visual.mubira-theme-photo>.hero-sun,.hero-visual.mubira-theme-photo>.hero-plant,.hero-visual.mubira-theme-photo>.hero-sofa,.hero-visual.mubira-theme-photo>.hero-table,.hero-visual.mubira-theme-photo>.hero-vase,.hero-visual.mubira-theme-photo>.hero-rug,.hero-visual.mubira-theme-photo>.hero-kicker,.hero-visual.mubira-theme-photo>.hero-caption{display:none!important}
