@@ -19,7 +19,7 @@ function fill(row){
  const key=$("themeScreen").value,p=s.screens?.[key]||{};
  $("themeScreenOverlay").value=p.overlay??"25";$("themeScreenPosition").value=p.position||"center";
  const url=publicImage(p.image_path);
- $("themeScreenImagePreview").innerHTML=url?'<img alt="Portada guardada" src="'+url+'"><small>Imagen guardada para '+screens.find(x=>x[0]===key)?.[1]+'.</small>':'<small>Esta pantalla todavía no tiene una imagen propia.</small>';
+ $("themeScreenImagePreview").innerHTML=url?'<img alt="Fotografía de ambiente de fondo" src="'+url+'"><small>Foto de ambiente guardada para '+screens.find(x=>x[0]===key)?.[1]+'.</small>':'<small>Esta pantalla todavía no tiene una fotografía de ambiente de fondo.</small>';
 }
 function renderLibrary(){
  const host=$("themeLibrary");if(!host)return;host.innerHTML="";
