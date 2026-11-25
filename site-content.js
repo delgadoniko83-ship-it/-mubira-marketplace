@@ -81,4 +81,4 @@ loadEditableSections();
 loadEditableSpaceCards();
 
 // Sincronización ligera: la tienda abierta refleja cambios de administración sin tener que cerrarla.
-setInterval(()=>{loadEditableSections();loadEditableSpaceCards();},12000);
+setInterval(()=>{loadEditableSections();loadEditableSpaceCards();loadPublishedVisualTheme();},12000);
