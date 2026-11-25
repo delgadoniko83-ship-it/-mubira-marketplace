@@ -24,9 +24,15 @@ async function loadInvites(){
  box.querySelectorAll("[data-invite]").forEach(b=>b.addEventListener("click",async()=>{
   if(!confirm("¿Retirar el acceso técnico de "+b.closest(".access-row").querySelector("strong").textContent+"?"))return;
   b.disabled=true;
-  const {error}=await db.rpc("revoke_technical_admin_access",{target_user_id:b.dataset.revoke||null,target_invite_id:b.dataset.invite});
-  if(error){say("No se pudo retirar el acceso: "+error.message);b.disabled=false;return;}
-  say("Acceso retirado correctamente.");await loadInvites();
+  try{
+   const {error}=await db.rpc("revoke_technical_admin_access",{target_user_id:b.dataset.revoke||null,target_invite_id:b.dataset.invite});
+   if(error)throw error;
+   const {data:check,error:checkError}=await db.from("technical_admin_invites").select("id,is_active").eq("id",b.dataset.invite).maybeSingle();
+   if(checkError)throw checkError;
+   if(!check||check.is_active)throw new Error("La base de datos todavía muestra esta invitación activa.");
+   await loadInvites();
+   say("Acceso retirado y verificado en la base de datos.");
+  }catch(error){say("No se pudo confirmar el retiro: "+error.message);b.disabled=false;}
  }));
 }
 $("technicalInviteForm").addEventListener("submit",async e=>{
@@ -38,9 +44,12 @@ $("technicalInviteForm").addEventListener("submit",async e=>{
   const {data:existing,error:findError}=await db.from("technical_admin_invites").select("id").ilike("email",email).maybeSingle();
   if(findError)throw findError;
   const payload={email,role:"technical_admin",is_active:true,created_by:currentUser.id,claimed_by:null,claimed_at:null};
-  const result=existing?await db.from("technical_admin_invites").update(payload).eq("id",existing.id):await db.from("technical_admin_invites").insert(payload);
+  const result=existing
+   ?await db.from("technical_admin_invites").update(payload).eq("id",existing.id).select("id,email,is_active").single()
+   :await db.from("technical_admin_invites").insert(payload).select("id,email,is_active").single();
   if(result.error)throw result.error;
-  $("technicalInviteEmail").value="";say("Correo autorizado. La persona debe entrar con Google usando exactamente ese correo.");await loadInvites();
+  if(!result.data?.is_active||result.data.email.toLowerCase()!==email)throw new Error("La autorización no quedó guardada como se esperaba.");
+  $("technicalInviteEmail").value="";say("Correo autorizado y verificado. La persona debe entrar con Google usando exactamente ese correo.");await loadInvites();
  }catch(err){say("No se pudo autorizar: "+err.message);}
  finally{button.disabled=false;}
 });
