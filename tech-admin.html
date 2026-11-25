@@ -131,7 +131,15 @@
 }
 
 </style>
-</head><body>
+<style>
+.cover-layout-controls{margin:18px 0;padding:16px;border:1px solid rgba(155,112,190,.28);border-radius:18px;background:linear-gradient(135deg,rgba(245,239,250,.9),rgba(255,255,255,.96))}
+.cover-layout-controls h3{margin:0 0 6px;font-size:1rem}
+.cover-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.cover-control-grid>div{min-width:0;padding:10px;border-radius:12px;background:rgba(255,255,255,.82)}
+.cover-control-grid input[type=range]{width:100%;accent-color:#c02c91}
+.cover-control-grid select{width:100%;min-width:0}
+@media(max-width:560px){.cover-control-grid{grid-template-columns:1fr}.cover-layout-controls{padding:12px}}
+</style></head><body>
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN TÉCNICA</small></a><div class="head-actions"><a href="/admin.html">Administración comercial</a><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
 <main>
 <section id="loginGate" class="panel"><p class="eyebrow">ACCESO TÉCNICO SEGURO</p><h1>Diseño y tecnología.</h1><p class="sub">Este espacio controla portadas, imágenes de botones y tarjetas, títulos y textos de las pantallas. No administra productos ni promociones.</p><button class="primary" id="loginButton">Continuar con Google</button><p class="message" id="loginMessage"></p></section>
@@ -161,6 +169,19 @@
 <label for="sectionButtonText">Texto del botón o etiqueta</label><input id="sectionButtonText" maxlength="80" placeholder="Ej. Explorar">
 <label for="sectionImage">PORTADA · Subir imagen frontal desde galería</label><input id="sectionImage" type="file" accept="image/jpeg,image/png,image/webp"><small class="sub">Esta es la imagen que se monta delante del ambiente. Elige un archivo guardado en tu celular. No cambia el fondo ni la fotografía del ambiente.</small>
 <div class="file-preview" id="sectionImagePreview" hidden></div>
+<div class="cover-layout-controls" id="coverLayoutControls">
+<h3>Diseño y posición de la portada</h3>
+<p class="sub">Ajusta la imagen frontal sin mover ni cambiar la fotografía de Ambiente.</p>
+<div class="cover-control-grid">
+<div><label for="coverX">Posición horizontal</label><input id="coverX" type="range" min="0" max="100" value="72"><small class="sub">Izquierda ↔ derecha</small></div>
+<div><label for="coverY">Posición vertical</label><input id="coverY" type="range" min="0" max="100" value="55"><small class="sub">Arriba ↕ abajo</small></div>
+<div><label for="coverSize">Tamaño</label><input id="coverSize" type="range" min="18" max="90" value="48"><small class="sub">Más pequeña ↔ más grande</small></div>
+<div><label for="coverAngle">Ángulo de giro</label><input id="coverAngle" type="range" min="-180" max="180" value="0"><small class="sub">Gira la portada</small></div>
+<div><label for="coverShape">Forma de la imagen</label><select id="coverShape"><option value="rounded">Esquinas redondeadas</option><option value="rectangle">Rectangular</option><option value="circle">Circular</option></select></div>
+<div><label for="coverFit">Ajuste de imagen</label><select id="coverFit"><option value="contain">Mostrar completa</option><option value="cover">Rellenar el marco</option></select></div>
+</div>
+<button class="secondary" id="coverReset" type="button">Restablecer posición</button>
+</div>
 <div class="check"><input type="checkbox" id="removeSectionImage"><label for="removeSectionImage">Quitar fotografía y restaurar el diseño original</label></div>
 <div class="actions"><button class="primary" id="saveSectionContent">Guardar portada y contenido</button></div><p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
 </section>
