@@ -90,7 +90,7 @@ $("themeSave").addEventListener("click",async()=>{
   const payload={theme_key:themeKey,name,description:$("themeDescription").value.trim(),settings,updated_by:user.id};
   const result=current.id?await db.from("site_themes").update(payload).eq("id",current.id).select().single():await db.from("site_themes").insert({...payload,created_by:user.id,is_active:false}).select().single();
   if(result.error)throw result.error;
-  current=result.data;$("themeScreenImage").value="";await loadThemes();$("themeSelect").value=current.id;fill(current);msg("Guardado correctamente. Ya aparece en tu biblioteca como borrador; todavía no cambia la tienda.");
+  const savedThemeId=result.data.id;$("themeScreenImage").value="";await loadThemes();const savedTheme=themes.find(t=>t.id===savedThemeId);if(!savedTheme)throw new Error("El ambiente se guardó, pero no se pudo volver a cargar en la biblioteca. Pulsa Actualizar biblioteca.");$("themeSelect").value=savedThemeId;fill(savedTheme);msg("Ambiente guardado y verificado. Quedó seleccionado como borrador. Para mostrarlo a los clientes, pulsa Aplicar en tienda.");
  }catch(e){
   if(uploadedPath)await db.storage.from("mubira-products").remove([uploadedPath]);
   msg("No se pudo guardar: "+(e.message||"Error desconocido"));
