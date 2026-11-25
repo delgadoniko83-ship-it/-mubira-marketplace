@@ -37,17 +37,19 @@ async function loadEditableSections(){
           cover.loading="eager";cover.decoding="async";
           cover.style.position="absolute";cover.style.display="block";cover.style.visibility="visible";cover.style.opacity="1";
           cover.src=image;
-          const layout={x:72,y:55,size:48,angle:0,shape:"rounded",fit:"contain",...(row.image_settings||{})};
-          cover.style.left=Number(layout.x)+"%";cover.style.top=Number(layout.y)+"%";
-          cover.style.right="auto";cover.style.bottom="auto";cover.style.zIndex="8";
-          cover.style.width=Number(layout.size)+"%";cover.style.height="72%";
-          cover.style.maxWidth="90%";cover.style.maxHeight="86%";
-          cover.style.transform="translate(-50%,-50%) rotate("+Number(layout.angle)+"deg)";
-          cover.style.borderRadius=layout.shape==="circle"?"50%":layout.shape==="rectangle"?"3px":"18px";
-          cover.style.objectFit=layout.fit==="cover"?"cover":"contain";cover.style.objectPosition="center";
-          cover.onerror=()=>{console.warn("MUBIRA: no se pudo cargar la imagen de portada",row.image_path);cover.classList.add("cover-image-error");};
+          const layout={x:50,y:50,size:48,angle:0,shape:"rectangle",fit:"cover",...(row.image_settings||{})};
+          // La portada es la fotografía protagonista del panel visual, no una tarjeta flotante.
+          host.classList.add("has-cover-image");
+          cover.style.inset="0";cover.style.left="0";cover.style.top="0";cover.style.right="0";cover.style.bottom="0";
+          cover.style.zIndex="5";cover.style.width="100%";cover.style.height="100%";
+          cover.style.maxWidth="none";cover.style.maxHeight="none";
+          cover.style.transform="rotate("+Number(layout.angle)+"deg) scale("+Math.max(.7,Math.min(1.35,0.7+Number(layout.size)/100))+")";
+          cover.style.transformOrigin="center";cover.style.borderRadius=layout.shape==="circle"?"50%":layout.shape==="rounded"?"12px":"0";
+          cover.style.objectFit=layout.fit==="contain"?"contain":"cover";
+          cover.style.objectPosition=Number(layout.x)+"% "+Number(layout.y)+"%";
+          cover.onerror=()=>{console.warn("MUBIRA: no se pudo cargar la imagen de portada",row.image_path);cover.classList.add("cover-image-error");host.classList.remove("has-cover-image");};
           cover.onload=()=>cover.classList.remove("cover-image-error");
-        }else if(cover){cover.remove();}
+        }else if(cover){cover.remove();host.classList.remove("has-cover-image");}
       }else if(row.image_path && host){
         const image=db.storage.from("mubira-products").getPublicUrl(row.image_path).data.publicUrl;
         host.classList.add("has-editor-image");
@@ -108,7 +110,7 @@ async function loadPublishedVisualTheme(){
     document.body.dataset.mubiraButtonStyle=g.buttonStyle||"gradient";
     document.body.dataset.mubiraTheme=data.theme_key||"";
     const imageTargets={
-      inicio:document.querySelector(".hero-visual"),
+      inicio:document.querySelector(".hero"),
       espacios:document.querySelector(".spaces-page"),
       coleccion:document.querySelector(".collection"),
       nuestro_mundo:document.querySelector(".studio-art")
