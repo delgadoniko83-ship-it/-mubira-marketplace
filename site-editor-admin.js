@@ -2,7 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.119.2";
 const db=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publishable_01DxOQWRyBJAdrUeXh7_gQ_j_qlTvtz");
 const $=id=>document.getElementById(id);
 const labels={inicio:"Inicio",espacios:"Espacios",coleccion:"Colección",nuestro_mundo:"Nuestro mundo"};
-const defaultCover={x:72,y:55,size:48,angle:0,shape:"rounded",fit:"contain"};
+const defaultCover={x:50,y:50,size:48,angle:0,shape:"rectangle",fit:"cover"};
 let rows=[],currentImage=null,session=null,activeEnvironmentUrl="";
 const msg=value=>$("sectionContentMessage").textContent=value;
 const publicUrl=path=>path?db.storage.from("mubira-products").getPublicUrl(path).data.publicUrl:"";
@@ -11,11 +11,11 @@ function readCoverControls(){return {x:Number($("coverX").value),y:Number($("cov
 function writeCoverControls(s){$("coverX").value=s.x;$("coverY").value=s.y;$("coverSize").value=s.size;$("coverAngle").value=s.angle;$("coverShape").value=s.shape;$("coverFit").value=s.fit;}
 function applyCoverStyle(img,s){
  img.style.position="absolute";img.style.display="block";img.style.visibility="visible";img.style.opacity="1";
- img.style.left=Number(s.x)+"%";img.style.top=Number(s.y)+"%";img.style.right="auto";img.style.bottom="auto";
- img.style.width=Number(s.size)+"%";img.style.height="72%";img.style.maxWidth="90%";img.style.maxHeight="86%";
- img.style.transform="translate(-50%,-50%) rotate("+Number(s.angle)+"deg)";
- img.style.borderRadius=s.shape==="circle"?"50%":s.shape==="rectangle"?"3px":"18px";
- img.style.objectFit=s.fit==="cover"?"cover":"contain";img.style.objectPosition="center";
+ img.style.inset="0";img.style.left="auto";img.style.top="0";img.style.right="0";img.style.bottom="0";
+ img.style.width="58%";img.style.height="100%";img.style.maxWidth="none";img.style.maxHeight="none";
+ img.style.transform="rotate("+Number(s.angle)+"deg) scale("+Math.max(.7,Math.min(1.35,.7+Number(s.size)/100))+")";img.style.transformOrigin="center";
+ img.style.borderRadius=s.shape==="circle"?"50%":s.shape==="rounded"?"12px":"0";
+ img.style.objectFit=s.fit==="contain"?"contain":"cover";img.style.objectPosition=Number(s.x)+"% "+Number(s.y)+"%";
 }
 function refreshCoverPreview(){
  const img=$("coverPreviewImage"),empty=$("coverPreviewEmpty"),path=img.dataset.path||"";
