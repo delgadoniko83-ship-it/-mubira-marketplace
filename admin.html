@@ -241,7 +241,7 @@ body { overflow-x: hidden; }
      <p class="message" id="productMessage" aria-live="polite"></p>
      <p class="sub">Los archivos se optimizan antes de subirlos cuando la compresión está activada. El archivo final debe pesar máximo 35 MB.</p>
     </section>
-    <section class="panel"><h2>Catálogo organizado</h2><p class="sub">Cada mueble queda agrupado por categoría. Busca, filtra, edita o elimina una ficha sin mezclarla con las demás.</p><label for="productSearch">Buscar producto</label><input id="productSearch" type="search" placeholder="Escribe el nombre del producto..."><label for="productCategoryFilter">Ver categoría</label><select id="productCategoryFilter"><option value="">Todas las categorías</option></select><div id="productCount" class="sub"></div><div id="productList"><p class="sub">Cargando catálogo...</p></div></section>
+    <section class="panel"><h2>Catálogo organizado</h2><p class="sub">Cada mueble queda agrupado por categoría. Busca, filtra, edita o elimina una ficha sin mezclarla con las demás.</p><label for="productSearch">Buscar dentro de esta categoría</label><input id="productSearch" type="search" placeholder="Escribe el nombre del producto..."><p class="sub">Selecciona una categoría para abrir su propia pantalla. Solo verás los productos de esa sección.</p><nav id="categoryScreens" class="category-screens" aria-label="Pantallas de categorías"></nav><div id="productCount" class="sub"></div><div id="productList"><p class="sub">Cargando catálogo...</p></div></section>
    </div>
   </section>
   </section>
@@ -366,13 +366,32 @@ $("refreshOrders")?.addEventListener("click",loadOrders);
 setInterval(()=>{if(session?.user&&!$("adminApp").classList.contains("hidden"))loadOrders();},20000);
 
 let cachedProducts=[];
+let activeCategoryId=null;
+function categoryScreenName(id){
+ if(id==="__uncategorized__")return "Sin categoría";
+ return categories.find(item=>item.id===id)?.name||"Categoría";
+}
+function renderCategoryScreens(){
+ const nav=$("categoryScreens");if(!nav)return;
+ const counts=new Map();
+ cachedProducts.forEach(p=>{const key=p.category_id||"__uncategorized__";counts.set(key,(counts.get(key)||0)+1);});
+ const available=categories.map(item=>({id:item.id,name:item.name,count:counts.get(item.id)||0}));
+ if(counts.has("__uncategorized__"))available.push({id:"__uncategorized__",name:"Sin categoría",count:counts.get("__uncategorized__")});
+ if(!available.length){nav.innerHTML='<p class="sub">Primero crea o activa una categoría.</p>';return;}
+ if(!available.some(item=>item.id===activeCategoryId))activeCategoryId=available[0].id;
+ nav.innerHTML=available.map(item=>'<button type="button" class="category-screen-tab '+(item.id===activeCategoryId?'active':'')+'" data-category-screen="'+escapeHtml(item.id)+'"><span>'+escapeHtml(item.name)+'</span><small>'+item.count+'</small></button>').join("");
+ nav.querySelectorAll("[data-category-screen]").forEach(button=>button.addEventListener("click",()=>{
+  activeCategoryId=button.dataset.categoryScreen;
+  renderCategoryScreens();renderProducts();
+ }));
+}
 function renderProducts(){
- const box=$("productList");const term=($("productSearch").value||"").trim().toLocaleLowerCase("es");const category=$("productCategoryFilter").value;
- const filtered=cachedProducts.filter(p=>(!category||p.category_id===category)&&(!term||[p.name,p.short_description,p.categories?.name].some(v=>String(v||"").toLocaleLowerCase("es").includes(term))));
- $("productCount").textContent=filtered.length+" de "+cachedProducts.length+" productos";
- if(!filtered.length){box.innerHTML='<p class="sub">No hay productos que coincidan con la búsqueda o categoría.</p>';return;}
- const groups=new Map();filtered.forEach(p=>{const label=p.categories?.name||"Sin categoría";if(!groups.has(label))groups.set(label,[]);groups.get(label).push(p);});
- box.innerHTML=[...groups.entries()].map(([categoryName,items])=>'<section class="product-category-group"><h3>'+escapeHtml(categoryName)+' <small>('+items.length+')</small></h3>'+items.map(p=>'<article class="campaign product-admin-card"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+moneyCOP(p.price)+' · '+(p.status==="published"?"PUBLICADO":"BORRADOR")+' · '+(p.stock_quantity||0)+' unidades</small><p>'+escapeHtml(p.short_description||"Sin descripción")+'</p></div><div class="actions"><button class="secondary" type="button" data-edit-product="'+p.id+'">Editar</button><button class="secondary" type="button" data-delete-product="'+p.id+'">Eliminar</button></div></article>').join("")+'</section>').join("");
+ const box=$("productList");const term=($("productSearch").value||"").trim().toLocaleLowerCase("es");
+ const filtered=cachedProducts.filter(p=>(activeCategoryId==="__uncategorized__"?!p.category_id:p.category_id===activeCategoryId)&&(!term||[p.name,p.short_description,p.categories?.name].some(v=>String(v||"").toLocaleLowerCase("es").includes(term))));
+ const categoryName=categoryScreenName(activeCategoryId);
+ $("productCount").textContent=categoryName+" · "+filtered.length+" productos";
+ if(!filtered.length){box.innerHTML='<section class="product-category-empty"><h3>'+escapeHtml(categoryName)+'</h3><p class="sub">'+(term?'No hay productos que coincidan con tu búsqueda en esta categoría.':'Esta categoría todavía no tiene productos. Puedes agregarlos desde el formulario de la izquierda.')+'</p></section>';return;}
+ box.innerHTML='<section class="product-category-page"><header class="product-category-page-heading"><div><span>CATÁLOGO POR SECCIÓN</span><h3>'+escapeHtml(categoryName)+'</h3></div><small>'+filtered.length+' '+(filtered.length===1?'producto':'productos')+'</small></header>'+filtered.map(p=>'<article class="campaign product-admin-card"><div><strong>'+escapeHtml(p.name)+'</strong><small>'+moneyCOP(p.price)+' · '+(p.status==="published"?"PUBLICADO":"BORRADOR")+' · '+(p.stock_quantity||0)+' unidades</small><p>'+escapeHtml(p.short_description||"Sin descripción")+'</p></div><div class="actions"><button class="secondary" type="button" data-edit-product="'+p.id+'">Editar</button><button class="secondary" type="button" data-delete-product="'+p.id+'">Eliminar</button></div></article>').join("")+'</section>';
  box.querySelectorAll("[data-edit-product]").forEach(button=>button.addEventListener("click",()=>{const p=cachedProducts.find(item=>item.id===button.dataset.editProduct);if(!p)return;$("productId").value=p.id;$("productName").value=p.name||"";$("productCategory").value=p.category_id||"";$("productPrice").value=p.price??"";$("productCost").value=p.cost_price??"";$("productShort").value=p.short_description||"";$("productDescription").value=p.description||"";$("productStock").value=p.stock_quantity||0;$("productFeatured").checked=!!p.is_featured;$("productPublish").checked=p.status==="published";$("productFormTitle").textContent="Editar producto";setMessage("productMessage","Editando "+p.name+". Selecciona nuevos archivos solo si deseas reemplazarlos.");$("productName").focus();}));
  box.querySelectorAll("[data-delete-product]").forEach(button=>button.addEventListener("click",async()=>{
   const p=cachedProducts.find(item=>item.id===button.dataset.deleteProduct);if(!p)return;
@@ -395,13 +414,9 @@ async function loadProducts(){
  if(costError){box.textContent="No se pudieron consultar los costos privados: "+costError.message;return;}
  const costMap=new Map((costRows||[]).map(row=>[row.product_id,row.cost_price]));
  cachedProducts=(data||[]).map(product=>({...product,cost_price:costMap.has(product.id)?costMap.get(product.id):null}));
- const filter=$("productCategoryFilter");const selected=filter.value;
- filter.innerHTML='<option value="">Todas las categorías</option>'+categories.map(item=>'<option value="'+item.id+'">'+escapeHtml(item.name)+'</option>').join("");
- filter.value=selected;
- renderProducts();
+ renderCategoryScreens();renderProducts();
 }
 $("productSearch").addEventListener("input",renderProducts);
-$("productCategoryFilter").addEventListener("change",renderProducts);
 
 function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));}
 async function prepareMediaFile(file,mediaType,compress){
@@ -605,3 +620,18 @@ const {data:{session:s},error}=await supabase.auth.getSession();if(error)setMess
 <style>#productCost{border-color:rgba(170,90,180,.45)}#orderHistoryView .stat strong{font-size:clamp(18px,4vw,26px)}</style>
 
 <style>.product-category-group{margin:18px 0 24px}.product-category-group>h3{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:12px;background:rgba(170,90,180,.10);font-size:15px}.product-category-group>h3 small{font-size:12px;opacity:.7}.product-admin-card{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0}.product-admin-card .actions{display:flex;gap:7px;flex-wrap:wrap}.product-admin-card .actions button{min-width:86px}@media(max-width:600px){.product-admin-card{align-items:stretch;flex-direction:column}.product-admin-card .actions{display:grid;grid-template-columns:1fr 1fr}.product-admin-card .actions button{width:100%}}</style>
+
+<style>
+.category-screens{display:flex;gap:9px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:8px 2px 14px;margin:12px 0;border-bottom:1px solid var(--line,#ded7e4)}
+.category-screen-tab{flex:0 0 auto;min-width:112px;display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:12px 15px;border:1px solid var(--line,#ded7e4);border-radius:15px;background:rgba(255,255,255,.62);color:var(--ink,#292330);scroll-snap-align:start}
+.category-screen-tab span{font-weight:850;font-size:13px}
+.category-screen-tab small{font-size:11px;opacity:.72}
+.category-screen-tab.active{background:linear-gradient(135deg,#34283f,#8d397f);border-color:#8d397f;color:#fff;box-shadow:0 7px 18px rgba(87,43,91,.18)}
+.product-category-page{min-height:190px;padding:4px 0}
+.product-category-page-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;margin:4px 0 14px;border-radius:15px;background:linear-gradient(110deg,rgba(190,183,200,.20),rgba(219,164,216,.18))}
+.product-category-page-heading span{font-size:10px;letter-spacing:.14em;font-weight:900;opacity:.7}
+.product-category-page-heading h3{margin:5px 0 0;font-size:20px}
+.product-category-page-heading>small{font-weight:800;white-space:nowrap}
+.product-category-empty{padding:24px 16px;border:1px dashed var(--line,#ded7e4);border-radius:15px}
+@media(max-width:600px){.category-screen-tab{min-width:104px;padding:11px 13px}.product-category-page-heading h3{font-size:18px}}
+</style>
