@@ -48,15 +48,20 @@ $("saveSpaceItem").addEventListener("click",async()=>{
    if(upload.error)throw upload.error;uploadedPath=upload.data.path;nextPath=uploadedPath;
   }else if($("removeSpaceItemImage").checked)nextPath=null;
   const payload={section_key:"espacios",item_key:key,eyebrow:$("spaceItemEyebrow").value.trim(),title:$("spaceItemTitle").value.trim()||item.title,description:$("spaceItemDescription").value.trim(),image_path:nextPath,sort_order:item.sort_order,updated_at:new Date().toISOString(),updated_by:session.user.id};
-  const saved=await db.from("site_section_items").upsert(payload,{onConflict:"section_key,item_key"});
+  const saved=await db.from("site_section_items").upsert(payload,{onConflict:"section_key,item_key"}).select("*").single();
   if(saved.error)throw saved.error;
-  if(existing?.image_path&&existing.image_path!==nextPath)await db.storage.from("mubira-products").remove([existing.image_path]);
-  rows=rows.filter(r=>r.item_key!==key);rows.push(payload);currentImage=nextPath;
+  if(saved.data.section_key!=="espacios"||saved.data.item_key!==key||saved.data.image_path!==nextPath)throw new Error("La base de datos no confirmó todos los cambios de la tarjeta.");
+  let storageNote="";
+  if(existing?.image_path&&existing.image_path!==nextPath){
+   const removed=await db.storage.from("mubira-products").remove([existing.image_path]);
+   if(removed.error)storageNote=" La tarjeta sí se actualizó, pero no se pudo retirar la imagen anterior: "+removed.error.message;
+  }
+  rows=rows.filter(r=>r.item_key!==key);rows.push(saved.data);currentImage=nextPath;
   $("spaceItemImage").value="";$("removeSpaceItemImage").checked=false;preview(currentImage);
-  msg("¡Tarjeta actualizada! Actualiza la tienda para ver la nueva fotografía y los textos.");
+  msg("Tarjeta guardada y verificada en Supabase."+storageNote+" Actualiza la tienda para ver los cambios.");
  }catch(error){
-  if(uploadedPath)await db.storage.from("mubira-products").remove([uploadedPath]);
-  msg("No se pudo guardar: "+error.message);
+  if(uploadedPath){const cleanup=await db.storage.from("mubira-products").remove([uploadedPath]);if(cleanup.error)console.warn("No se pudo limpiar la imagen temporal:",cleanup.error);}
+  msg("No se pudo guardar o verificar la tarjeta: "+error.message);
  }finally{button.disabled=false;}
 });
 async function init(){
