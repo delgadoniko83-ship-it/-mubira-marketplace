@@ -134,17 +134,30 @@ body { overflow-x: hidden; }
 }
 @media(max-width:390px){header{padding-left:9px;padding-right:9px}.brand{font-size:17px}.head-actions{gap:4px}.admin-nav button{padding:9px 11px}}
 
-/* MUBIRA · navegación móvil sin paneles internos que atrapan el desplazamiento */
+/* MUBIRA · administración móvil por pantallas independientes */
 @media (max-width:760px) {
- html,body { height:auto !important; min-height:100%; overflow-x:hidden !important; overflow-y:auto !important; }
- main { height:auto !important; min-height:calc(100dvh - var(--head)); display:block !important; overflow:visible !important; padding-bottom:max(28px,env(safe-area-inset-bottom)); }
- .admin-deck { display:block !important; height:auto !important; min-height:0 !important; overflow:visible !important; scroll-snap-type:none !important; }
- .admin-screen { display:block !important; width:100% !important; height:auto !important; min-height:0 !important; overflow:visible !important; scroll-snap-align:none !important; padding-bottom:20px !important; scroll-margin-top:12px; }
- .admin-nav { position:sticky; top:0; z-index:8; }
- .admin-screen .actions { position:static !important; padding:8px 0 max(10px,env(safe-area-inset-bottom)) !important; background:transparent !important; }
- .admin-screen .actions button { min-height:48px; }
- .admin-screen input[type=file] { max-width:100%; }
+ html,body { width:100%;max-width:100%;height:100%;min-height:0;overflow:hidden!important; }
+ header { height:var(--head);min-height:var(--head);flex-wrap:nowrap; }
+ main { width:100%;height:calc(100dvh - var(--head));min-height:0;display:flex!important;flex-direction:column;overflow:hidden;padding:10px 9px 8px; }
+ #adminApp { display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:hidden; }
+ #adminApp.hidden { display:none!important; }
+ .intro { display:block;flex:0 0 auto;margin:2px 2px 10px; }
+ .intro h1 { font-size:25px; }
+ .intro p:not(.eyebrow) { font-size:11px; }
+ .admin-nav { position:relative;top:auto;z-index:4;flex:0 0 auto;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;white-space:nowrap;-webkit-overflow-scrolling:touch;margin-bottom:9px; }
+ .admin-nav button { flex:0 0 auto;min-height:44px; }
+ .admin-deck { display:flex!important;flex:1 1 auto;width:100%;min-width:0;min-height:0;height:auto;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;border-radius:16px; }
+ .admin-screen { display:block!important;flex:0 0 100%!important;width:100%!important;min-width:100%!important;max-width:100%;height:100%!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;scroll-snap-align:start;scroll-snap-stop:always;padding:2px 2px 20px!important; }
+ .admin-screen .columns,.admin-screen#products .columns { grid-template-columns:minmax(0,1fr)!important;gap:11px; }
+ .admin-screen .panel { width:100%;min-width:0;max-width:none;padding:14px; }
+ .admin-screen input,.admin-screen select,.admin-screen textarea { font-size:16px;max-width:100%;min-width:0; }
+ .admin-screen input[type=file] { width:100%;max-width:100%;font-size:12px; }
+ .admin-screen .actions { position:static!important;display:grid;grid-template-columns:1fr;gap:8px; }
+ .admin-screen .actions button { width:100%;min-height:48px; }
+ .deck-controls { flex:0 0 auto;padding:7px 2px max(7px,env(safe-area-inset-bottom)); }
+ .deck-controls button { width:42px;height:42px; }
 }
+@media(max-width:390px) { header{padding-left:9px;padding-right:9px}.brand{font-size:17px}.head-actions{gap:4px}.admin-nav button{padding:9px 11px} }
 </style>
 </head>
 <body>
@@ -161,8 +174,8 @@ body { overflow-x: hidden; }
   <button class="active" data-panel="overview" aria-current="page">Resumen</button>
   <button data-panel="promotion">Beneficio</button>
   <button data-panel="campaigns">Marketing</button>
-  <button data-panel="products">Productos</button>
   <button data-panel="orders">Pedidos <span id="newOrdersBadge" class="orders-badge" hidden>0</span></button>
+  <button data-panel="products">Productos</button>
  </nav>
  <div class="admin-deck" id="adminDeck">
   <section class="admin-screen" id="overview">
@@ -458,12 +471,14 @@ const {data:{session:s},error}=await supabase.auth.getSession();if(error)setMess
  const setActive=(id)=>{
    tabs.forEach(t=>{const on=t.dataset.panel===id;t.classList.toggle('active',on);t.setAttribute('aria-current',on?'page':'false');});
  };
- tabs.forEach(t=>t.addEventListener('click',()=>{
-   const panel=document.getElementById(t.dataset.panel);
-   panel?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'});
-   setActive(t.dataset.panel);
- }));
- let ticking=false;
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    const panel=document.getElementById(t.dataset.panel);
+    if(!panel)return;
+    const index=panels.indexOf(panel);
+    deck.scrollTo({left:index*deck.clientWidth,behavior:'smooth'});
+    setActive(t.dataset.panel);
+  }));
+  let ticking=false;
  deck.addEventListener('scroll',()=>{
    if(ticking)return;ticking=true;
    requestAnimationFrame(()=>{
