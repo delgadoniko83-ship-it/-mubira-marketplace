@@ -103,7 +103,21 @@ async function loadPublishedVisualTheme(){
     for(const [key,host] of Object.entries(imageTargets)){
       if(!host)continue;
       const item=settings.screens?.[key]||{};
-      if(item.image_path){
+      if(key==="inicio"){
+        // Ambiente y portada usan capas DOM distintas: nunca comparten el mismo fondo.
+        let environment=host.querySelector(":scope > .hero-environment");
+        if(!environment){environment=document.createElement("div");environment.className="hero-environment";environment.setAttribute("aria-hidden","true");host.prepend(environment);}
+        if(item.image_path){
+          const url=db.storage.from("mubira-products").getPublicUrl(item.image_path).data.publicUrl;
+          const opacity=Math.max(0,Math.min(0.7,Number(item.overlay||0)/100));
+          environment.style.backgroundImage="linear-gradient(rgba(22,16,30,"+opacity+"),rgba(22,16,30,"+opacity+")),url("+JSON.stringify(url)+")";
+          environment.style.backgroundSize="cover";environment.style.backgroundPosition=item.position||"center";
+          host.classList.add("mubira-theme-photo");
+        }else{
+          environment.style.removeProperty("background-image");environment.style.removeProperty("background-size");environment.style.removeProperty("background-position");
+          host.classList.remove("mubira-theme-photo");
+        }
+      }else if(item.image_path){
         const url=db.storage.from("mubira-products").getPublicUrl(item.image_path).data.publicUrl;
         const opacity=Math.max(0,Math.min(0.7,Number(item.overlay||0)/100));
         host.style.backgroundImage="linear-gradient(rgba(22,16,30,"+opacity+"),rgba(22,16,30,"+opacity+")),url("+JSON.stringify(url)+")";
