@@ -846,3 +846,7 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
 .studio-art.mubira-theme-photo>.studio-arch,
 .studio-art.mubira-theme-photo>.studio-object,
 .studio-art.mubira-theme-photo>span{display:none!important}
+/* La capa decorativa del hero tapaba la foto aplicada desde el estudio visual. */
+.hero-visual.mubira-theme-photo:before{display:none!important}
+.hero-visual.mubira-theme-photo{background-repeat:no-repeat!important;background-size:cover!important;background-position:center!important}
+.spaces-page.mubira-theme-photo,.collection.mubira-theme-photo,.studio-art.mubira-theme-photo{background-repeat:no-repeat!important;background-size:cover!important;background-position:center!important}
