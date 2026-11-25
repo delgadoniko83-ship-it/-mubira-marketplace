@@ -13,7 +13,7 @@ function fill(row){
  for(const k of ["primary","secondary","background","surface","text"])$("theme"+k[0].toUpperCase()+k.slice(1)).value=g[k]||baseSettings().global[k];
  $("themeButtonStyle").value=g.buttonStyle||"gradient";$("themeFont").value=g.font||"Manrope";
  $("themeActiveState").textContent=row.is_active?"AMBIENTE APLICADO EN LA TIENDA":(row.theme_key==="mubira-base"?"MUBIRA ORIGINAL":"BORRADOR GUARDADO");
- $("themeActivate").disabled=!!row.is_active;$("themeDelete").disabled=row.theme_key==="mubira-base"||row.is_active;
+ $("themeActivate").disabled=!!row.is_active;$("themeDelete").disabled=row.theme_key==="mubira-base";
  $("themeSave").disabled=row.theme_key==="mubira-base";
  if(row.theme_key==="mubira-base")msg("MUBIRA Original es la copia de seguridad: puedes aplicarla, pero no editarla ni eliminarla.");
  const key=$("themeScreen").value,p=s.screens?.[key]||{};
@@ -31,7 +31,7 @@ function renderLibrary(){
   const actions=document.createElement("div");actions.className="theme-library-actions";
   const edit=document.createElement("button");edit.type="button";edit.className="secondary";edit.textContent="Abrir / editar";edit.addEventListener("click",()=>{ $("themeSelect").value=t.id;fill(t);msg("Ambiente seleccionado: "+t.name);});
   const apply=document.createElement("button");apply.type="button";apply.className="primary";apply.textContent=t.is_active?"Ya aplicado":"Aplicar en tienda";apply.disabled=!!t.is_active;apply.addEventListener("click",()=>activateTheme(t));
-  const del=document.createElement("button");del.type="button";del.className="secondary";del.textContent="Eliminar";del.disabled=t.theme_key==="mubira-base"||t.is_active;del.addEventListener("click",()=>deleteTheme(t));
+  const del=document.createElement("button");del.type="button";del.className="secondary";del.textContent=t.is_active?"Restaurar Original y eliminar":"Eliminar";del.disabled=t.theme_key==="mubira-base";del.addEventListener("click",()=>deleteTheme(t));
   actions.append(edit,apply,del);card.append(title,state,actions);host.append(card);
  });
 }
@@ -111,20 +111,34 @@ async function activateTheme(t){
  finally{button.disabled=!!current?.is_active}
 }
 async function deleteTheme(t){
- if(!t||t.theme_key==="mubira-base"||t.is_active){msg("No se puede eliminar el Original ni el ambiente aplicado.");return}
- if(!confirm("¿Eliminar definitivamente «"+t.name+"»? Esta acción no se puede deshacer."))return;
- const button=$("themeDelete");button.disabled=true;msg("Eliminando «"+t.name+"»...");
+ if(!t||t.theme_key==="mubira-base"){msg("MUBIRA Original está protegido y no se puede eliminar.");return}
+ const original=themes.find(x=>x.theme_key==="mubira-base");
+ if(!original){msg("No aparece MUBIRA Original. Por seguridad no se puede eliminar ningún ambiente.");return}
+ const active=!!t.is_active;
+ const promptText=active
+  ?"«"+t.name+"» está aplicado en la tienda. Para eliminarlo primero se restaurará MUBIRA Original y después se borrará este ambiente y sus imágenes. ¿Continuar?"
+  :"¿Eliminar definitivamente «"+t.name+"» y sus imágenes? Esta acción no se puede deshacer.";
+ if(!confirm(promptText))return;
+ const button=$("themeDelete");button.disabled=true;msg(active?"Restaurando MUBIRA Original antes de eliminar...":"Eliminando «"+t.name+"»...");
  try{
+  if(active){
+   const {error:applyError}=await db.rpc("apply_site_theme",{p_theme_id:original.id});
+   if(applyError)throw applyError;
+   await loadThemes();
+   t=themes.find(x=>x.id===t.id);
+   if(!t)throw new Error("El ambiente ya no aparece en la biblioteca. Actualiza para verificar.");
+  }
   const {data:paths,error}=await db.rpc("delete_site_theme",{p_theme_id:t.id});
   if(error)throw error;
+  let storageWarning="";
   if(Array.isArray(paths)&&paths.length){
    const {error:storageError}=await db.storage.from("mubira-products").remove(paths);
-   if(storageError)msg("El ambiente se eliminó, pero algunas imágenes quedaron pendientes: "+storageError.message);
+   if(storageError)storageWarning=" El registro se eliminó, pero no se pudieron borrar todas las imágenes: "+storageError.message;
   }
   if(current?.id===t.id)current=null;
-  await loadThemes();msg("«"+t.name+"» fue eliminado correctamente de la biblioteca.");
+  await loadThemes();msg("«"+t.name+"» fue eliminado de la biblioteca."+storageWarning);
  }catch(e){msg("No se pudo eliminar «"+t.name+"»: "+(e.message||"Error desconocido"))}
- finally{button.disabled=!!current?.is_active}
+ finally{button.disabled=current?.theme_key==="mubira-base"}
 }
 $("themeActivate").addEventListener("click",()=>activateTheme(current));
 $("themeDelete").addEventListener("click",()=>current&&deleteTheme(current));
