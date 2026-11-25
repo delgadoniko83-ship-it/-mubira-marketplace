@@ -367,8 +367,12 @@ setInterval(()=>{if(session?.user&&!$("adminApp").classList.contains("hidden"))l
 
 async function loadProducts(){
  const box=$("productList");box.innerHTML='<p class="sub">Cargando catálogo...</p>';
- const {data,error}=await supabase.from("products").select("id,name,slug,short_description,price,cost_price,status,is_featured,stock_quantity,category_id,description,categories(name),product_media(id,media_type,storage_path,is_primary,sort_order)").order("created_at",{ascending:false});
+ const {data,error}=await supabase.from("products").select("id,name,slug,short_description,price,status,is_featured,stock_quantity,category_id,description,categories(name),product_media(id,media_type,storage_path,is_primary,sort_order)").order("created_at",{ascending:false});
  if(error){box.textContent="No se pudo cargar el catálogo: "+error.message;return;}
+ const {data:costRows,error:costError}=await supabase.from("product_costs").select("product_id,cost_price");
+ if(costError){box.textContent="No se pudieron consultar los costos privados: "+costError.message;return;}
+ const costMap=new Map((costRows||[]).map(row=>[row.product_id,row.cost_price]));
+ (data||[]).forEach(product=>product.cost_price=costMap.has(product.id)?costMap.get(product.id):null);
  if(!data?.length){box.innerHTML='<p class="sub">Aún no hay productos propios. Crea el primero en este formulario.</p>';return;}
  box.innerHTML=data.map(p=>'<article class="campaign"><strong>'+escapeHtml(p.name)+'</strong><small>'+moneyCOP(p.price)+' · '+(p.status==="published"?"PUBLICADO":"BORRADOR")+' · '+(p.stock_quantity||0)+' unidades</small><p>'+escapeHtml(p.short_description||"Sin descripción")+'</p><button class="secondary" type="button" data-edit-product="'+p.id+'">Editar</button></article>').join("");
  box.querySelectorAll("[data-edit-product]").forEach(button=>button.addEventListener("click",()=>{const p=data.find(item=>item.id===button.dataset.editProduct);if(!p)return;$("productId").value=p.id;$("productName").value=p.name||"";$("productCategory").value=p.category_id||"";$("productPrice").value=p.price??"";$("productCost").value=p.cost_price??"";$("productShort").value=p.short_description||"";$("productDescription").value=p.description||"";$("productStock").value=p.stock_quantity||0;$("productFeatured").checked=!!p.is_featured;$("productPublish").checked=p.status==="published";$("productFormTitle").textContent="Editar producto";setMessage("productMessage","Editando "+p.name+". Selecciona nuevos archivos solo si deseas reemplazarlos.");$("productName").focus();}));
@@ -455,11 +459,13 @@ $("saveProduct").addEventListener("click",async()=>{
   if(!categoryId)throw new Error("Selecciona una categoría de la lista antes de guardar.");
   const id=$("productId").value;
   const rawCost=$("productCost").value.trim();const costPrice=rawCost===""?null:Math.max(0,Number(rawCost));if(costPrice!==null&&(!Number.isFinite(costPrice)||costPrice>price))throw new Error("El costo debe ser válido y no puede superar el precio de venta.");
-   const payload={name,slug:slugify(name),category_id:categoryId,price,cost_price:costPrice,currency_code:"COP",short_description:$("productShort").value.trim()||null,description:$("productDescription").value.trim()||null,stock_quantity:Math.max(0,Math.floor(Number($("productStock").value)||0)),is_featured:$("productFeatured").checked,status:$("productPublish").checked?"published":"draft",published_at:$("productPublish").checked?new Date().toISOString():null,updated_at:new Date().toISOString()};
+   const payload={name,slug:slugify(name),category_id:categoryId,price,currency_code:"COP",short_description:$("productShort").value.trim()||null,description:$("productDescription").value.trim()||null,stock_quantity:Math.max(0,Math.floor(Number($("productStock").value)||0)),is_featured:$("productFeatured").checked,status:$("productPublish").checked?"published":"draft",published_at:$("productPublish").checked?new Date().toISOString():null,updated_at:new Date().toISOString()};
   let productId=id;
   if(id){const {error}=await supabase.from("products").update(payload).eq("id",id);if(error)throw error;}
   else{const {data,error}=await supabase.from("products").insert(payload).select("id").single();if(error)throw error;productId=data.id;}
-  setMessage("productMessage","Ficha guardada. Preparando archivos...");
+  if(costPrice===null){const {error:costDeleteError}=await supabase.from("product_costs").delete().eq("product_id",productId);if(costDeleteError)throw costDeleteError;}
+   else{const {error:costSaveError}=await supabase.from("product_costs").upsert({product_id:productId,cost_price:costPrice,updated_by:session.user.id,updated_at:new Date().toISOString()},{onConflict:"product_id"});if(costSaveError)throw costSaveError;}
+   setMessage("productMessage","Ficha guardada. Preparando archivos...");
   const compress=$("compressMedia").checked;
   const photo=await prepareMediaFile($("productPhoto").files[0],"image",compress);
   const video=await prepareMediaFile($("productVideo").files[0],"video",compress);
