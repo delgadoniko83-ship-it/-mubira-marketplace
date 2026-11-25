@@ -33,7 +33,7 @@ $("sectionImage").addEventListener("change",()=>{
  if(file){if(file.size>35*1024*1024){$("sectionImage").value="";msg("La imagen supera 35 MB.");box.hidden=true;return;}const img=document.createElement("img");img.src=URL.createObjectURL(file);img.alt="Vista previa";box.append(img);}
 });
 $("saveSectionContent").addEventListener("click",async()=>{
- if(!session?.user){msg("Inicia sesión como propietario para guardar.");return;}
+ if(!session?.user){msg("Inicia sesión con una cuenta autorizada para guardar.");return;}
  const key=$("sectionKey").value,existing=rows.find(r=>r.section_key===key);
  const button=$("saveSectionContent");button.disabled=true;msg("Guardando cambios...");
  let nextPath=currentImage,uploadedPath=null;
