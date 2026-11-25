@@ -98,14 +98,15 @@ async function activateTheme(t){
  if(!t?.id)return;
  const name=t.name;
  if(!confirm("Vas a aplicar «"+name+"» en la tienda pública para todos los clientes. ¿Continuar?"))return;
- msg("Aplicando ambiente en la tienda...");
+ const button=$("themeActivate");
+ button.disabled=true;msg("Aplicando ambiente de forma segura...");
  try{
-  const {error:off}=await db.from("site_themes").update({is_active:false}).eq("is_active",true);if(off)throw off;
-  const {data:{user}}=await db.auth.getUser();
-  const {error:on}=await db.from("site_themes").update({is_active:true,updated_by:user?.id||null}).eq("id",t.id);if(on)throw on;
+  const {error}=await db.rpc("apply_site_theme",{p_theme_id:t.id});
+  if(error)throw error;
   await loadThemes();const applied=themes.find(x=>x.id===t.id);if(applied){$("themeSelect").value=applied.id;fill(applied)}
   msg("«"+name+"» quedó aplicado. La tienda pública lo carga automáticamente.");
- }catch(e){msg("No se pudo aplicar: "+e.message)}
+ }catch(e){msg("No se pudo aplicar: "+(e.message||"Error desconocido"));await loadThemes()}
+ finally{button.disabled=!!current?.is_active}
 }
 async function deleteTheme(t){
  if(!t||t.theme_key==="mubira-base"||t.is_active){msg("Primero aplica otro ambiente. MUBIRA Original está protegido.");return}
