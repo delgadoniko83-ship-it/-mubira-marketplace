@@ -14,6 +14,8 @@ function fill(row){
  $("themeButtonStyle").value=g.buttonStyle||"gradient";$("themeFont").value=g.font||"Manrope";
  $("themeActiveState").textContent=row.is_active?"AMBIENTE APLICADO EN LA TIENDA":(row.theme_key==="mubira-base"?"MUBIRA ORIGINAL":"BORRADOR GUARDADO");
  $("themeActivate").disabled=!!row.is_active;$("themeDelete").disabled=row.theme_key==="mubira-base"||row.is_active;
+ $("themeSave").disabled=row.theme_key==="mubira-base";
+ if(row.theme_key==="mubira-base")msg("MUBIRA Original es la copia de seguridad: puedes aplicarla, pero no editarla ni eliminarla.");
  const key=$("themeScreen").value,p=s.screens?.[key]||{};
  $("themeScreenOverlay").value=p.overlay??"25";$("themeScreenPosition").value=p.position||"center";
  const url=publicImage(p.image_path);
