@@ -11,11 +11,11 @@ function readCoverControls(){return {x:Number($("coverX").value),y:Number($("cov
 function writeCoverControls(s){$("coverX").value=s.x;$("coverY").value=s.y;$("coverSize").value=s.size;$("coverAngle").value=s.angle;$("coverShape").value=s.shape;$("coverFit").value=s.fit;}
 function applyCoverStyle(img,s){
  img.style.position="absolute";img.style.display="block";img.style.visibility="visible";img.style.opacity="1";
- img.style.inset="0";img.style.left="auto";img.style.top="0";img.style.right="0";img.style.bottom="0";
- img.style.width="58%";img.style.height="100%";img.style.maxWidth="none";img.style.maxHeight="none";
- img.style.transform="rotate("+Number(s.angle)+"deg) scale("+Math.max(.7,Math.min(1.35,.7+Number(s.size)/100))+")";img.style.transformOrigin="center";
+ img.style.inset="auto";img.style.left=Number(s.x)+"%";img.style.top=Number(s.y)+"%";img.style.right="auto";img.style.bottom="auto";
+ img.style.width=Math.max(18,Math.min(90,Number(s.size)))+"%";img.style.height="auto";img.style.maxWidth="none";img.style.maxHeight="none";
+ img.style.transform="translate(-50%,-50%) rotate("+Number(s.angle)+"deg)";img.style.transformOrigin="center";
  img.style.borderRadius=s.shape==="circle"?"50%":s.shape==="rounded"?"12px":"0";
- img.style.objectFit=s.fit==="contain"?"contain":"cover";img.style.objectPosition=Number(s.x)+"% "+Number(s.y)+"%";
+ img.style.objectFit=s.fit==="contain"?"contain":"cover";img.style.objectPosition="center";img.style.touchAction="none";img.style.cursor="grab";
 }
 function refreshCoverPreview(){
  const img=$("coverPreviewImage"),empty=$("coverPreviewEmpty"),path=img.dataset.path||"";
@@ -53,6 +53,22 @@ async function loadRows(){
 }
 $("sectionKey").addEventListener("change",()=>fill($("sectionKey").value));
 ["coverX","coverY","coverSize","coverAngle","coverShape","coverFit"].forEach(id=>$(id).addEventListener("input",refreshCoverPreview));
+const coverStage=$("coverPreviewStage"),coverDragImage=$("coverPreviewImage");
+let coverDragging=false;
+coverDragImage.addEventListener("pointerdown",event=>{
+ if(coverDragImage.hidden||!coverDragImage.src)return;
+ coverDragging=true;coverDragImage.setPointerCapture(event.pointerId);coverDragImage.style.cursor="grabbing";event.preventDefault();
+});
+coverDragImage.addEventListener("pointermove",event=>{
+ if(!coverDragging)return;
+ const rect=coverStage.getBoundingClientRect();
+ const x=Math.max(0,Math.min(100,((event.clientX-rect.left)/rect.width)*100));
+ const y=Math.max(0,Math.min(100,((event.clientY-rect.top)/rect.height)*100));
+ $("coverX").value=Math.round(x);$("coverY").value=Math.round(y);refreshCoverPreview();
+});
+const stopCoverDrag=()=>{coverDragging=false;coverDragImage.style.cursor="grab";};
+coverDragImage.addEventListener("pointerup",stopCoverDrag);
+coverDragImage.addEventListener("pointercancel",stopCoverDrag);
 $("coverReset").addEventListener("click",()=>{writeCoverControls(defaultCover);refreshCoverPreview();});
 $("sectionImage").addEventListener("change",()=>{
  const file=$("sectionImage").files?.[0];if(!file)return;
