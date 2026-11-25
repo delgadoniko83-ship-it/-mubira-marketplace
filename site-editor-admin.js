@@ -46,15 +46,20 @@ $("saveSectionContent").addEventListener("click",async()=>{
    if(up.error)throw up.error;uploadedPath=up.data.path;nextPath=uploadedPath;
   } else if($("removeSectionImage").checked) nextPath=null;
   const payload={section_key:key,nav_label:$("sectionNavLabel").value.trim()||labels[key],eyebrow:$("sectionEyebrow").value.trim(),title:$("sectionTitle").value.trim(),description:$("sectionDescription").value.trim(),button_text:$("sectionButtonText").value.trim(),image_path:nextPath,updated_at:new Date().toISOString(),updated_by:session.user.id};
-  const saved=await db.from("site_sections").upsert(payload,{onConflict:"section_key"});
+  const saved=await db.from("site_sections").upsert(payload,{onConflict:"section_key"}).select("*").single();
   if(saved.error)throw saved.error;
-  if(existing?.image_path && existing.image_path!==nextPath) await db.storage.from("mubira-products").remove([existing.image_path]);
-  currentImage=nextPath;rows=rows.filter(r=>r.section_key!==key);rows.push(payload);
+  if(saved.data.section_key!==key||saved.data.image_path!==nextPath)throw new Error("La base de datos no confirmó todos los cambios de la portada.");
+  let storageNote="";
+  if(existing?.image_path&&existing.image_path!==nextPath){
+   const removed=await db.storage.from("mubira-products").remove([existing.image_path]);
+   if(removed.error)storageNote=" La portada sí se actualizó, pero no se pudo retirar la imagen anterior: "+removed.error.message;
+  }
+  currentImage=nextPath;rows=rows.filter(r=>r.section_key!==key);rows.push(saved.data);
   preview(currentImage);$("sectionImage").value="";$("removeSectionImage").checked=false;
-  msg("¡Sección actualizada! Abre o actualiza la tienda para ver los cambios.");
+  msg("Portada guardada y verificada en Supabase."+storageNote+" Actualiza la tienda para ver el resultado.");
  }catch(error){
-  if(uploadedPath) await db.storage.from("mubira-products").remove([uploadedPath]);
-  msg("No se pudo guardar: "+error.message);
+  if(uploadedPath){const cleanup=await db.storage.from("mubira-products").remove([uploadedPath]);if(cleanup.error)console.warn("No se pudo limpiar la imagen temporal:",cleanup.error);}
+  msg("No se pudo guardar o verificar la portada: "+error.message);
  }finally{button.disabled=false;}
 });
 async function init(){
