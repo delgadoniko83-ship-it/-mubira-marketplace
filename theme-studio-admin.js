@@ -112,32 +112,27 @@ async function activateTheme(t){
 }
 async function deleteTheme(t){
  if(!t||t.theme_key==="mubira-base"){msg("MUBIRA Original está protegido y no se puede eliminar.");return}
- const original=themes.find(x=>x.theme_key==="mubira-base");
- if(!original){msg("No aparece MUBIRA Original. Por seguridad no se puede eliminar ningún ambiente.");return}
- const active=!!t.is_active;
- const promptText=active
-  ?"«"+t.name+"» está aplicado en la tienda. Para eliminarlo primero se restaurará MUBIRA Original y después se borrará este ambiente y sus imágenes. ¿Continuar?"
-  :"¿Eliminar definitivamente «"+t.name+"» y sus imágenes? Esta acción no se puede deshacer.";
- if(!confirm(promptText))return;
- const button=$("themeDelete");button.disabled=true;msg(active?"Restaurando MUBIRA Original antes de eliminar...":"Eliminando «"+t.name+"»...");
+ const name=t.name;
+ if(!confirm("¿Eliminar definitivamente «"+name+"» de la biblioteca? Si está aplicado, primero se restaurará MUBIRA Original. También se intentará borrar sus imágenes. Esta acción no se puede deshacer."))return;
+ const button=$("themeDelete");button.disabled=true;msg("Retirando «"+name+"» de la biblioteca y restaurando MUBIRA Original si hace falta...");
  try{
-  if(active){
-   const {error:applyError}=await db.rpc("apply_site_theme",{p_theme_id:original.id});
-   if(applyError)throw applyError;
-   await loadThemes();
-   t=themes.find(x=>x.id===t.id);
-   if(!t)throw new Error("El ambiente ya no aparece en la biblioteca. Actualiza para verificar.");
-  }
+  // One atomic server operation restores Original and deletes the chosen environment.
   const {data:paths,error}=await db.rpc("delete_site_theme",{p_theme_id:t.id});
   if(error)throw error;
+  const {data:remaining,error:checkError}=await db.from("site_themes").select("id,name,theme_key,is_active").eq("id",t.id).maybeSingle();
+  if(checkError)throw checkError;
+  if(remaining)throw new Error("La base de datos todavía devuelve este ambiente. No se marcó como eliminado.");
   let storageWarning="";
   if(Array.isArray(paths)&&paths.length){
    const {error:storageError}=await db.storage.from("mubira-products").remove(paths);
-   if(storageError)storageWarning=" El registro se eliminó, pero no se pudieron borrar todas las imágenes: "+storageError.message;
+   if(storageError)storageWarning=" La tarjeta se eliminó, pero quedaron imágenes almacenadas: "+storageError.message;
   }
   if(current?.id===t.id)current=null;
-  await loadThemes();msg("«"+t.name+"» fue eliminado de la biblioteca."+storageWarning);
- }catch(e){msg("No se pudo eliminar «"+t.name+"»: "+(e.message||"Error desconocido"))}
+  await loadThemes();
+  const stillListed=themes.some(x=>x.id===t.id);
+  if(stillListed)throw new Error("El registro ya no está en la base de datos, pero la lista no se actualizó. Pulsa Actualizar biblioteca.");
+  msg("«"+name+"» desapareció de la biblioteca."+storageWarning);
+ }catch(e){msg("No se pudo eliminar «"+name+"»: "+(e.message||"Error desconocido"));await loadThemes()}
  finally{button.disabled=current?.theme_key==="mubira-base"}
 }
 $("themeActivate").addEventListener("click",()=>activateTheme(current));
