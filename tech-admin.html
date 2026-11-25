@@ -152,14 +152,14 @@
 <div id="technicalAuditList" class="sub">Cargando historial...</div>
 </section>
 <section class="panel section-editor-panel tech-screen" data-tech-screen="covers">
-<h2>Portadas de las pantallas</h2><p class="sub">Selecciona Inicio, Espacios, Colección o Nuestro mundo. Cambia su portada, títulos, textos y etiqueta del botón.</p>
+<h2>Portada · Imagen que va delante</h2><p class="sub">La portada es la imagen principal que se monta ENCIMA del ambiente. En Inicio aparece como una capa independiente dentro del espacio visual; no reemplaza el fondo. Aquí también puedes cambiar títulos y textos.</p>
 <label for="sectionKey">Pantalla que quieres editar</label><select id="sectionKey"><option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option></select>
 <label for="sectionNavLabel">Nombre en el menú</label><input id="sectionNavLabel" maxlength="60" placeholder="Nombre de la pantalla">
 <label for="sectionEyebrow">Texto pequeño superior</label><input id="sectionEyebrow" maxlength="120" placeholder="Frase corta">
 <label for="sectionTitle">Título principal</label><textarea id="sectionTitle" rows="3" maxlength="240" placeholder="Puedes escribir saltos de línea"></textarea>
 <label for="sectionDescription">Descripción</label><textarea id="sectionDescription" rows="4" maxlength="1200" placeholder="Texto que verá el cliente"></textarea>
 <label for="sectionButtonText">Texto del botón o etiqueta</label><input id="sectionButtonText" maxlength="80" placeholder="Ej. Explorar">
-<label for="sectionImage">Subir imagen de portada desde tu galería</label><input id="sectionImage" type="file" accept="image/jpeg,image/png,image/webp"><small class="sub">Selecciona un archivo JPG, PNG o WEBP que ya esté guardado en tu celular. Esta portada se guarda por separado y no modifica el ambiente.</small>
+<label for="sectionImage">PORTADA · Subir imagen frontal desde galería</label><input id="sectionImage" type="file" accept="image/jpeg,image/png,image/webp"><small class="sub">Esta es la imagen que se monta delante del ambiente. Elige un archivo guardado en tu celular. No cambia el fondo ni la fotografía del ambiente.</small>
 <div class="file-preview" id="sectionImagePreview" hidden></div>
 <div class="check"><input type="checkbox" id="removeSectionImage"><label for="removeSectionImage">Quitar fotografía y restaurar el diseño original</label></div>
 <div class="actions"><button class="primary" id="saveSectionContent">Guardar portada y contenido</button></div><p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
@@ -176,8 +176,8 @@
 <div class="actions"><button class="primary" id="saveSpaceItem">Guardar tarjeta</button></div><p class="message" id="spaceItemMessage" aria-live="polite">Cargando tarjetas...</p>
 </section>
 <section class="panel tech-screen" data-tech-screen="themes">
-<h2>Estudio visual · Ambientes MUBIRA</h2>
-<p class="sub">Crea temporadas y salas visuales completas. Cada ambiente guarda sus propios colores y portadas por pantalla. Guarda como borrador y publícalo cuando esté listo.</p>
+<h2>Ambiente · Fotografía de fondo</h2>
+<p class="sub">El ambiente es la fotografía grande que ocupa el FONDO de la pantalla, detrás de la portada y del contenido. Aquí eliges y subes una imagen de ambiente distinta. No sustituye ni modifica la portada frontal.</p>
 <div class="pill" id="themeActiveState">CARGANDO AMBIENTES</div>
 <label for="themeSelect">Ambiente guardado</label><select id="themeSelect"></select>
 <div class="actions"><button class="secondary" type="button" id="themeNew">＋ Crear nuevo ambiente</button></div>
@@ -196,9 +196,9 @@
 <label for="themeFont">Tipografía</label><select id="themeFont"><option value="Manrope">Manrope moderna</option><option value="DM Sans">DM Sans limpia</option><option value="serif">Serif editorial</option></select>
 <h3>Diseñar cada pantalla</h3>
 <label for="themeScreen">Pantalla que vas a transformar</label><select id="themeScreen"><option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option></select>
-<label for="themeScreenImage">Imagen de portada para esta pantalla</label>
+<label for="themeScreenImage">AMBIENTE · Subir fotografía de fondo desde galería</label>
 <input id="themeScreenImage" type="file" accept="image/*">
-<div class="actions"><button class="secondary" type="button" id="themePickImage">Elegir imagen desde galería / Archivos</button></div>
+<small class="sub">Esta imagen queda detrás de la portada. Selecciona una foto de sala, comedor o espacio completo; no subas aquí el recorte del mueble o gráfico de portada.</small><div class="actions"><button class="secondary" type="button" id="themePickImage">Elegir foto de ambiente desde galería / Archivos</button></div>
 <div class="file-preview" id="themeScreenImagePreview"><small>Selecciona una imagen para ver la vista previa.</small></div>
 <label for="themeScreenOverlay">Oscurecer imagen para facilitar la lectura</label><select id="themeScreenOverlay"><option value="0">Sin oscurecer</option><option value="15">Suave</option><option value="25" selected>Medio</option><option value="40">Fuerte</option><option value="55">Muy fuerte</option></select>
 <label for="themeScreenPosition">Encuadre de la imagen</label><select id="themeScreenPosition"><option value="center">Centro</option><option value="top">Arriba</option><option value="bottom">Abajo</option><option value="left">Izquierda</option><option value="right">Derecha</option></select>
