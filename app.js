@@ -24,7 +24,7 @@ const visualBuilderOriginalDots=new Map(["inicio","espacios","coleccion","estudi
 const visualBuilderDynamicIds=new Set();
 function visualBuilderPublicUrl(path){return path?catalogClient.storage.from("mubira-products").getPublicUrl(path).data.publicUrl:"";}
 function visualBuilderPublicText(value){return String(value??"");}
-function visualBuilderValidPageId(id){return typeof id==="string"&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)&&!visualBuilderPublicPages.includes(id)&&id.length<=48;}
+function visualBuilderValidPageId(id){return typeof id==="string"&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)&&!visualBuilderPublicPages.includes(id)&&id.length<=48&&(!document.getElementById(id)||document.getElementById(id).classList.contains("page-panel"));}
 function createVisualBuilderPublicPage(page){
  const section=document.createElement("section");
  section.id=page.id;section.className="page-panel mubira-dynamic-page";section.dataset.page=String(pages.length);
