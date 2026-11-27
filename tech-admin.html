@@ -159,7 +159,42 @@
 <section id="denied" class="panel hidden"><p class="eyebrow">ACCESO RESTRINGIDO</p><h1>Cuenta sin permisos técnicos</h1><p class="sub">La sesión de Google está activa, pero esta cuenta no tiene autorización para cambiar la apariencia de MUBIRA.</p><p id="signedEmail"></p><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
 <div id="techApp" class="hidden">
 <div class="intro"><p class="eyebrow">CENTRO DE DISEÑO · MUBIRA</p><h1>La imagen de tu tienda, bajo control.</h1><p>Modifica una portada o tarjeta, guarda y abre la tienda para revisar el resultado. Las páginas abiertas se sincronizan automáticamente.</p><span class="pill">ADMINISTRACIÓN TÉCNICA</span></div>
-<nav class="tech-nav" aria-label="Secciones del administrador técnico"><button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Accesos</button><button type="button" class="tech-tab" data-tech-target="audit"><span>02</span> Historial</button><button type="button" class="tech-tab" data-tech-target="covers"><span>03</span> Portadas</button><button type="button" class="tech-tab" data-tech-target="cards"><span>04</span> Tarjetas</button><button type="button" class="tech-tab" data-tech-target="themes"><span>05</span> Ambientes</button></nav><div class="tech-workspace"><section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
+<nav class="tech-nav" aria-label="Secciones del administrador técnico"><button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Accesos</button><button type="button" class="tech-tab" data-tech-target="audit"><span>02</span> Historial</button><button type="button" class="tech-tab" data-tech-target="covers"><span>03</span> Portadas</button><button type="button" class="tech-tab" data-tech-target="cards"><span>04</span> Tarjetas</button><button type="button" class="tech-tab" data-tech-target="themes"><span>05</span> Ambientes</button><button type="button" class="tech-tab" data-tech-target="builder"><span>06</span> Constructor visual</button></nav><div class="tech-workspace"><section class="panel tech-screen" data-tech-screen="builder" id="visualBuilderPanel">
+<style>
+#visualBuilderPanel .vb-pages{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 14px;scrollbar-width:thin}
+#visualBuilderPanel .vb-pages button{flex:0 0 auto;border:1px solid #e8ddec;background:#fff;color:#594865;border-radius:13px;padding:11px 16px;font-size:12px}
+#visualBuilderPanel .vb-pages button.active{background:linear-gradient(110deg,#c934a6,#8e78d7);color:#fff;border-color:transparent}
+#visualBuilderPanel .vb-shell{display:grid;grid-template-columns:minmax(210px,260px) minmax(0,1fr);gap:16px}
+#visualBuilderPanel .vb-tools,#visualBuilderPanel .vb-stage-wrap{background:#fff;border:1px solid #eadfed;border-radius:18px;padding:14px;min-width:0}
+#visualBuilderPanel .vb-tools button{width:100%;margin:5px 0;text-align:left;background:#faf6fc;border:1px solid #eee4f0;color:#4d3b57}
+#visualBuilderPanel .vb-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px}
+#visualBuilderPanel .vb-stage{position:relative;margin:auto;width:min(100%,680px);min-height:480px;aspect-ratio:9/16;max-height:760px;overflow:hidden;border:8px solid #28212f;border-radius:28px;background:linear-gradient(145deg,#f8f2fa,#eee7f4);box-shadow:0 14px 38px #28163220;touch-action:pan-y}
+#visualBuilderPanel .vb-stage.desktop{aspect-ratio:16/9;min-height:340px;max-height:520px;width:100%;border-radius:16px}
+#visualBuilderPanel .vb-element{position:absolute;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden;touch-action:none;cursor:grab;border:1px dashed transparent;user-select:none}
+#visualBuilderPanel .vb-element.selected{border:2px solid #c934a6}
+#visualBuilderPanel .vb-element img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+#visualBuilderPanel .vb-copy{white-space:pre-wrap;text-align:center;overflow-wrap:anywhere;font-weight:800}
+#visualBuilderPanel .vb-button{display:inline-block;padding:10px 18px;border-radius:999px;background:linear-gradient(110deg,#c934a6,#8e78d7);color:white;font-weight:800}
+#visualBuilderPanel .vb-empty{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:28px;color:#8b7b93;pointer-events:none}
+#visualBuilderPanel .vb-props{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#visualBuilderPanel .vb-props label{margin:6px 0;font-size:10px}
+#visualBuilderPanel .vb-props input{font-size:14px;padding:8px;min-height:38px}
+#visualBuilderPanel .vb-status{font-size:11px;color:#8d4388;min-height:20px;margin-top:10px}
+@media(max-width:760px){#visualBuilderPanel .vb-shell{grid-template-columns:1fr}#visualBuilderPanel .vb-tools{order:2}#visualBuilderPanel .vb-stage-wrap{order:1}#visualBuilderPanel .vb-stage{min-height:440px;width:min(100%,340px)}#visualBuilderPanel .vb-stage.desktop{width:100%;min-height:230px}}
+</style>
+<h2>Constructor visual · Todas tus pantallas</h2>
+<p class="sub">Elige una pantalla para diseñarla por separado. Cada una conserva su propio borrador. Cambiar de pantalla no borra el trabajo anterior.</p>
+<div class="vb-pages" id="vbPages" aria-label="Pantallas de la tienda">
+<button type="button" data-vb-page="inicio">01 · Inicio</button><button type="button" data-vb-page="espacios">02 · Espacios</button><button type="button" data-vb-page="coleccion">03 · Colección</button><button type="button" data-vb-page="estudio">04 · Nuestro mundo</button>
+</div>
+<div class="vb-toolbar"><strong id="vbCurrentPage">INICIO</strong><div><button class="secondary" id="vbPhone" type="button">Celular</button> <button class="secondary" id="vbDesktop" type="button">Computador</button></div></div>
+<div class="vb-shell"><aside class="vb-tools"><strong>＋ Agregar elementos</strong>
+<button type="button" id="vbAddImage">▧ Agregar fotografía</button><button type="button" id="vbAddText">T Agregar título o texto</button><button type="button" id="vbAddButton">▢ Agregar botón</button><button type="button" id="vbAddPanel">▤ Agregar bloque / sección</button>
+<input id="vbImageFile" type="file" accept="image/jpeg,image/png,image/webp" hidden><hr style="border:0;border-top:1px solid #eee4f0;margin:14px 0"><strong>Editar elemento seleccionado</strong>
+<div class="vb-props"><label>Ancho (%)<input id="vbWidth" type="number" min="8" max="100" value="80"></label><label>Alto (px)<input id="vbHeight" type="number" min="30" max="600" value="90"></label><label>Izquierda (%)<input id="vbLeft" type="number" min="0" max="100" value="10"></label><label>Arriba (%)<input id="vbTop" type="number" min="0" max="100" value="10"></label><label>Texto<input id="vbText" type="text" maxlength="180" placeholder="Tu mensaje"></label><label>Tamaño texto<input id="vbFont" type="number" min="10" max="64" value="24"></label><label>Color<input id="vbColor" type="color" value="#30263a"></label><label>Fondo<input id="vbBackground" type="color" value="#ffffff"></label></div>
+<button type="button" id="vbDuplicate">⧉ Duplicar seleccionado</button><button type="button" id="vbDelete">Eliminar seleccionado</button><button type="button" id="vbClear">Vaciar esta pantalla</button></aside>
+<div class="vb-stage-wrap"><div class="vb-stage" id="vbStage"><div class="vb-empty" id="vbEmpty">Esta pantalla está lista para diseñarse.</div></div><div class="actions"><button class="primary" type="button" id="vbSave">Guardar borrador de esta pantalla</button></div><p class="vb-status" id="vbStatus" aria-live="polite">Cargando...</p></div></div></section>
+<section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
 <h2>Personas autorizadas</h2><p class="sub">Agrega los correos de Google que pueden entrar al administrador técnico. La persona debe iniciar sesión con ese mismo correo. Puedes retirar el acceso cuando lo necesites.</p>
 <form id="technicalInviteForm">
 <label for="technicalInviteEmail">Correo de Google que vas a autorizar</label><input id="technicalInviteEmail" type="email" required maxlength="254" placeholder="persona@gmail.com" autocomplete="email">
@@ -286,5 +321,5 @@ document.querySelectorAll("[data-tech-target]").forEach(button=>{
  });
 });
 </script>
-<script type="module" src="technical-admin-control.js"></script><script type="module" src="site-editor-admin.js"></script><script type="module" src="site-items-editor-admin.js"></script><script type="module" src="theme-studio-admin.js"></script>
+<script type="module" src="technical-admin-control.js"></script><script type="module" src="site-editor-admin.js"></script><script type="module" src="site-items-editor-admin.js"></script><script type="module" src="theme-studio-admin.js"></script><script type="module" src="visual-builder-admin.js"></script>
 </body></html>
