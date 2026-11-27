@@ -319,7 +319,7 @@ supabase.auth.onAuthStateChange((_event,s)=>queueMicrotask(()=>checkAccess(s)));
  const names=buttons.map(b=>b.textContent.replace(/^\\s*\\d+\\s*/, "").trim());
  let activeIndex=Math.max(0,buttons.findIndex(b=>b.classList.contains("active")));
  function show(index){
-  activeIndex=(index+buttons.length)%buttons.length;
+  activeIndex=Math.max(0,Math.min(index,buttons.length-1));
   const selected=buttons[activeIndex],target=selected.dataset.techTarget;
   buttons.forEach((item,i)=>{const active=i===activeIndex;item.classList.toggle("active",active);item.setAttribute("aria-current",active?"page":"false");});
   screens.forEach(screen=>screen.classList.toggle("active",screen.dataset.techScreen===target));
