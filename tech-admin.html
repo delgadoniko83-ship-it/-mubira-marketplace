@@ -139,6 +139,14 @@
 .cover-control-grid input[type=range]{width:100%;accent-color:#c02c91}
 .cover-control-grid select{width:100%;min-width:0}
 @media(max-width:560px){.cover-control-grid{grid-template-columns:1fr}.cover-layout-controls{padding:12px}}
+
+.tech-nav-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px;color:#796982;font-size:11px;font-weight:800}
+.tech-nav-heading>div{display:flex;gap:7px;flex:0 0 auto}
+.tech-step{border:1px solid #e8ddec;background:#fff;color:#6d5278;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800}
+.tech-step:disabled{opacity:.35}
+.tech-nav{scroll-snap-type:x proximity;touch-action:pan-x;overscroll-behavior-x:contain}
+.tech-tab{scroll-snap-align:center}
+@media(max-width:560px){.tech-nav-heading{align-items:flex-start;flex-direction:column}.tech-nav-heading>div{width:100%}.tech-step{flex:1}.tech-nav{top:68px}}
 </style><style>
 #sectionImagePreview.cover-preview-mode{position:relative;height:300px;min-height:220px;overflow:hidden;background:linear-gradient(145deg,#eee8f3,#fff)}
 #sectionImagePreview.cover-preview-mode img{position:absolute;display:block;max-height:none;max-width:none;object-position:center}
@@ -158,8 +166,8 @@
 <section id="loginGate" class="panel"><p class="eyebrow">ACCESO TÉCNICO SEGURO</p><h1>Diseño y tecnología.</h1><p class="sub">Este espacio controla portadas, imágenes de botones y tarjetas, títulos y textos de las pantallas. No administra productos ni promociones.</p><button class="primary" id="loginButton">Continuar con Google</button><p class="message" id="loginMessage"></p></section>
 <section id="denied" class="panel hidden"><p class="eyebrow">ACCESO RESTRINGIDO</p><h1>Cuenta sin permisos técnicos</h1><p class="sub">La sesión de Google está activa, pero esta cuenta no tiene autorización para cambiar la apariencia de MUBIRA.</p><p id="signedEmail"></p><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
 <div id="techApp" class="hidden">
-<div class="intro"><p class="eyebrow">CENTRO DE DISEÑO · MUBIRA</p><h1>La imagen de tu tienda, bajo control.</h1><p>Modifica una portada o tarjeta, guarda y abre la tienda para revisar el resultado. Las páginas abiertas se sincronizan automáticamente.</p><span class="pill">ADMINISTRACIÓN TÉCNICA</span></div>
-<nav class="tech-nav" aria-label="Secciones del administrador técnico"><button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Accesos</button><button type="button" class="tech-tab" data-tech-target="audit"><span>02</span> Historial</button><button type="button" class="tech-tab" data-tech-target="covers"><span>03</span> Portadas</button><button type="button" class="tech-tab" data-tech-target="cards"><span>04</span> Tarjetas</button><button type="button" class="tech-tab" data-tech-target="themes"><span>05</span> Ambientes</button><button type="button" class="tech-tab" data-tech-target="builder"><span>06</span> Constructor visual</button></nav><div class="tech-workspace"><section class="panel tech-screen" data-tech-screen="builder" id="visualBuilderPanel">
+<div class="intro"><p class="eyebrow">CENTRO DE DISEÑO · MUBIRA</p><h1>La imagen de tu tienda, bajo control.</h1><p>Administra el diseño de cada pantalla desde su propio espacio. Portadas, tarjetas y ambientes tienen sus controles; el Constructor Visual conserva borradores independientes y no publica cambios en la tienda.</p><span class="pill">ADMINISTRACIÓN TÉCNICA</span></div>
+<div class="tech-nav-heading"><span id="techScreenStatus" aria-live="polite">Sección 1 de 6 · Accesos</span><div><button type="button" class="tech-step" id="techPrev" aria-label="Sección anterior">← Anterior</button><button type="button" class="tech-step" id="techNext" aria-label="Sección siguiente">Siguiente →</button></div></div><nav class="tech-nav" aria-label="Secciones del administrador técnico"><button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Accesos</button><button type="button" class="tech-tab" data-tech-target="audit"><span>02</span> Historial</button><button type="button" class="tech-tab" data-tech-target="covers"><span>03</span> Portadas</button><button type="button" class="tech-tab" data-tech-target="cards"><span>04</span> Tarjetas</button><button type="button" class="tech-tab" data-tech-target="themes"><span>05</span> Ambientes</button><button type="button" class="tech-tab" data-tech-target="builder"><span>06</span> Constructor visual</button></nav><div class="tech-workspace"><section class="panel tech-screen" data-tech-screen="builder" id="visualBuilderPanel">
 <style>
 #visualBuilderPanel .vb-pages{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 14px;scrollbar-width:thin}
 #visualBuilderPanel .vb-pages button{flex:0 0 auto;border:1px solid #e8ddec;background:#fff;color:#594865;border-radius:13px;padding:11px 16px;font-size:12px}
@@ -183,7 +191,7 @@
 @media(max-width:760px){#visualBuilderPanel .vb-shell{grid-template-columns:1fr}#visualBuilderPanel .vb-tools{order:2}#visualBuilderPanel .vb-stage-wrap{order:1}#visualBuilderPanel .vb-stage{min-height:440px;width:min(100%,340px)}#visualBuilderPanel .vb-stage.desktop{width:100%;min-height:230px}}
 </style>
 <h2>Constructor visual · Todas tus pantallas</h2>
-<p class="sub">Elige una pantalla para diseñarla por separado. Cada una conserva su propio borrador. Cambiar de pantalla no borra el trabajo anterior.</p>
+<p class="sub">Elige Inicio, Espacios, Colección o Nuestro mundo. Cada pantalla conserva su borrador por separado. Guardar aquí no modifica todavía la tienda pública.</p>
 <div class="vb-pages" id="vbPages" aria-label="Pantallas de la tienda">
 <button type="button" data-vb-page="inicio">01 · Inicio</button><button type="button" data-vb-page="espacios">02 · Espacios</button><button type="button" data-vb-page="coleccion">03 · Colección</button><button type="button" data-vb-page="estudio">04 · Nuestro mundo</button>
 </div>
@@ -193,7 +201,7 @@
 <input id="vbImageFile" type="file" accept="image/jpeg,image/png,image/webp" hidden><hr style="border:0;border-top:1px solid #eee4f0;margin:14px 0"><strong>Editar elemento seleccionado</strong>
 <div class="vb-props"><label>Ancho (%)<input id="vbWidth" type="number" min="8" max="100" value="80"></label><label>Alto (px)<input id="vbHeight" type="number" min="30" max="600" value="90"></label><label>Izquierda (%)<input id="vbLeft" type="number" min="0" max="100" value="10"></label><label>Arriba (%)<input id="vbTop" type="number" min="0" max="100" value="10"></label><label>Texto<input id="vbText" type="text" maxlength="180" placeholder="Tu mensaje"></label><label>Tamaño texto<input id="vbFont" type="number" min="10" max="64" value="24"></label><label>Color<input id="vbColor" type="color" value="#30263a"></label><label>Fondo<input id="vbBackground" type="color" value="#ffffff"></label></div>
 <button type="button" id="vbDuplicate">⧉ Duplicar seleccionado</button><button type="button" id="vbDelete">Eliminar seleccionado</button><button type="button" id="vbClear">Vaciar esta pantalla</button></aside>
-<div class="vb-stage-wrap"><div class="vb-stage" id="vbStage"><div class="vb-empty" id="vbEmpty">Esta pantalla está lista para diseñarse.</div></div><div class="actions"><button class="primary" type="button" id="vbSave">Guardar borrador de esta pantalla</button></div><p class="vb-status" id="vbStatus" aria-live="polite">Cargando...</p></div></div></section>
+<div class="vb-stage-wrap"><div class="vb-stage" id="vbStage"><div class="vb-empty" id="vbEmpty">Esta pantalla está lista para diseñarse.</div></div><div class="actions"><button class="primary" type="button" id="vbSave">Guardar borradores · No publicar</button></div><p class="vb-status" id="vbStatus" aria-live="polite">Cargando...</p></div></div></section>
 <section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
 <h2>Personas autorizadas</h2><p class="sub">Agrega los correos de Google que pueden entrar al administrador técnico. La persona debe iniciar sesión con ese mismo correo. Puedes retirar el acceso cuando lo necesites.</p>
 <form id="technicalInviteForm">
@@ -303,23 +311,36 @@ supabase.auth.onAuthStateChange((_event,s)=>queueMicrotask(()=>checkAccess(s)));
 </script>
 
 <script>
-document.querySelectorAll("[data-tech-target]").forEach(button=>{
- button.addEventListener("click",()=>{
-  const target=button.dataset.techTarget;
-  document.querySelectorAll("[data-tech-target]").forEach(item=>{
-   const active=item===button;
-   item.classList.toggle("active",active);
-   item.setAttribute("aria-current",active?"page":"false");
-  });
-  document.querySelectorAll("[data-tech-screen]").forEach(screen=>{
-   screen.classList.toggle("active",screen.dataset.techScreen===target);
-  });
-  const nav=button.closest(".tech-nav");
-  if(nav && window.matchMedia("(max-width:760px)").matches){
-   button.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
-  }
- });
-});
+(()=>{
+ const buttons=[...document.querySelectorAll("[data-tech-target]")];
+ const screens=[...document.querySelectorAll("[data-tech-screen]")];
+ const status=document.getElementById("techScreenStatus");
+ const prev=document.getElementById("techPrev"),next=document.getElementById("techNext");
+ const names=buttons.map(b=>b.textContent.replace(/^\\s*\\d+\\s*/, "").trim());
+ let activeIndex=Math.max(0,buttons.findIndex(b=>b.classList.contains("active")));
+ function show(index){
+  activeIndex=(index+buttons.length)%buttons.length;
+  const selected=buttons[activeIndex],target=selected.dataset.techTarget;
+  buttons.forEach((item,i)=>{const active=i===activeIndex;item.classList.toggle("active",active);item.setAttribute("aria-current",active?"page":"false");});
+  screens.forEach(screen=>screen.classList.toggle("active",screen.dataset.techScreen===target));
+  if(status)status.textContent="Sección "+(activeIndex+1)+" de "+buttons.length+" · "+names[activeIndex];
+  prev.disabled=activeIndex===0;next.disabled=activeIndex===buttons.length-1;
+  selected.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
+ }
+ buttons.forEach((button,index)=>button.addEventListener("click",()=>show(index)));
+ prev.addEventListener("click",()=>show(activeIndex-1));next.addEventListener("click",()=>show(activeIndex+1));
+ const workspace=document.querySelector(".tech-workspace");let start=null;
+ workspace?.addEventListener("touchstart",event=>{
+  if(event.touches.length!==1||event.target.closest("input,textarea,select,button,a,[contenteditable=true],.vb-stage,.cover-preview-stage")){start=null;return;}
+  const t=event.touches[0];start={x:t.clientX,y:t.clientY};
+ },{passive:true});
+ workspace?.addEventListener("touchend",event=>{
+  if(!start||!event.changedTouches.length)return;
+  const t=event.changedTouches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;start=null;
+  if(Math.abs(dx)>75&&Math.abs(dx)>Math.abs(dy)*1.35)show(activeIndex+(dx<0?1:-1));
+ },{passive:true});
+ show(activeIndex);
+})();
 </script>
 <script type="module" src="technical-admin-control.js"></script><script type="module" src="site-editor-admin.js"></script><script type="module" src="site-items-editor-admin.js"></script><script type="module" src="theme-studio-admin.js"></script><script type="module" src="visual-builder-admin.js"></script>
 </body></html>
