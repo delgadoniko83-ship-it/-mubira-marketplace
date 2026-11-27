@@ -22,7 +22,7 @@ function restoreHistory(next){
  if(next<0||next>=history.length)return;
  historyIndexByPage[activePage]=next;items=JSON.parse(history[next]).map(clean);selected=null;drafts[activePage]=items.map(x=>({...x}));render();syncProps();syncHistoryButtons();say(next===history.length-1?"Cambios restaurados.":"Historial recuperado.");
 }
-function syncHistoryButtons(){const i=historyIndexByPage[activePage]??-1,h=historyByPage[activePage]||[];$("vbUndo").disabled=i<=0;$ ("vbRedo").disabled=i<0||i>=h.length-1;}
+function syncHistoryButtons(){const i=historyIndexByPage[activePage]??-1,h=historyByPage[activePage]||[];$("vbUndo").disabled=i<=0;$("vbRedo").disabled=i<0||i>=h.length-1;}
 function bringLayer(front){const i=items.findIndex(x=>x.id===selected);if(i<0)return;const [x]=items.splice(i,1);items.splice(front?items.length:0,0,x);snapshot();render();syncProps();say(front?"Elemento al frente.":"Elemento al fondo.");}
 function renderPageTabs(){
  const host=$("vbPages");host.innerHTML="";
@@ -32,7 +32,7 @@ function switchPage(id){
  if(!pages.some(p=>p.id===id))return;
  if(items.length||!historyByPage[activePage])snapshot();activePage=id;items=(drafts[id]||[]).map(clean);selected=null;
  $("vbCurrentPage").textContent=pages.find(p=>p.id===id).name.toLocaleUpperCase("es-CO");
- renderPageTabs();render();syncProps();say("Editando "+pages.find(p=>p.id===id).name+". El borrador de las demás pantallas se conserva.");
+ renderPageTabs();if(!historyByPage[id])snapshot();render();syncProps();say("Editando "+pages.find(p=>p.id===id).name+". El borrador de las demás pantallas se conserva.");
 }
 function render(){
  stage.classList.toggle("desktop",mode==="desktop");
