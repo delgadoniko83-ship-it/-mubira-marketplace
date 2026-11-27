@@ -922,16 +922,6 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
   background-repeat:no-repeat;background-size:cover;background-position:center;
   pointer-events:none;
 }
-.hero-visual.mubira-theme-photo:before{display:none!important}
-.hero-visual.mubira-theme-photo>.hero-window,
-.hero-visual.mubira-theme-photo>.hero-sun,
-.hero-visual.mubira-theme-photo>.hero-plant,
-.hero-visual.mubira-theme-photo>.hero-sofa,
-.hero-visual.mubira-theme-photo>.hero-table,
-.hero-visual.mubira-theme-photo>.hero-vase,
-.hero-visual.mubira-theme-photo>.hero-rug,
-.hero-visual.mubira-theme-photo>.hero-kicker,
-.hero-visual.mubira-theme-photo>.hero-caption{display:none!important}
 .hero-visual .hero-editor-cover{
   position:absolute;z-index:5;left:auto;right:5%;bottom:7%;
   width:min(48%,460px);height:72%;max-width:48%;max-height:82%;
