@@ -19,36 +19,71 @@ function renderProducts(list=products){grid.innerHTML=list.length?list.map(p=>`<
 async function loadLiveCatalog(){try{const {data,error}=await catalogClient.from("products").select("id,name,short_description,price,is_featured,categories(name),product_media(media_type,storage_path,is_primary,sort_order)").eq("status","published").order("created_at",{ascending:false});if(error)throw error;if(!data?.length)return;catalogIsLive=true;products=data.map(p=>{const media=p.product_media||[];const photo=media.find(m=>m.media_type==="image"&&m.is_primary)||media.find(m=>m.media_type==="image");const clip=media.find(m=>m.media_type==="video");const url=path=>path?catalogClient.storage.from("mubira-products").getPublicUrl(path).data.publicUrl:"";return{id:p.id,name:p.name,category:p.categories?.name||"Muebles",detail:p.short_description||"Mueble de MUBIRA",price:Number(p.price)||0,icon:"🛋️",tag:p.is_featured?"DESTACADO":"MUBIRA",tone:"#e6dce8",image_url:url(photo?.storage_path),video:url(clip?.storage_path)};});}catch(error){console.warn("Catálogo de MUBIRA: se mantienen los productos de muestra.",error.message);}}
 
 const visualBuilderPublicPages=["inicio","espacios","coleccion","estudio"];
+const visualBuilderOriginalNames={inicio:"Inicio",espacios:"Espacios",coleccion:"Colección",estudio:"Nuestro mundo"};
+const visualBuilderOriginalDots=new Map(["inicio","espacios","coleccion","estudio"].map((id,i)=>[id,dots[i]]));
+const visualBuilderDynamicIds=new Set();
 function visualBuilderPublicUrl(path){return path?catalogClient.storage.from("mubira-products").getPublicUrl(path).data.publicUrl:"";}
 function visualBuilderPublicText(value){return String(value??"");}
+function visualBuilderValidPageId(id){return typeof id==="string"&&/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)&&!visualBuilderPublicPages.includes(id)&&id.length<=48;}
+function createVisualBuilderPublicPage(page){
+ const section=document.createElement("section");
+ section.id=page.id;section.className="page-panel mubira-dynamic-page";section.dataset.page=String(pages.length);
+ const heading=document.createElement("h2");heading.className="mubira-dynamic-page-title";heading.textContent=visualBuilderPublicText(page.name||"MUBIRA");
+ section.append(heading);deck.append(section);
+ const dot=document.createElement("button");dot.type="button";dot.setAttribute("aria-label","Ir a "+heading.textContent);
+ dot.addEventListener("click",()=>goToPage(Number(dot.dataset.pageIndex)));
+ document.getElementById("pageDots").append(dot);
+ const nav=document.createElement("a");nav.href="#"+page.id;nav.textContent=heading.textContent;nav.dataset.pageLink="";nav.dataset.mubiraDynamicNav=page.id;
+ nav.addEventListener("click",e=>{e.preventDefault();goToPage(Number(nav.dataset.pageLink));document.querySelector(".main-nav").classList.remove("open");});
+ document.querySelector(".main-nav").append(nav);
+ visualBuilderDynamicIds.add(page.id);
+ return {section,dot,nav};
+}
 function applyVisualBuilderPageOrder(pageList){
- if(!Array.isArray(pageList)||!pageList.length)return;
- const originalIds=["inicio","espacios","coleccion","estudio"];
- const requested=pageList.map(p=>p&&p.id).filter(id=>originalIds.includes(id));
- const orderedIds=[...new Set([...requested,...originalIds])];
- const byId=new Map(pages.map(section=>[section.id,section]));
- const ordered=orderedIds.map(id=>byId.get(id)).filter(Boolean);
- if(ordered.length!==pages.length)return;
- ordered.forEach(section=>deck.appendChild(section));
- pages.splice(0,pages.length,...ordered);
- const dotById=new Map(dots.map((dot,i)=>[originalIds[i],dot]));
- const orderedDots=orderedIds.map(id=>dotById.get(id)).filter(Boolean);
- const dotHost=document.getElementById("pageDots");
- orderedDots.forEach((dot,i)=>{dot.setAttribute("aria-label","Ir a "+ordered[i].id);dotHost.appendChild(dot);});
- dots.splice(0,dots.length,...orderedDots);
- document.querySelectorAll("[data-page-link]").forEach(link=>{const id=(link.getAttribute("href")||"").slice(1);const index=pages.findIndex(section=>section.id===id);if(index>=0)link.dataset.pageLink=String(index);});
+ const requested=Array.isArray(pageList)?pageList:[];
+ const entries=[],seen=new Set();
+ for(const page of requested){
+  if(!page||typeof page.id!=="string"||seen.has(page.id))continue;
+  if(visualBuilderPublicPages.includes(page.id)){entries.push({id:page.id,name:visualBuilderOriginalNames[page.id]});seen.add(page.id);continue;}
+  if(!visualBuilderValidPageId(page.id))continue;
+  entries.push({id:page.id,name:visualBuilderPublicText(page.name||"Nueva pantalla").slice(0,48)});seen.add(page.id);
+ }
+ for(const id of visualBuilderPublicPages)if(!seen.has(id))entries.push({id,name:visualBuilderOriginalNames[id]});
+ for(const id of [...visualBuilderDynamicIds]){
+  if(!entries.some(page=>page.id===id)){
+   document.getElementById(id)?.remove();
+   document.querySelector('[data-mubira-dynamic-nav="'+id+'"]')?.remove();
+   visualBuilderDynamicIds.delete(id);
+  }
+ }
+ const byId=new Map(pages.filter(section=>visualBuilderPublicPages.includes(section.id)).map(section=>[section.id,section]));
+ const dotById=new Map(visualBuilderOriginalDots);
+ const navById=new Map([...document.querySelectorAll(".main-nav a")].filter(link=>visualBuilderPublicPages.includes((link.getAttribute("href")||"").slice(1))).map(link=>[(link.getAttribute("href")||"").slice(1),link]));
+ for(const page of entries){
+  if(!byId.has(page.id)){
+   const created=createVisualBuilderPublicPage(page);byId.set(page.id,created.section);dotById.set(page.id,created.dot);navById.set(page.id,created.nav);
+  }
+  const nav=navById.get(page.id),dot=dotById.get(page.id);
+  if(nav&& !visualBuilderPublicPages.includes(page.id))nav.textContent=page.name;
+  if(dot)dot.setAttribute("aria-label","Ir a "+page.name);
+ }
+ const ordered=entries.map(page=>byId.get(page.id)).filter(Boolean);
+ const orderedDots=entries.map(page=>dotById.get(page.id)).filter(Boolean);
+ ordered.forEach((section,i)=>{section.dataset.page=String(i);deck.append(section);});
+ orderedDots.forEach((dot,i)=>{dot.dataset.pageIndex=String(i);document.getElementById("pageDots").append(dot);});
+ pages.splice(0,pages.length,...ordered);dots.splice(0,dots.length,...orderedDots);
+ entries.forEach((page,i)=>{const nav=navById.get(page.id);if(nav)nav.dataset.pageLink=String(i);});
  document.querySelectorAll("[data-go]").forEach(link=>{const id=(link.getAttribute("href")||"").slice(1);const index=pages.findIndex(section=>section.id===id);if(index>=0)link.dataset.go=String(index);});
  deck.scrollLeft=0;activePage=0;updateNavigation();
 }
 function renderVisualBuilderPublic(settings){
  const builder=settings?.visual_builder;
  if(!builder||!builder.pages||typeof builder.pages!=="object")return;
- for(const pageId of visualBuilderPublicPages){
-  const section=document.getElementById(pageId);
-  if(!section)continue;
+ for(const [pageId,sectionItems] of Object.entries(builder.pages)){
+  if(!visualBuilderPublicPages.includes(pageId)&&!visualBuilderDynamicIds.has(pageId))continue;
+  const section=document.getElementById(pageId);if(!section)continue;
   const meta=builder.page_meta?.[pageId]||{};
-  const list=Array.isArray(builder.pages[pageId])?builder.pages[pageId]:[];
-  if(!list.length&&!meta.background_path&&!meta.background_local_url&&!meta.background_color)continue;
+  const list=Array.isArray(sectionItems)?sectionItems:[];
   section.querySelectorAll(".mubira-visual-public-layer,.mubira-visual-public-background").forEach(node=>node.remove());
   if(meta.background_type==="video"&&meta.background_path){
    const video=document.createElement("video");video.className="mubira-visual-public-background";video.muted=true;video.autoplay=true;video.loop=true;video.playsInline=true;video.preload="metadata";video.src=visualBuilderPublicUrl(meta.background_path);video.setAttribute("aria-label","Video ambiental de MUBIRA");section.prepend(video);
@@ -57,7 +92,7 @@ function renderVisualBuilderPublic(settings){
   if(!list.length)continue;
   const layer=document.createElement("div");layer.className="mubira-visual-public-layer";layer.setAttribute("aria-label","Diseño visual MUBIRA");
   for(const item of list){
-   if(!item||!["image","text","button","panel"].includes(item.type))continue;
+   if(!item||item.hidden||!["image","text","button","panel"].includes(item.type))continue;
    const el=document.createElement("div");el.className="mubira-visual-public-element mubira-visual-"+item.type;
    Object.assign(el.style,{left:Math.max(0,Math.min(100,Number(item.left)||0))+"%",top:Math.max(0,Math.min(100,Number(item.top)||0))+"%",width:Math.max(8,Math.min(100,Number(item.width)||80))+"%",height:Math.max(30,Math.min(600,Number(item.height)||90))+"px",color:item.color||"#30263a",fontSize:Math.max(10,Math.min(64,Number(item.font)||24))+"px"});
    if(item.type==="image"&&item.path){const img=document.createElement("img");img.src=visualBuilderPublicUrl(item.path);img.alt="Imagen de MUBIRA";img.loading="lazy";el.append(img);}
