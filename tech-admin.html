@@ -181,6 +181,13 @@
 #visualBuilderPanel .vb-bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
 #visualBuilderPanel .vb-element{position:absolute;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden;touch-action:none;cursor:grab;border:1px dashed transparent;user-select:none}
 #visualBuilderPanel .vb-element.selected{border:2px solid #c934a6}
+#visualBuilderPanel .vb-resize{position:absolute;z-index:5;width:18px;height:18px;min-width:18px;min-height:18px;padding:0;border:2px solid #fff;border-radius:50%;background:#c934a6;box-shadow:0 1px 6px #27142f66;touch-action:none}
+#visualBuilderPanel .vb-resize-nw{left:-7px;top:-7px;cursor:nwse-resize}
+#visualBuilderPanel .vb-resize-ne{right:-7px;top:-7px;cursor:nesw-resize}
+#visualBuilderPanel .vb-resize-sw{left:-7px;bottom:-7px;cursor:nesw-resize}
+#visualBuilderPanel .vb-resize-se{right:-7px;bottom:-7px;cursor:nwse-resize}
+#visualBuilderPanel .vb-element.selected{overflow:visible}
+#visualBuilderPanel .vb-element.selected img{border-radius:2px}
 #visualBuilderPanel .vb-element img{width:100%;height:100%;object-fit:cover;pointer-events:none}
 #visualBuilderPanel .vb-copy{white-space:pre-wrap;text-align:center;overflow-wrap:anywhere;font-weight:800}
 #visualBuilderPanel .vb-button{display:inline-block;padding:10px 18px;border-radius:999px;background:linear-gradient(110deg,#c934a6,#8e78d7);color:white;font-weight:800}
