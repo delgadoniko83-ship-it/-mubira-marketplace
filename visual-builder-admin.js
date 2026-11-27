@@ -48,6 +48,7 @@ function render(){
  $("vbEmpty").hidden=items.length>0;
  stage.querySelectorAll(".vb-element").forEach(n=>n.remove());
  for(const x of items){
+  if(x.hidden)continue;
   const el=document.createElement("div");el.className="vb-element"+(x.id===selected?" selected":"");el.dataset.id=x.id;
   Object.assign(el.style,{left:x.left+"%",top:x.top+"%",width:x.width+"%",height:x.height+"px",color:x.color,background:x.type==="panel"?x.background:"transparent",fontSize:x.font+"px"});
   if(x.type==="image"){const img=document.createElement("img");img.alt="Imagen";img.src=x.localUrl||url(x.path);el.append(img);}
