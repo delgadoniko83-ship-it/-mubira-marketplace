@@ -10,7 +10,7 @@ function clean(x){return {id:x.id||uid(),type:x.type||"text",left:clamp(x.left,0
 function snapshot(){drafts[activePage]=items.map(x=>({...x}));}
 function switchPage(id){
  if(!pages.some(p=>p.id===id))return;
- snapshot();activePage=id;items=(drafts[id]||[]).map(clean);selected=null;pendingFiles.clear();
+ snapshot();activePage=id;items=(drafts[id]||[]).map(clean);selected=null;
  $("vbCurrentPage").textContent=pages.find(p=>p.id===id).name.toLocaleUpperCase("es-CO");
  document.querySelectorAll("[data-vb-page]").forEach(b=>b.classList.toggle("active",b.dataset.vbPage===id));
  render();syncProps();say("Editando "+pages.find(p=>p.id===id).name+". El borrador de las otras pantallas se conserva.");
@@ -46,7 +46,7 @@ const props={vbWidth:["width",8,100],vbHeight:["height",30,600],vbLeft:["left",0
 for(const [id,[key,min,max]] of Object.entries(props))$(id).addEventListener("input",()=>{const x=items.find(v=>v.id===selected);if(!x)return;x[key]=min===undefined?$(id).value:clamp($(id).value,min,max);snapshot();render();});
 $("vbDuplicate").addEventListener("click",()=>{const x=items.find(v=>v.id===selected);if(!x)return;const y=clean({...x,id:uid(),left:clamp(x.left+4,0,90),top:clamp(x.top+5,0,95)});items.push(y);selected=y.id;snapshot();render();syncProps();});
 $("vbDelete").addEventListener("click",()=>{if(!selected)return;items=items.filter(v=>v.id!==selected);pendingFiles.delete(selected);selected=null;snapshot();render();syncProps();});
-$("vbClear").addEventListener("click",()=>{if(!confirm("¿Vaciar solamente "+pages.find(p=>p.id===activePage).name+"?"))return;items=[];pendingFiles.clear();selected=null;snapshot();render();syncProps();});
+$("vbClear").addEventListener("click",()=>{if(!confirm("¿Vaciar solamente "+pages.find(p=>p.id===activePage).name+"?"))return;for(const item of items)pendingFiles.delete(item.id);items=[];selected=null;snapshot();render();syncProps();});
 $("vbPhone").addEventListener("click",()=>{mode="phone";render();});$("vbDesktop").addEventListener("click",()=>{mode="desktop";render();});
 document.querySelectorAll("[data-vb-page]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.vbPage)));
 async function load(){
