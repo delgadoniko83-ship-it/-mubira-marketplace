@@ -21,6 +21,25 @@ async function loadLiveCatalog(){try{const {data,error}=await catalogClient.from
 const visualBuilderPublicPages=["inicio","espacios","coleccion","estudio"];
 function visualBuilderPublicUrl(path){return path?catalogClient.storage.from("mubira-products").getPublicUrl(path).data.publicUrl:"";}
 function visualBuilderPublicText(value){return String(value??"");}
+function applyVisualBuilderPageOrder(pageList){
+ if(!Array.isArray(pageList)||!pageList.length)return;
+ const originalIds=["inicio","espacios","coleccion","estudio"];
+ const requested=pageList.map(p=>p&&p.id).filter(id=>originalIds.includes(id));
+ const orderedIds=[...new Set([...requested,...originalIds])];
+ const byId=new Map(pages.map(section=>[section.id,section]));
+ const ordered=orderedIds.map(id=>byId.get(id)).filter(Boolean);
+ if(ordered.length!==pages.length)return;
+ ordered.forEach(section=>deck.appendChild(section));
+ pages.splice(0,pages.length,...ordered);
+ const dotById=new Map(dots.map((dot,i)=>[originalIds[i],dot]));
+ const orderedDots=orderedIds.map(id=>dotById.get(id)).filter(Boolean);
+ const dotHost=document.getElementById("pageDots");
+ orderedDots.forEach((dot,i)=>{dot.setAttribute("aria-label","Ir a "+ordered[i].id);dotHost.appendChild(dot);});
+ dots.splice(0,dots.length,...orderedDots);
+ document.querySelectorAll("[data-page-link]").forEach(link=>{const id=(link.getAttribute("href")||"").slice(1);const index=pages.findIndex(section=>section.id===id);if(index>=0)link.dataset.pageLink=String(index);});
+ document.querySelectorAll("[data-go]").forEach(link=>{const id=(link.getAttribute("href")||"").slice(1);const index=pages.findIndex(section=>section.id===id);if(index>=0)link.dataset.go=String(index);});
+ deck.scrollLeft=0;activePage=0;updateNavigation();
+}
 function renderVisualBuilderPublic(settings){
  const builder=settings?.visual_builder;
  if(!builder||!builder.pages||typeof builder.pages!=="object")return;
@@ -52,7 +71,7 @@ async function loadVisualBuilderPublic(){
  try{
   const {data,error}=await catalogClient.from("site_themes").select("settings").eq("is_active",true).maybeSingle();
   if(error)throw error;
-  if(data?.settings)renderVisualBuilderPublic(data.settings);
+  if(data?.settings){applyVisualBuilderPageOrder(data.settings.visual_builder?.page_list);renderVisualBuilderPublic(data.settings);}
  }catch(error){console.info("Diseño visual personalizado no disponible; se conserva la tienda base.",error?.message||error);}
 }
 
