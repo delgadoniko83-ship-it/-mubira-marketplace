@@ -117,6 +117,14 @@ function moveActivePage(direction){
  renderPageTabs();
  say("Orden actualizado. Guarda los borradores para conservar el nuevo orden de la tienda.");
 }
+$("vbRenamePage").addEventListener("click",()=>{
+ const page=pages.find(p=>p.id===activePage);if(!page)return;
+ const proposed=prompt("Nuevo nombre para esta pantalla:",page.name);if(proposed===null)return;
+ const name=proposed.trim().slice(0,48);if(name.length<2){say("Escribe un nombre de al menos 2 caracteres.");return;}
+ if(pages.some(p=>p.id!==activePage&&p.name.toLocaleLowerCase("es-CO")===name.toLocaleLowerCase("es-CO"))){say("Ya existe otra pantalla con ese nombre.");return;}
+ page.name=name;$("vbCurrentPage").textContent=name.toLocaleUpperCase("es-CO");renderPageTabs();
+ say("Nombre actualizado. Guarda los borradores para conservarlo.");
+});
 $("vbMovePageLeft").addEventListener("click",()=>moveActivePage(-1));
 $("vbMovePageRight").addEventListener("click",()=>moveActivePage(1));
 $("vbAddPage").addEventListener("click",()=>{const name=prompt("Nombre de la nueva pantalla:");if(!name?.trim())return;const id=pageSlug(name);if(!id||pages.some(p=>p.id===id)){say("Ese nombre ya existe o no es válido. Prueba con otro.");return;}pages.push({id,name:name.trim().slice(0,48)});drafts[id]=[];pageMeta[id]={};switchPage(id);say("Pantalla creada como borrador. Todavía no aparece en la tienda pública.");});
