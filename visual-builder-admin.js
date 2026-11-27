@@ -113,6 +113,7 @@ $("vbClear").addEventListener("click",()=>{if(!confirm("¿Vaciar solamente "+pag
 $("vbPhone").addEventListener("click",()=>{mode="phone";render();});$("vbDesktop").addEventListener("click",()=>{mode="desktop";render();});
 $("vbPreviewToggle").addEventListener("click",()=>{previewing=!previewing;if(previewing){selected=null;syncProps();}const b=$("vbPreviewToggle");b.textContent=previewing?"✎ Volver a editar":"▶ Vista previa";b.setAttribute("aria-pressed",String(previewing));render();say(previewing?"Vista previa limpia. El borrador sigue sin publicarse.":"Volviste al editor; puedes continuar ajustando elementos.");});
 $("vbPages").addEventListener("click",e=>{const b=e.target.closest("[data-vb-page]");if(b)switchPage(b.dataset.vbPage);});
+for(const [id,target] of [["vbOpenCards","cards"],["vbOpenThemes","themes"]])$(id).addEventListener("click",()=>{const tab=document.querySelector('[data-tech-target="'+target+'"]');if(tab)tab.click();});
 $("vbLayers").addEventListener("click",e=>{
  const action=e.target.closest("[data-layer-action]");
  if(action){const item=items.find(x=>x.id===action.dataset.layerId);if(!item)return;
