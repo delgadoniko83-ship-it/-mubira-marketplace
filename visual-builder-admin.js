@@ -7,10 +7,10 @@ const pageSlug=s=>s.toLocaleLowerCase("es-CO").normalize("NFD").replace(/[\u0300
 const say=t=>status.textContent=t,clamp=(v,a,b)=>Math.max(a,Math.min(b,Number(v)||0));
 const uid=()=>"vb-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7);
 const url=p=>p?db.storage.from("mubira-products").getPublicUrl(p).data.publicUrl:"";
-function clean(x){return {id:x.id||uid(),type:x.type||"text",left:clamp(x.left,0,100),top:clamp(x.top,0,100),width:clamp(x.width??80,8,100),height:clamp(x.height??90,30,600),text:String(x.text||""),font:clamp(x.font??24,10,64),color:x.color||"#30263a",background:x.background||"#ffffff",path:x.path||"",localUrl:x.localUrl||""};}
+function clean(x){return {id:x.id||uid(),type:x.type||"text",left:clamp(x.left,0,100),top:clamp(x.top,0,100),width:clamp(x.width??80,8,100),height:clamp(x.height??90,30,600),text:String(x.text||""),font:clamp(x.font??24,10,64),color:x.color||"#30263a",background:x.background||"#ffffff",path:x.path||"",localUrl:x.localUrl||"",hidden:!!x.hidden,locked:!!x.locked};}
 function snapshot(){
  drafts[activePage]=items.map(x=>({...x}));
- const state=JSON.stringify(items.map(({id,type,left,top,width,height,text,font,color,background,path,localUrl})=>({id,type,left,top,width,height,text,font,color,background,path,localUrl})));
+ const state=JSON.stringify(items.map(({id,type,left,top,width,height,text,font,color,background,path,localUrl,hidden,locked})=>({id,type,left,top,width,height,text,font,color,background,path,localUrl,hidden,locked})));
  const history=historyByPage[activePage]||(historyByPage[activePage]=[]);
  let index=historyIndexByPage[activePage]??-1;
  if(index>=0&&history[index]===state)return;
@@ -52,7 +52,7 @@ function render(){
   Object.assign(el.style,{left:x.left+"%",top:x.top+"%",width:x.width+"%",height:x.height+"px",color:x.color,background:x.type==="panel"?x.background:"transparent",fontSize:x.font+"px"});
   if(x.type==="image"){const img=document.createElement("img");img.alt="Imagen";img.src=x.localUrl||url(x.path);el.append(img);}
   else {const child=document.createElement(x.type==="button"?"span":"div");child.className=x.type==="button"?"vb-button":"vb-copy";child.textContent=x.text||(x.type==="panel"?"Nueva sección":x.type==="button"?"Explorar":"Tu título");el.append(child);}
-  el.addEventListener("pointerdown",e=>{if(e.target.closest(".vb-resize"))return;e.preventDefault();e.stopPropagation();selected=x.id;syncProps();render();const r=stage.getBoundingClientRect();drag={mode:"move",id:x.id,x:e.clientX,y:e.clientY,left:x.left,top:x.top,w:r.width,h:r.height};stage.setPointerCapture(e.pointerId);});
+  el.addEventListener("pointerdown",e=>{if(e.target.closest(".vb-resize"))return;e.preventDefault();e.stopPropagation();if(x.locked){selected=x.id;syncProps();render();say("Este elemento está bloqueado. Desbloquéalo desde Capas para moverlo.");return;}selected=x.id;syncProps();render();const r=stage.getBoundingClientRect();drag={mode:"move",id:x.id,x:e.clientX,y:e.clientY,left:x.left,top:x.top,w:r.width,h:r.height};stage.setPointerCapture(e.pointerId);});
   el.addEventListener("click",e=>{e.stopPropagation();selected=x.id;syncProps();render();});
   if(x.id===selected){
    for(const corner of ["nw","ne","sw","se"]){const handle=document.createElement("button");handle.type="button";handle.className="vb-resize vb-resize-"+corner;handle.setAttribute("aria-label","Cambiar tamaño desde "+corner);handle.addEventListener("pointerdown",e=>{e.preventDefault();e.stopPropagation();const r=stage.getBoundingClientRect();drag={mode:"resize",corner,id:x.id,x:e.clientX,y:e.clientY,left:x.left,top:x.top,width:x.width,height:x.height,w:r.width,h:r.height};stage.setPointerCapture(e.pointerId);});el.append(handle);}
@@ -66,11 +66,14 @@ function renderLayers(){
  const labels={image:"Fotografía",text:"Texto",button:"Botón",panel:"Bloque"};
  if(!items.length){const empty=document.createElement("p");empty.className="vb-layers-empty";empty.textContent="Aún no hay elementos en esta pantalla.";host.append(empty);return;}
  [...items].reverse().forEach((x,index)=>{
-  const row=document.createElement("button");row.type="button";row.className="vb-layer"+(x.id===selected?" active":"");row.dataset.layerId=x.id;
+  const row=document.createElement("div");row.className="vb-layer"+(x.id===selected?" active":"")+(x.hidden?" is-hidden":"")+(x.locked?" is-locked":"");row.dataset.layerId=x.id;
+  const pick=document.createElement("button");pick.type="button";pick.className="vb-layer-pick";pick.dataset.layerPick=x.id;
   const icon=document.createElement("span");icon.className="vb-layer-icon";icon.textContent=({image:"▧",text:"T",button:"▢",panel:"▤"})[x.type]||"•";
   const name=document.createElement("span");name.className="vb-layer-name";name.textContent=(x.text||labels[x.type]||"Elemento").slice(0,36);
-  const order=document.createElement("small");order.textContent=String(items.length-index).padStart(2,"0");
-  row.append(icon,name,order);host.append(row);
+  const order=document.createElement("small");order.textContent=String(items.length-index).padStart(2,"0");pick.append(icon,name,order);
+  const visibility=document.createElement("button");visibility.type="button";visibility.className="vb-layer-action";visibility.dataset.layerAction="visibility";visibility.dataset.layerId=x.id;visibility.title=x.hidden?"Mostrar elemento":"Ocultar elemento";visibility.setAttribute("aria-label",visibility.title);visibility.textContent=x.hidden?"◌":"◉";
+  const lock=document.createElement("button");lock.type="button";lock.className="vb-layer-action";lock.dataset.layerAction="lock";lock.dataset.layerId=x.id;lock.title=x.locked?"Desbloquear elemento":"Bloquear elemento";lock.setAttribute("aria-label",lock.title);lock.textContent=x.locked?"🔒":"🔓";
+  row.append(pick,visibility,lock);host.append(row);
  });
 }
 function syncProps(){
@@ -109,7 +112,16 @@ $("vbClear").addEventListener("click",()=>{if(!confirm("¿Vaciar solamente "+pag
 $("vbPhone").addEventListener("click",()=>{mode="phone";render();});$("vbDesktop").addEventListener("click",()=>{mode="desktop";render();});
 $("vbPreviewToggle").addEventListener("click",()=>{previewing=!previewing;if(previewing){selected=null;syncProps();}const b=$("vbPreviewToggle");b.textContent=previewing?"✎ Volver a editar":"▶ Vista previa";b.setAttribute("aria-pressed",String(previewing));render();say(previewing?"Vista previa limpia. El borrador sigue sin publicarse.":"Volviste al editor; puedes continuar ajustando elementos.");});
 $("vbPages").addEventListener("click",e=>{const b=e.target.closest("[data-vb-page]");if(b)switchPage(b.dataset.vbPage);});
-$("vbLayers").addEventListener("click",e=>{const row=e.target.closest("[data-layer-id]");if(!row)return;selected=row.dataset.layerId;syncProps();render();});
+$("vbLayers").addEventListener("click",e=>{
+ const action=e.target.closest("[data-layer-action]");
+ if(action){const item=items.find(x=>x.id===action.dataset.layerId);if(!item)return;
+  if(action.dataset.layerAction==="visibility")item.hidden=!item.hidden;
+  if(action.dataset.layerAction==="lock")item.locked=!item.locked;
+  selected=item.id;snapshot();render();syncProps();
+  say(item.hidden?"Elemento oculto en el lienzo.":item.locked?"Elemento bloqueado para evitar movimientos.":"Elemento actualizado.");return;
+ }
+ const pick=e.target.closest("[data-layer-pick]");if(!pick)return;selected=pick.dataset.layerPick;syncProps();render();
+});
 function moveActivePage(direction){
  const index=pages.findIndex(p=>p.id===activePage),next=index+direction;
  if(index<0||next<0||next>=pages.length)return;
