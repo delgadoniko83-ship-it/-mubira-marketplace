@@ -152,5 +152,18 @@ async function loadPublishedVisualTheme(){
     }
   }catch(error){console.warn("Tema visual publicado de MUBIRA:",error.message);}
 }
-Promise.all([loadEditableSections(),loadEditableSpaceCards()]).then(loadPublishedVisualTheme);
-setInterval(()=>{Promise.all([loadEditableSections(),loadEditableSpaceCards()]).then(loadPublishedVisualTheme);},12000);
+let refreshingPublishedContent=false;
+async function refreshPublishedContent(){
+  if(refreshingPublishedContent||document.visibilityState!=="visible")return;
+  refreshingPublishedContent=true;
+  try{
+    await Promise.all([loadEditableSections(),loadEditableSpaceCards()]);
+    await loadPublishedVisualTheme();
+  }finally{refreshingPublishedContent=false;}
+}
+refreshPublishedContent();
+// Actualiza contenido publicado con menor frecuencia y no consulta mientras la pestaña está en segundo plano.
+setInterval(refreshPublishedContent,60000);
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible")refreshPublishedContent();
+});;

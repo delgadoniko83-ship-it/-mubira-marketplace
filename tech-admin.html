@@ -139,6 +139,14 @@
 .cover-control-grid input[type=range]{width:100%;accent-color:#c02c91}
 .cover-control-grid select{width:100%;min-width:0}
 @media(max-width:560px){.cover-control-grid{grid-template-columns:1fr}.cover-layout-controls{padding:12px}}
+
+.tech-nav-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px;color:#796982;font-size:11px;font-weight:800}
+.tech-nav-heading>div{display:flex;gap:7px;flex:0 0 auto}
+.tech-step{border:1px solid #e8ddec;background:#fff;color:#6d5278;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800}
+.tech-step:disabled{opacity:.35}
+.tech-nav{scroll-snap-type:x proximity;touch-action:pan-x;overscroll-behavior-x:contain}
+.tech-tab{scroll-snap-align:center}
+@media(max-width:560px){.tech-nav-heading{align-items:flex-start;flex-direction:column}.tech-nav-heading>div{width:100%}.tech-step{flex:1}.tech-nav{top:68px}}
 </style><style>
 #sectionImagePreview.cover-preview-mode{position:relative;height:300px;min-height:220px;overflow:hidden;background:linear-gradient(145deg,#eee8f3,#fff)}
 #sectionImagePreview.cover-preview-mode img{position:absolute;display:block;max-height:none;max-width:none;object-position:center}
@@ -152,28 +160,156 @@
 .cover-preview-stage #coverPreviewEmpty{position:absolute;z-index:1;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:#756a80;font-size:12px}
 .cover-preview-stage #coverPreviewEmpty[hidden]{display:none}
 @media(max-width:560px){.cover-composition-preview{padding:9px}.cover-preview-stage{height:260px}}
+</style><style>
+/* Rediseño del centro técnico MUBIRA */
+.tech-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(210px,270px);gap:18px;align-items:stretch;padding:24px!important;border:1px solid #fff;border-radius:24px;background:radial-gradient(circle at 92% 8%,#f1d9f1 0,transparent 34%),linear-gradient(125deg,#fff,#f7f0fa 58%,#eae5f6);box-shadow:0 16px 44px #36203c0d}
+.tech-hero h1{max-width:680px!important;font-size:clamp(28px,4vw,43px)!important;line-height:1.04!important}
+.tech-hero-links{display:grid;gap:9px;align-content:center}
+.tech-hero-links a{display:grid;grid-template-columns:34px 1fr;column-gap:10px;align-items:center;padding:12px 14px;border:1px solid #eadfed;border-radius:14px;background:#ffffffd9;color:#493b53;text-decoration:none}
+.tech-hero-links a>span{grid-row:span 2;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#f7e8f6;color:#a23e9a;font-size:17px}
+.tech-hero-links b{font-size:12px}.tech-hero-links small{font-size:10px;color:#8d8094}
+#techApp .tech-nav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:8px;border-radius:18px}
+#techApp .tech-tab{min-width:0;flex-direction:column;gap:4px;padding:12px 8px;white-space:normal;text-align:center;font-size:11px}
+#techApp .tech-tab span{font-size:9px}
+#techApp .tech-screen{background:linear-gradient(150deg,#fff,#fdfafe);border:1px solid #fff;box-shadow:0 16px 44px rgba(52,29,63,.075)}
+#visualBuilderPanel .vb-toolbar{gap:8px}
+#visualBuilderPanel .vb-toolbar>button{flex:1 1 auto}
+#visualBuilderPanel .vb-shell{grid-template-columns:minmax(245px,310px) minmax(0,1fr);align-items:start}
+#visualBuilderPanel .vb-tools{position:sticky;top:150px;max-height:calc(100vh - 175px);overflow:auto;scrollbar-width:thin;background:linear-gradient(160deg,#fff,#faf6fc);box-shadow:0 8px 25px #36203c0b}
+#visualBuilderPanel .vb-group{border:1px solid #eee5f1;border-radius:14px;background:#fff;margin:0 0 9px;overflow:hidden}
+#visualBuilderPanel .vb-group summary{display:flex;gap:10px;align-items:center;cursor:pointer;list-style:none;padding:12px}
+#visualBuilderPanel .vb-group summary::-webkit-details-marker{display:none}
+#visualBuilderPanel .vb-group summary:after{content:"＋";margin-left:auto;color:#a14b9a;font-weight:900}
+#visualBuilderPanel .vb-group[open] summary:after{content:"−"}
+#visualBuilderPanel .vb-group-icon{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:10px;background:#f7eaf7;color:#a13f98;font-size:17px}
+#visualBuilderPanel .vb-group summary b,#visualBuilderPanel .vb-group summary small{display:block}
+#visualBuilderPanel .vb-group summary b{font-size:12px;color:#45364e}
+#visualBuilderPanel .vb-group summary small{font-size:10px;color:#96899b;margin-top:3px}
+#visualBuilderPanel .vb-group-body{padding:0 11px 11px}
+#visualBuilderPanel .vb-group-body>button{min-height:40px;font-size:11px;border-radius:10px}
+#visualBuilderPanel .vb-group-body .vb-layers{max-height:190px}
+#visualBuilderPanel .vb-layer-actions{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+#visualBuilderPanel .vb-layer-actions button{width:100%;min-height:37px;padding:8px;font-size:10px}
+#visualBuilderPanel .vb-history{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 2px;color:#786b80;font-size:11px}
+#visualBuilderPanel .vb-history>div{display:flex;gap:5px}
+#visualBuilderPanel .vb-history button{min-height:36px;padding:7px 10px;font-size:11px}
+#visualBuilderPanel .vb-danger{background:#fff5f7!important;border:1px solid #f0d9e1!important;color:#a34463!important}
+#visualBuilderPanel .vb-help{font-size:10px;line-height:1.5;color:#8c7d92;margin:8px 2px}
+#visualBuilderPanel .vb-stage-wrap{background:linear-gradient(145deg,#f8f3fa,#eee8f4);box-shadow:inset 0 0 0 1px #fff}
+#visualBuilderPanel .vb-stage{box-shadow:0 18px 48px #28163225}
+#visualBuilderPanel .vb-status{padding:10px 12px;border-radius:11px;background:#f7edf8}
+@media(max-width:760px){
+ .tech-hero{grid-template-columns:1fr;padding:17px!important;border-radius:18px}
+ .tech-hero-links{grid-template-columns:1fr 1fr}
+ .tech-hero-links a{grid-template-columns:28px 1fr;padding:10px;column-gap:7px}
+ .tech-hero-links a>span{width:28px;height:28px}
+ #techApp .tech-nav{grid-template-columns:repeat(3,minmax(0,1fr));top:65px}
+ #techApp .tech-tab{min-height:60px;padding:8px 5px;font-size:10px}
+ #visualBuilderPanel .vb-shell{grid-template-columns:1fr}
+ #visualBuilderPanel .vb-stage-wrap{order:0}
+ #visualBuilderPanel .vb-tools{position:static;order:1;max-height:none;overflow:visible}
+ #visualBuilderPanel .vb-group summary{min-height:57px}
+ #visualBuilderPanel .vb-stage{min-height:500px}
+}
+@media(min-width:761px) and (max-width:980px){#techApp .tech-nav{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style></head><body>
 <header><a href="/" class="brand">MUBIRA<small>ADMINISTRACIÓN TÉCNICA</small></a><div class="head-actions"><a href="/admin.html">Administración comercial</a><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button class="secondary" id="authButton">Entrar con Google</button></div></header>
 <main>
 <section id="loginGate" class="panel"><p class="eyebrow">ACCESO TÉCNICO SEGURO</p><h1>Diseño y tecnología.</h1><p class="sub">Este espacio controla portadas, imágenes de botones y tarjetas, títulos y textos de las pantallas. No administra productos ni promociones.</p><button class="primary" id="loginButton">Continuar con Google</button><p class="message" id="loginMessage"></p></section>
 <section id="denied" class="panel hidden"><p class="eyebrow">ACCESO RESTRINGIDO</p><h1>Cuenta sin permisos técnicos</h1><p class="sub">La sesión de Google está activa, pero esta cuenta no tiene autorización para cambiar la apariencia de MUBIRA.</p><p id="signedEmail"></p><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
 <div id="techApp" class="hidden">
-<div class="intro"><p class="eyebrow">CENTRO DE DISEÑO · MUBIRA</p><h1>La imagen de tu tienda, bajo control.</h1><p>Modifica una portada o tarjeta, guarda y abre la tienda para revisar el resultado. Las páginas abiertas se sincronizan automáticamente.</p><span class="pill">ADMINISTRACIÓN TÉCNICA</span></div>
-<nav class="tech-nav" aria-label="Secciones del administrador técnico"><button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Accesos</button><button type="button" class="tech-tab" data-tech-target="audit"><span>02</span> Historial</button><button type="button" class="tech-tab" data-tech-target="covers"><span>03</span> Portadas</button><button type="button" class="tech-tab" data-tech-target="cards"><span>04</span> Tarjetas</button><button type="button" class="tech-tab" data-tech-target="themes"><span>05</span> Ambientes</button></nav><div class="tech-workspace"><section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
-<h2>Personas autorizadas</h2><p class="sub">Agrega los correos de Google que pueden entrar al administrador técnico. La persona debe iniciar sesión con ese mismo correo. Puedes retirar el acceso cuando lo necesites.</p>
-<form id="technicalInviteForm">
-<label for="technicalInviteEmail">Correo de Google que vas a autorizar</label><input id="technicalInviteEmail" type="email" required maxlength="254" placeholder="persona@gmail.com" autocomplete="email">
-<div class="actions"><button class="primary" type="submit" id="technicalInviteSave">Autorizar acceso técnico</button></div>
-</form><p class="message" id="technicalInviteMessage" aria-live="polite"></p>
-<div id="technicalInviteList" class="sub">Cargando accesos...</div>
-</section>
-<section class="panel tech-screen" id="technicalAuditPanel" data-tech-screen="audit">
-<h2>Historial y responsabilidad</h2><p class="sub">Cada cambio queda registrado con el correo de la sesión, fecha, tipo de acción y campos modificados. Este registro es de solo lectura para proteger la trazabilidad: puedes actualizarlo, pero no alterar ni borrar evidencias desde aquí.</p>
-<div class="actions"><button class="secondary" id="refreshTechnicalAudit" type="button">Actualizar historial</button></div>
-<div id="technicalAuditList" class="sub">Cargando historial...</div>
-</section>
-<section class="panel section-editor-panel tech-screen" data-tech-screen="covers">
-<h2>Portada · Imagen que va delante</h2><p class="sub">La portada es la imagen principal que se monta ENCIMA del ambiente. En Inicio aparece como una capa independiente dentro del espacio visual; no reemplaza el fondo. Aquí también puedes cambiar títulos y textos.</p>
+<div class="intro tech-hero"><div><p class="eyebrow">MUBIRA · CONTROL CENTER</p><h1>Estudio de administración técnica</h1><p>Un solo lugar para controlar el acceso, la identidad visual y cada pantalla de la tienda. Organiza tu trabajo por módulos y revisa los cambios antes de publicarlos.</p><span class="pill">ESPACIO PRIVADO · DISEÑO Y CONFIGURACIÓN</span></div><div class="tech-hero-links"><a href="/" target="_blank" rel="noopener"><span>↗</span><b>Ver tienda</b><small>Experiencia pública</small></a><a href="/admin.html"><span>▤</span><b>Catálogo comercial</b><small>Productos y pedidos</small></a></div></div>
+<div class="tech-test-notice" role="status">MODO DE PRUEBAS · Los cambios del constructor se preparan como borradores. No se debe considerar la tienda lista para operación comercial.</div><div class="tech-nav-heading"><span id="techScreenStatus" aria-live="polite">Módulo 1 de 4 · Seguridad</span><div><button type="button" class="tech-step" id="techPrev" aria-label="Sección anterior">← Anterior</button><button type="button" class="tech-step" id="techNext" aria-label="Sección siguiente">Siguiente →</button></div></div><nav class="tech-nav" aria-label="Módulos del administrador técnico">
+<button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Seguridad y accesos</button>
+<button type="button" class="tech-tab" data-tech-target="builder"><span>02</span> Constructor de pantallas</button>
+<button type="button" class="tech-tab" data-tech-target="cards"><span>03</span> Tarjetas de Espacios</button>
+<button type="button" class="tech-tab" data-tech-target="themes"><span>04</span> Ambientes y marca</button>
+</nav><div class="tech-workspace"><section class="panel tech-screen" data-tech-screen="builder" id="visualBuilderPanel">
+<style>
+#visualBuilderPanel .vb-pages{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 14px;scrollbar-width:thin}
+#visualBuilderPanel .vb-pages button{flex:0 0 auto;border:1px solid #e8ddec;background:#fff;color:#594865;border-radius:13px;padding:11px 16px;font-size:12px}
+#visualBuilderPanel .vb-pages button.active{background:linear-gradient(110deg,#c934a6,#8e78d7);color:#fff;border-color:transparent}
+#visualBuilderPanel .vb-shell{display:grid;grid-template-columns:minmax(210px,260px) minmax(0,1fr);gap:16px}
+#visualBuilderPanel .vb-tools,#visualBuilderPanel .vb-stage-wrap{background:#fff;border:1px solid #eadfed;border-radius:18px;padding:14px;min-width:0}
+#visualBuilderPanel .vb-tools button{width:100%;margin:5px 0;text-align:left;background:#faf6fc;border:1px solid #eee4f0;color:#4d3b57}
+#visualBuilderPanel .vb-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px}
+#visualBuilderPanel .vb-stage{position:relative;margin:auto;width:min(100%,680px);min-height:480px;aspect-ratio:9/16;max-height:760px;overflow:hidden;border:8px solid #28212f;border-radius:28px;background:linear-gradient(145deg,#f8f2fa,#eee7f4);box-shadow:0 14px 38px #28163220;touch-action:pan-y}
+#visualBuilderPanel .vb-stage.desktop{aspect-ratio:16/9;min-height:340px;max-height:520px;width:100%;border-radius:16px}
+#visualBuilderPanel .vb-bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
+#visualBuilderPanel .vb-element{position:absolute;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden;touch-action:none;cursor:grab;border:1px dashed transparent;user-select:none}
+#visualBuilderPanel .vb-element.selected{border:2px solid #c934a6}
+#visualBuilderPanel .vb-resize{position:absolute;z-index:5;width:18px;height:18px;min-width:18px;min-height:18px;padding:0;border:2px solid #fff;border-radius:50%;background:#c934a6;box-shadow:0 1px 6px #27142f66;touch-action:none}
+#visualBuilderPanel .vb-resize-nw{left:-7px;top:-7px;cursor:nwse-resize}
+#visualBuilderPanel .vb-resize-ne{right:-7px;top:-7px;cursor:nesw-resize}
+#visualBuilderPanel .vb-resize-sw{left:-7px;bottom:-7px;cursor:nesw-resize}
+#visualBuilderPanel .vb-resize-se{right:-7px;bottom:-7px;cursor:nwse-resize}
+#visualBuilderPanel .vb-element.selected{overflow:visible}
+#visualBuilderPanel .vb-element.selected img{border-radius:2px}
+#visualBuilderPanel .vb-element img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+#visualBuilderPanel .vb-copy{white-space:pre-wrap;text-align:center;overflow-wrap:anywhere;font-weight:800}
+#visualBuilderPanel .vb-button{display:inline-block;padding:10px 18px;border-radius:999px;background:linear-gradient(110deg,#c934a6,#8e78d7);color:white;font-weight:800}
+#visualBuilderPanel .vb-empty{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:28px;color:#8b7b93;pointer-events:none}
+#visualBuilderPanel .vb-layers{display:flex;flex-direction:column;gap:5px;max-height:240px;overflow:auto;margin:9px 0}
+#visualBuilderPanel .vb-layer{display:flex!important;align-items:center;gap:8px;width:100%;margin:0!important;padding:9px 10px!important;border:1px solid #eee4f0!important;border-radius:10px;background:#fff!important;color:#594865!important;text-align:left!important}
+#visualBuilderPanel .vb-layer.active{border-color:#c934a6!important;background:#fbf0fa!important}
+#visualBuilderPanel .vb-layer-icon{width:25px;height:25px;display:grid;place-items:center;border-radius:7px;background:#f2e8f4;color:#9a398e;font-weight:800}
+#visualBuilderPanel .vb-layer-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+#visualBuilderPanel .vb-layer small{color:#98899e;font-variant-numeric:tabular-nums}
+#visualBuilderPanel .vb-layers-empty{font-size:11px;color:#98899e;padding:8px 2px}
+#visualBuilderPanel .vb-props{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#visualBuilderPanel .vb-props label{margin:6px 0;font-size:10px}
+#visualBuilderPanel .vb-props input{font-size:14px;padding:8px;min-height:38px}
+#visualBuilderPanel .vb-status{font-size:11px;color:#8d4388;min-height:20px;margin-top:10px}
+@media(max-width:760px){#visualBuilderPanel .vb-shell{grid-template-columns:1fr}#visualBuilderPanel .vb-tools{order:2}#visualBuilderPanel .vb-stage-wrap{order:1}#visualBuilderPanel .vb-stage{min-height:440px;width:min(100%,340px)}#visualBuilderPanel .vb-stage.desktop{width:100%;min-height:230px}}
+
+/* Vista previa enfocada: oculta herramientas y muestra el lienzo sin controles de edición */
+#visualBuilderPanel.vb-preview-mode .vb-shell{grid-template-columns:minmax(0,1fr)}
+#visualBuilderPanel.vb-preview-mode .vb-tools{display:none}
+#visualBuilderPanel.vb-preview-mode .vb-stage-wrap{padding:clamp(12px,3vw,28px);background:linear-gradient(145deg,#f7f1fa,#ece6f2)}
+#visualBuilderPanel.vb-preview-mode .vb-stage{width:min(100%,980px);max-height:none;min-height:520px;aspect-ratio:16/9;border-radius:18px;box-shadow:0 20px 55px #28163224}
+#visualBuilderPanel.vb-preview-mode .vb-stage:not(.desktop){width:min(100%,390px);min-height:650px;aspect-ratio:9/16;border-radius:30px}
+#visualBuilderPanel.vb-preview-mode .vb-element{border-color:transparent!important;cursor:default}
+#visualBuilderPanel.vb-preview-mode .vb-resize{display:none!important}
+#visualBuilderPanel.vb-preview-mode #vbPreviewToggle{background:#4f405b}
+@media(max-width:760px){#visualBuilderPanel.vb-preview-mode .vb-stage{min-height:440px}#visualBuilderPanel.vb-preview-mode .vb-stage:not(.desktop){min-height:560px}}
+
+#visualBuilderPanel .vb-layer{padding:5px!important}
+#visualBuilderPanel .vb-layer-pick{display:flex;align-items:center;gap:8px;flex:1;min-width:0;border:0!important;background:transparent!important;color:inherit!important;padding:4px!important;margin:0!important;text-align:left}
+#visualBuilderPanel .vb-layer-action{width:30px;min-width:30px;height:30px;padding:0!important;margin:0!important;border:1px solid #e8ddeb!important;border-radius:8px;background:#fff!important;color:#76517b!important}
+#visualBuilderPanel .vb-layer.is-hidden{opacity:.62}
+#visualBuilderPanel .vb-layer.is-locked{border-style:dashed!important}
+#visualBuilderPanel .vb-cover-editor{margin-top:18px;border:1px solid #e7d9ec;border-radius:16px;background:#fff;overflow:hidden}
+#visualBuilderPanel .vb-cover-editor>summary{padding:14px 16px;background:linear-gradient(110deg,#f8f0fa,#fff);cursor:pointer}
+#visualBuilderPanel .vb-cover-editor .vb-group-body{padding:16px}
+#visualBuilderPanel .cover-save-note{padding:12px 14px;border-left:3px solid #c934a6;border-radius:8px;background:#fbf5fc}
+#visualBuilderPanel .vb-cover-editor .cover-composition-preview{max-width:620px}
+#visualBuilderPanel .vb-cover-editor .cover-preview-stage{max-width:100%}
+
+/* El historial permanece conservado, pero fuera de la navegación durante las pruebas. */
+#technicalAuditPanel{display:none!important}
+.tech-test-notice{margin:0 0 18px;padding:12px 16px;border:1px solid #d9c8e5;border-radius:14px;background:linear-gradient(110deg,#f5eef9,#fff);color:#5b4568;font-size:12px;font-weight:700}
+</style>
+<h2>Constructor visual · Todas tus pantallas</h2>
+<p class="sub">Diseña la composición de cada pantalla: agrega fotografías, textos, botones, bloques y videos de fondo; mueve, cambia tamaños y organiza capas. Este módulo no reemplaza los datos de las tarjetas existentes ni la identidad global del sitio.</p>
+<div class="actions vb-shortcuts"><button type="button" class="secondary" id="vbOpenCards">▦ Editar tarjetas de Espacios</button><button type="button" class="secondary" id="vbOpenThemes">◈ Abrir ambientes y marca</button></div>
+<div class="vb-pages" id="vbPages" aria-label="Pantallas de la tienda"></div>
+<div class="vb-toolbar"><button type="button" class="secondary" id="vbAddPage">＋ Crear pantalla</button><button type="button" class="secondary" id="vbDuplicatePage">▣ Duplicar pantalla</button><button type="button" class="secondary" id="vbRenamePage">✎ Renombrar pantalla</button><button type="button" class="secondary" id="vbMovePageLeft">← Mover antes</button><button type="button" class="secondary" id="vbMovePageRight">Mover después →</button><button type="button" class="secondary" id="vbRemovePage">Retirar pantalla nueva</button></div>
+<div class="vb-toolbar"><strong id="vbCurrentPage">INICIO</strong><div><button class="secondary" id="vbPhone" type="button">Celular</button> <button class="secondary" id="vbDesktop" type="button">Computador</button> <button class="primary" id="vbPreviewToggle" type="button" aria-pressed="false">▶ Vista previa</button></div></div>
+<div class="vb-shell">
+<aside class="vb-tools">
+<details class="vb-group" open><summary><span class="vb-group-icon">＋</span><span><b>Contenido</b><small>Agrega elementos a tu pantalla</small></span></summary><div class="vb-group-body">
+<button type="button" id="vbAddImage">▧ Agregar fotografía</button><button type="button" id="vbAddText">T Agregar título o texto</button><button type="button" id="vbAddButton">▢ Agregar botón</button><button type="button" id="vbAddPanel">▤ Agregar bloque / sección</button><input id="vbImageFile" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+</div></details>
+<details class="vb-group"><summary><span class="vb-group-icon">▧</span><span><b>Fondo y ambiente</b><small>Video decorativo de pantalla</small></span></summary><div class="vb-group-body"><button type="button" id="vbBackgroundVideoButton">▶ Poner video de fondo</button><button type="button" id="vbClearBackground">Quitar fondo de video</button><input id="vbBackgroundVideo" type="file" accept="video/mp4,video/webm,video/quicktime" hidden><p class="vb-help">Este fondo es independiente del video de presentación de 10 segundos de cada producto.</p></div></details>
+<details class="vb-group" open><summary><span class="vb-group-icon">☷</span><span><b>Capas</b><small>Selecciona y organiza los elementos</small></span></summary><div class="vb-group-body"><div id="vbLayers" class="vb-layers" aria-label="Capas y elementos de la pantalla"></div><div class="vb-layer-actions"><button type="button" id="vbBringFront">Traer al frente</button><button type="button" id="vbSendBack">Enviar al fondo</button><button type="button" id="vbDuplicate">⧉ Duplicar</button><button type="button" id="vbDelete">Eliminar</button></div></div></details>
+<details class="vb-group"><summary><span class="vb-group-icon">⚙</span><span><b>Propiedades</b><small>Posición, tamaño, texto y color</small></span></summary><div class="vb-group-body"><div class="vb-props"><label>Ancho (%)<input id="vbWidth" type="number" min="8" max="100" value="80"></label><label>Alto (px)<input id="vbHeight" type="number" min="30" max="600" value="90"></label><label>Izquierda (%)<input id="vbLeft" type="number" min="0" max="100" value="10"></label><label>Arriba (%)<input id="vbTop" type="number" min="0" max="100" value="10"></label><label>Texto<input id="vbText" type="text" maxlength="180" placeholder="Tu mensaje"></label><label>Tamaño texto<input id="vbFont" type="number" min="10" max="64" value="24"></label><label>Color<input id="vbColor" type="color" value="#30263a"></label><label>Fondo<input id="vbBackground" type="color" value="#ffffff"></label><label id="vbLinkLabel" hidden>Destino del botón<input id="vbLink" type="text" maxlength="300" placeholder="https://... o #coleccion"></label></div></div></details>
+<div class="vb-history"><span>Historial de edición</span><div><button type="button" id="vbUndo" disabled>↶ Deshacer</button><button type="button" id="vbRedo" disabled>↷ Rehacer</button></div></div>
+<button type="button" id="vbClear" class="vb-danger">Vaciar esta pantalla</button>
+</aside>
+<div class="vb-stage-wrap"><div class="vb-stage" id="vbStage"><div class="vb-empty" id="vbEmpty">Esta pantalla está lista para diseñarse.</div></div><div class="actions"><button class="primary" type="button" id="vbSave">Guardar borradores · No publicar</button></div><p class="vb-status" id="vbStatus" aria-live="polite">Cargando...</p></div>
+</div><details class="vb-group vb-cover-editor"><summary><span class="vb-group-icon">▧</span><span><b>Textos y portada original</b><small>Editar títulos, descripciones e imagen frontal de las cuatro pantallas</small></span></summary><div class="vb-group-body">
+<h3>Contenido y portada de la pantalla</h3>
+<p class="sub cover-save-note"><strong>Importante:</strong> «Guardar portada y contenido» actualiza los textos y la portada de la tienda. Los elementos que agregues con el Constructor visual siguen siendo borradores hasta que se publique ese diseño.</p><p class="sub">La portada es la imagen principal que se monta ENCIMA del ambiente. En Inicio aparece como una capa independiente dentro del espacio visual; no reemplaza el fondo. Aquí también puedes cambiar títulos y textos.</p>
 <label for="sectionKey">Pantalla que quieres editar</label><select id="sectionKey"><option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option></select>
 <label for="sectionNavLabel">Nombre en el menú</label><input id="sectionNavLabel" maxlength="60" placeholder="Nombre de la pantalla">
 <label for="sectionEyebrow">Texto pequeño superior</label><input id="sectionEyebrow" maxlength="120" placeholder="Frase corta">
@@ -206,9 +342,23 @@
 </div>
 <div class="check"><input type="checkbox" id="removeSectionImage"><label for="removeSectionImage">Quitar fotografía y restaurar el diseño original</label></div>
 <div class="actions"><button class="primary" id="saveSectionContent">Guardar portada y contenido</button></div><p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
+</div></details></section>
+<section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
+<h2>Personas autorizadas</h2><p class="sub">Agrega los correos de Google que pueden entrar al administrador técnico. La persona debe iniciar sesión con ese mismo correo. Puedes retirar el acceso cuando lo necesites.</p>
+<form id="technicalInviteForm">
+<label for="technicalInviteEmail">Correo de Google que vas a autorizar</label><input id="technicalInviteEmail" type="email" required maxlength="254" placeholder="persona@gmail.com" autocomplete="email">
+<div class="actions"><button class="primary" type="submit" id="technicalInviteSave">Autorizar acceso técnico</button></div>
+</form><p class="message" id="technicalInviteMessage" aria-live="polite"></p>
+<div id="technicalInviteList" class="sub">Cargando accesos...</div>
 </section>
+<section class="panel tech-screen" id="technicalAuditPanel" data-tech-screen="audit">
+<h2>Historial y responsabilidad</h2><p class="sub">Cada cambio queda registrado con el correo de la sesión, fecha, tipo de acción y campos modificados. Este registro es de solo lectura para proteger la trazabilidad: puedes actualizarlo, pero no alterar ni borrar evidencias desde aquí.</p>
+<div class="actions"><button class="secondary" id="refreshTechnicalAudit" type="button">Actualizar historial</button></div>
+<div id="technicalAuditList" class="sub">Cargando historial...</div>
+</section>
+
 <section class="panel section-editor-panel space-items-panel tech-screen" data-tech-screen="cards">
-<h2>Imágenes y textos de botones / tarjetas</h2><p class="sub">Edita cada tarjeta de Espacios por separado. Las imágenes de los productos de Colección se administran en el catálogo comercial.</p>
+<h2>Tarjetas de Espacios</h2><p class="sub">Este módulo administra el contenido real de las cuatro tarjetas existentes: nombre, texto superior, descripción e imagen. El Constructor visual se ocupa de la composición libre; aquí cambias los datos que leen esas tarjetas. Las fotos de productos de Colección se administran en el catálogo comercial.</p>
 <label for="spaceItemKey">Tarjeta que quieres editar</label><select id="spaceItemKey"><option value="salas">Salas</option><option value="comedores">Comedores</option><option value="habitaciones">Habitaciones</option><option value="decoracion">Decoración</option></select>
 <label for="spaceItemEyebrow">Texto pequeño superior</label><input id="spaceItemEyebrow" maxlength="100" placeholder="Ej. 01 / RELAJARSE">
 <label for="spaceItemTitle">Nombre del botón o tarjeta</label><input id="spaceItemTitle" maxlength="80" placeholder="Ej. Salas">
@@ -219,8 +369,8 @@
 <div class="actions"><button class="primary" id="saveSpaceItem">Guardar tarjeta</button></div><p class="message" id="spaceItemMessage" aria-live="polite">Cargando tarjetas...</p>
 </section>
 <section class="panel tech-screen" data-tech-screen="themes">
-<h2>Ambiente · Fotografía de fondo</h2>
-<p class="sub">El ambiente es la fotografía grande que ocupa el FONDO de la pantalla, detrás de la portada y del contenido. Aquí eliges y subes una imagen de ambiente distinta. No sustituye ni modifica la portada frontal.</p>
+<h2>Ambientes y marca visual</h2>
+<p class="sub">Aquí defines los colores globales, tipografía, estilo de botones y fotografías de ambiente de cada pantalla. El Constructor visual controla la composición libre y los videos de fondo. Guarda un ambiente como borrador; solo usa «Aplicar en tienda» cuando quieras cambiar lo que ven los clientes.</p>
 <div class="pill" id="themeActiveState">CARGANDO AMBIENTES</div>
 <label for="themeSelect">Ambiente guardado</label><select id="themeSelect"></select>
 <div class="actions"><button class="secondary" type="button" id="themeNew">＋ Crear nuevo ambiente</button></div>
@@ -268,23 +418,36 @@ supabase.auth.onAuthStateChange((_event,s)=>queueMicrotask(()=>checkAccess(s)));
 </script>
 
 <script>
-document.querySelectorAll("[data-tech-target]").forEach(button=>{
- button.addEventListener("click",()=>{
-  const target=button.dataset.techTarget;
-  document.querySelectorAll("[data-tech-target]").forEach(item=>{
-   const active=item===button;
-   item.classList.toggle("active",active);
-   item.setAttribute("aria-current",active?"page":"false");
-  });
-  document.querySelectorAll("[data-tech-screen]").forEach(screen=>{
-   screen.classList.toggle("active",screen.dataset.techScreen===target);
-  });
-  const nav=button.closest(".tech-nav");
-  if(nav && window.matchMedia("(max-width:760px)").matches){
-   button.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
-  }
- });
-});
+(()=>{
+ const buttons=[...document.querySelectorAll("[data-tech-target]")];
+ const screens=[...document.querySelectorAll("[data-tech-screen]")];
+ const status=document.getElementById("techScreenStatus");
+ const prev=document.getElementById("techPrev"),next=document.getElementById("techNext");
+ const names=buttons.map(b=>b.textContent.replace(/^\\s*\\d+\\s*/, "").trim());
+ let activeIndex=Math.max(0,buttons.findIndex(b=>b.classList.contains("active")));
+ function show(index){
+  activeIndex=Math.max(0,Math.min(index,buttons.length-1));
+  const selected=buttons[activeIndex],target=selected.dataset.techTarget;
+  buttons.forEach((item,i)=>{const active=i===activeIndex;item.classList.toggle("active",active);item.setAttribute("aria-current",active?"page":"false");});
+  screens.forEach(screen=>screen.classList.toggle("active",screen.dataset.techScreen===target));
+  if(status)status.textContent="Sección "+(activeIndex+1)+" de "+buttons.length+" · "+names[activeIndex];
+  prev.disabled=activeIndex===0;next.disabled=activeIndex===buttons.length-1;
+  selected.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
+ }
+ buttons.forEach((button,index)=>button.addEventListener("click",()=>show(index)));
+ prev.addEventListener("click",()=>show(activeIndex-1));next.addEventListener("click",()=>show(activeIndex+1));
+ const workspace=document.querySelector(".tech-workspace");let start=null;
+ workspace?.addEventListener("touchstart",event=>{
+  if(event.touches.length!==1||event.target.closest("input,textarea,select,button,a,[contenteditable=true],.vb-stage,.cover-preview-stage")){start=null;return;}
+  const t=event.touches[0];start={x:t.clientX,y:t.clientY};
+ },{passive:true});
+ workspace?.addEventListener("touchend",event=>{
+  if(!start||!event.changedTouches.length)return;
+  const t=event.changedTouches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;start=null;
+  if(Math.abs(dx)>75&&Math.abs(dx)>Math.abs(dy)*1.35)show(activeIndex+(dx<0?1:-1));
+ },{passive:true});
+ show(activeIndex);
+})();
 </script>
-<script type="module" src="technical-admin-control.js"></script><script type="module" src="site-editor-admin.js"></script><script type="module" src="site-items-editor-admin.js"></script><script type="module" src="theme-studio-admin.js"></script>
+<script type="module" src="technical-admin-control.js"></script><script type="module" src="site-editor-admin.js"></script><script type="module" src="site-items-editor-admin.js"></script><script type="module" src="theme-studio-admin.js"></script><script type="module" src="visual-builder-admin.js?v=20261127-dynamicpages1"></script>
 </body></html>

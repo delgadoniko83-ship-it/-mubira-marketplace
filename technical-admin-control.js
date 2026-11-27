@@ -13,7 +13,7 @@ async function accessCheck(){
   db.from("admin_access").select("role").eq("user_id",currentUser.id)
  ]);
  canManage=p?.role==="owner"||(r||[]).some(x=>x.role==="technical_admin");
- if(canManage){await Promise.all([loadInvites(),loadAudit()]);}
+ if(canManage){await loadInvites();}
 }
 async function loadInvites(){
  const box=$("technicalInviteList");

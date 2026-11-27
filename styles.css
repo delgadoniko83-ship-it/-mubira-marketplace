@@ -1,5 +1,4 @@
 /* MUBIRA — sistema visual reconstruido */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 
 :root{
   color-scheme:light;
@@ -922,16 +921,6 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
   background-repeat:no-repeat;background-size:cover;background-position:center;
   pointer-events:none;
 }
-.hero-visual.mubira-theme-photo:before{display:none!important}
-.hero-visual.mubira-theme-photo>.hero-window,
-.hero-visual.mubira-theme-photo>.hero-sun,
-.hero-visual.mubira-theme-photo>.hero-plant,
-.hero-visual.mubira-theme-photo>.hero-sofa,
-.hero-visual.mubira-theme-photo>.hero-table,
-.hero-visual.mubira-theme-photo>.hero-vase,
-.hero-visual.mubira-theme-photo>.hero-rug,
-.hero-visual.mubira-theme-photo>.hero-kicker,
-.hero-visual.mubira-theme-photo>.hero-caption{display:none!important}
 .hero-visual .hero-editor-cover{
   position:absolute;z-index:5;left:auto;right:5%;bottom:7%;
   width:min(48%,460px);height:72%;max-width:48%;max-height:82%;
@@ -1045,3 +1034,25 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
  object-fit:contain!important;object-position:center!important;
  padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
 }
+
+
+/* Diseños guardados desde el Constructor Visual: solo lectura en la tienda pública */
+.page-panel{isolation:isolate}
+.page-panel>.mubira-visual-public-background{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none}
+.page-panel>.mubira-visual-public-layer{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden}
+.mubira-visual-public-element{position:absolute;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px;white-space:pre-wrap;overflow-wrap:anywhere;text-align:center;pointer-events:auto}
+.mubira-visual-public-element img{width:100%;height:100%;object-fit:cover;display:block}
+.mubira-visual-text{font-weight:700;text-shadow:0 1px 10px #ffffff66}
+.mubira-visual-button{width:auto;min-width:110px;min-height:42px;padding:10px 18px;border-radius:4px;background:linear-gradient(110deg,#d92fa9,#a17bea);color:#fff!important;font-size:clamp(12px,1.2vw,16px)!important;font-weight:800;box-shadow:0 8px 22px #8d4c9b35}
+.mubira-visual-panel{border:1px solid #ffffff9c;border-radius:12px;box-shadow:0 12px 30px #30203b20;backdrop-filter:blur(7px)}
+@media(max-width:760px){.mubira-visual-public-element{padding:5px}.mubira-visual-button{min-width:90px;min-height:36px}}
+
+
+/* MUBIRA · páginas nuevas creadas desde el Constructor Visual */
+.mubira-dynamic-page{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:flex-start;justify-content:flex-start;padding:clamp(28px,6vw,84px);background:linear-gradient(135deg,#f7f1fa,#e9e1f0 55%,#f9e8f5)}
+.mubira-dynamic-page-title{position:relative;z-index:2;margin:0;max-width:42%;font-family:var(--mubira-font,'Manrope',sans-serif);font-size:clamp(24px,4vw,54px);line-height:1.04;color:#44334e;pointer-events:none}
+.mubira-dynamic-page .mubira-visual-public-layer{z-index:5}
+@media(max-width:760px){.mubira-dynamic-page{padding:24px 18px}.mubira-dynamic-page-title{max-width:72%;font-size:clamp(22px,7vw,36px)}}
+
+.mubira-visual-public-button{display:flex;width:100%;height:100%;align-items:center;justify-content:center;padding:12px 22px;border-radius:999px;background:linear-gradient(110deg,#d72b9c,#8d62c5);color:#fff;text-decoration:none;font-family:inherit;font-size:1rem;font-weight:600;line-height:1.2;box-shadow:0 10px 28px #5b31522b;cursor:pointer;pointer-events:auto}
+.mubira-visual-public-element.mubira-visual-button{pointer-events:auto}
