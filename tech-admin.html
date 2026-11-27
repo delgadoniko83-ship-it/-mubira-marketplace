@@ -178,6 +178,7 @@
 #visualBuilderPanel .vb-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px}
 #visualBuilderPanel .vb-stage{position:relative;margin:auto;width:min(100%,680px);min-height:480px;aspect-ratio:9/16;max-height:760px;overflow:hidden;border:8px solid #28212f;border-radius:28px;background:linear-gradient(145deg,#f8f2fa,#eee7f4);box-shadow:0 14px 38px #28163220;touch-action:pan-y}
 #visualBuilderPanel .vb-stage.desktop{aspect-ratio:16/9;min-height:340px;max-height:520px;width:100%;border-radius:16px}
+#visualBuilderPanel .vb-bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
 #visualBuilderPanel .vb-element{position:absolute;display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden;touch-action:none;cursor:grab;border:1px dashed transparent;user-select:none}
 #visualBuilderPanel .vb-element.selected{border:2px solid #c934a6}
 #visualBuilderPanel .vb-element img{width:100%;height:100%;object-fit:cover;pointer-events:none}
@@ -192,12 +193,14 @@
 </style>
 <h2>Constructor visual · Todas tus pantallas</h2>
 <p class="sub">Elige Inicio, Espacios, Colección o Nuestro mundo. Cada pantalla conserva su borrador por separado. Guardar aquí no modifica todavía la tienda pública.</p>
-<div class="vb-pages" id="vbPages" aria-label="Pantallas de la tienda">
-<button type="button" data-vb-page="inicio">01 · Inicio</button><button type="button" data-vb-page="espacios">02 · Espacios</button><button type="button" data-vb-page="coleccion">03 · Colección</button><button type="button" data-vb-page="estudio">04 · Nuestro mundo</button>
-</div>
+<div class="vb-pages" id="vbPages" aria-label="Pantallas de la tienda"></div>
+<div class="vb-toolbar"><button type="button" class="secondary" id="vbAddPage">＋ Crear pantalla</button><button type="button" class="secondary" id="vbRemovePage">Retirar pantalla nueva</button></div>
 <div class="vb-toolbar"><strong id="vbCurrentPage">INICIO</strong><div><button class="secondary" id="vbPhone" type="button">Celular</button> <button class="secondary" id="vbDesktop" type="button">Computador</button></div></div>
 <div class="vb-shell"><aside class="vb-tools"><strong>＋ Agregar elementos</strong>
 <button type="button" id="vbAddImage">▧ Agregar fotografía</button><button type="button" id="vbAddText">T Agregar título o texto</button><button type="button" id="vbAddButton">▢ Agregar botón</button><button type="button" id="vbAddPanel">▤ Agregar bloque / sección</button>
+<hr style="border:0;border-top:1px solid #eee4f0;margin:14px 0"><strong>Fondo de pantalla</strong>
+<button type="button" id="vbBackgroundVideoButton">▶ Poner video de fondo</button><button type="button" id="vbClearBackground">Quitar fondo de video</button>
+<input id="vbBackgroundVideo" type="file" accept="video/mp4,video/webm,video/quicktime" hidden>
 <input id="vbImageFile" type="file" accept="image/jpeg,image/png,image/webp" hidden><hr style="border:0;border-top:1px solid #eee4f0;margin:14px 0"><strong>Editar elemento seleccionado</strong>
 <div class="vb-props"><label>Ancho (%)<input id="vbWidth" type="number" min="8" max="100" value="80"></label><label>Alto (px)<input id="vbHeight" type="number" min="30" max="600" value="90"></label><label>Izquierda (%)<input id="vbLeft" type="number" min="0" max="100" value="10"></label><label>Arriba (%)<input id="vbTop" type="number" min="0" max="100" value="10"></label><label>Texto<input id="vbText" type="text" maxlength="180" placeholder="Tu mensaje"></label><label>Tamaño texto<input id="vbFont" type="number" min="10" max="64" value="24"></label><label>Color<input id="vbColor" type="color" value="#30263a"></label><label>Fondo<input id="vbBackground" type="color" value="#ffffff"></label></div>
 <button type="button" id="vbDuplicate">⧉ Duplicar seleccionado</button><button type="button" id="vbDelete">Eliminar seleccionado</button><button type="button" id="vbClear">Vaciar esta pantalla</button></aside>
