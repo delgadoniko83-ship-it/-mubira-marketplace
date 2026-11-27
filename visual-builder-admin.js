@@ -2,7 +2,7 @@ import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.2";
 const db=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publishable_01DxOQWRyBJAdrUeXh7_gQ_j_qlTvtz");
 const $=id=>document.getElementById(id),stage=$("vbStage"),status=$("vbStatus");
 let pages=[{id:"inicio",name:"Inicio"},{id:"espacios",name:"Espacios"},{id:"coleccion",name:"Colección"},{id:"estudio",name:"Nuestro mundo"}];
-let theme=null,session=null,activePage="inicio",drafts={},pageMeta={},items=[],selected=null,mode="phone",drag=null,pendingFiles=new Map(),pendingBackgroundFiles=new Map(),historyByPage={},historyIndexByPage={};
+let theme=null,session=null,activePage="inicio",drafts={},pageMeta={},items=[],selected=null,mode="phone",previewing=false,drag=null,pendingFiles=new Map(),pendingBackgroundFiles=new Map(),historyByPage={},historyIndexByPage={};
 const pageSlug=s=>s.toLocaleLowerCase("es-CO").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,42);
 const say=t=>status.textContent=t,clamp=(v,a,b)=>Math.max(a,Math.min(b,Number(v)||0));
 const uid=()=>"vb-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7);
@@ -35,6 +35,7 @@ function switchPage(id){
  renderPageTabs();if(!historyByPage[id])snapshot();render();syncProps();say("Editando "+pages.find(p=>p.id===id).name+". El borrador de las demás pantallas se conserva.");
 }
 function render(){
+ $("visualBuilderPanel").classList.toggle("vb-preview-mode",previewing);
  stage.classList.toggle("desktop",mode==="desktop");
  const oldBg=stage.querySelector(".vb-bg-video");if(oldBg)oldBg.remove();
  const meta=pageMeta[activePage]||{};
@@ -102,6 +103,7 @@ $("vbDuplicate").addEventListener("click",()=>{const x=items.find(v=>v.id===sele
 $("vbDelete").addEventListener("click",()=>{if(!selected)return;items=items.filter(v=>v.id!==selected);pendingFiles.delete(selected);selected=null;snapshot();render();syncProps();});
 $("vbClear").addEventListener("click",()=>{if(!confirm("¿Vaciar solamente "+pages.find(p=>p.id===activePage).name+"?"))return;for(const item of items)pendingFiles.delete(item.id);items=[];selected=null;snapshot();render();syncProps();});
 $("vbPhone").addEventListener("click",()=>{mode="phone";render();});$("vbDesktop").addEventListener("click",()=>{mode="desktop";render();});
+$("vbPreviewToggle").addEventListener("click",()=>{previewing=!previewing;if(previewing){selected=null;syncProps();}const b=$("vbPreviewToggle");b.textContent=previewing?"✎ Volver a editar":"▶ Vista previa";b.setAttribute("aria-pressed",String(previewing));render();say(previewing?"Vista previa limpia. El borrador sigue sin publicarse.":"Volviste al editor; puedes continuar ajustando elementos.");});
 $("vbPages").addEventListener("click",e=>{const b=e.target.closest("[data-vb-page]");if(b)switchPage(b.dataset.vbPage);});
 $("vbLayers").addEventListener("click",e=>{const row=e.target.closest("[data-layer-id]");if(!row)return;selected=row.dataset.layerId;syncProps();render();});
 $("vbAddPage").addEventListener("click",()=>{const name=prompt("Nombre de la nueva pantalla:");if(!name?.trim())return;const id=pageSlug(name);if(!id||pages.some(p=>p.id===id)){say("Ese nombre ya existe o no es válido. Prueba con otro.");return;}pages.push({id,name:name.trim().slice(0,48)});drafts[id]=[];pageMeta[id]={};switchPage(id);say("Pantalla creada como borrador. Todavía no aparece en la tienda pública.");});
