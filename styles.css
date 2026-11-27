@@ -1045,5 +1045,4 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
 .mubira-visual-text{font-weight:700;text-shadow:0 1px 10px #ffffff66}
 .mubira-visual-button{width:auto;min-width:110px;min-height:42px;padding:10px 18px;border-radius:4px;background:linear-gradient(110deg,#d92fa9,#a17bea);color:#fff!important;font-size:clamp(12px,1.2vw,16px)!important;font-weight:800;box-shadow:0 8px 22px #8d4c9b35}
 .mubira-visual-panel{border:1px solid #ffffff9c;border-radius:12px;box-shadow:0 12px 30px #30203b20;backdrop-filter:blur(7px)}
-.page-panel>.mubira-visual-public-background~*{position:relative;z-index:1}
 @media(max-width:760px){.mubira-visual-public-element{padding:5px}.mubira-visual-button{min-width:90px;min-height:36px}}
