@@ -127,6 +127,24 @@ $("vbRenamePage").addEventListener("click",()=>{
 });
 $("vbMovePageLeft").addEventListener("click",()=>moveActivePage(-1));
 $("vbMovePageRight").addEventListener("click",()=>moveActivePage(1));
+$("vbDuplicatePage").addEventListener("click",()=>{
+ const source=pages.find(p=>p.id===activePage);if(!source)return;
+ snapshot();
+ const name=(source.name+" copia").slice(0,48);
+ let id=pageSlug(name),suffix=2;
+ while(!id||pages.some(p=>p.id===id)){const tail="-"+suffix++;id=(pageSlug(name).slice(0,42-tail.length)+tail);}
+ const copies=(drafts[activePage]||[]).map(item=>{
+  const copy=clean({...item,id:uid()});
+  const pending=pendingFiles.get(item.id);if(pending)pendingFiles.set(copy.id,pending);
+  return copy;
+ });
+ drafts[id]=copies;
+ pageMeta[id]={...(pageMeta[activePage]||{})};
+ const backgroundFile=pendingBackgroundFiles.get(activePage);if(backgroundFile)pendingBackgroundFiles.set(id,backgroundFile);
+ pages.splice(pages.findIndex(p=>p.id===activePage)+1,0,{id,name});
+ switchPage(id);
+ say("Pantalla duplicada con sus elementos y fondo. Revisa el contenido y guarda el borrador.");
+});
 $("vbAddPage").addEventListener("click",()=>{const name=prompt("Nombre de la nueva pantalla:");if(!name?.trim())return;const id=pageSlug(name);if(!id||pages.some(p=>p.id===id)){say("Ese nombre ya existe o no es válido. Prueba con otro.");return;}pages.push({id,name:name.trim().slice(0,48)});drafts[id]=[];pageMeta[id]={};switchPage(id);say("Pantalla creada como borrador. Todavía no aparece en la tienda pública.");});
 $("vbRemovePage").addEventListener("click",()=>{const p=pages.find(x=>x.id===activePage);if(!p||["inicio","espacios","coleccion","estudio"].includes(p.id)){say("Las cuatro pantallas originales están protegidas.");return;}if(!confirm("¿Eliminar el borrador de «"+p.name+"»? Esta acción se guardará cuando pulses Guardar borradores."))return;snapshot();pages=pages.filter(x=>x.id!==p.id);delete drafts[p.id];delete pageMeta[p.id];pendingBackgroundFiles.delete(p.id);activePage="inicio";items=(drafts.inicio||[]).map(clean);selected=null;renderPageTabs();render();syncProps();say("Pantalla retirada del borrador. Guarda para confirmar el cambio.");});
 $("vbBackgroundVideoButton").addEventListener("click",()=>$("vbBackgroundVideo").click());
