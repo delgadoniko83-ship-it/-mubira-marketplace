@@ -222,8 +222,8 @@
 <div class="tech-test-notice" role="status">MODO DE PRUEBAS · Los cambios del constructor se preparan como borradores. No se debe considerar la tienda lista para operación comercial.</div><div class="tech-nav-heading"><span id="techScreenStatus" aria-live="polite">Módulo 1 de 4 · Seguridad</span><div><button type="button" class="tech-step" id="techPrev" aria-label="Sección anterior">← Anterior</button><button type="button" class="tech-step" id="techNext" aria-label="Sección siguiente">Siguiente →</button></div></div><nav class="tech-nav" aria-label="Módulos del administrador técnico">
 <button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Seguridad y accesos</button>
 <button type="button" class="tech-tab" data-tech-target="builder"><span>02</span> Constructor de pantallas</button>
-<button type="button" class="tech-tab" data-tech-target="cards"><span>03</span> Biblioteca de bloques</button>
-<button type="button" class="tech-tab" data-tech-target="themes"><span>04</span> Fondos e identidad</button>
+<button type="button" class="tech-tab" data-tech-target="cards"><span>03</span> Tarjetas de Espacios</button>
+<button type="button" class="tech-tab" data-tech-target="themes"><span>04</span> Ambientes y marca</button>
 </nav><div class="tech-workspace"><section class="panel tech-screen" data-tech-screen="builder" id="visualBuilderPanel">
 <style>
 #visualBuilderPanel .vb-pages{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 14px;scrollbar-width:thin}
@@ -284,7 +284,8 @@
 .tech-test-notice{margin:0 0 18px;padding:12px 16px;border:1px solid #d9c8e5;border-radius:14px;background:linear-gradient(110deg,#f5eef9,#fff);color:#5b4568;font-size:12px;font-weight:700}
 </style>
 <h2>Constructor visual · Todas tus pantallas</h2>
-<p class="sub">Diseña las cuatro pantallas originales o crea otras nuevas. Puedes agregar fotos, textos, botones, bloques y videos de fondo. Cada pantalla conserva su borrador; guardar aquí no modifica la tienda pública.</p>
+<p class="sub">Diseña la composición de cada pantalla: agrega fotografías, textos, botones, bloques y videos de fondo; mueve, cambia tamaños y organiza capas. Este módulo no reemplaza los datos de las tarjetas existentes ni la identidad global del sitio.</p>
+<div class="actions vb-shortcuts"><button type="button" class="secondary" id="vbOpenCards">▦ Editar tarjetas de Espacios</button><button type="button" class="secondary" id="vbOpenThemes">◈ Abrir ambientes y marca</button></div>
 <div class="vb-pages" id="vbPages" aria-label="Pantallas de la tienda"></div>
 <div class="vb-toolbar"><button type="button" class="secondary" id="vbAddPage">＋ Crear pantalla</button><button type="button" class="secondary" id="vbDuplicatePage">▣ Duplicar pantalla</button><button type="button" class="secondary" id="vbRenamePage">✎ Renombrar pantalla</button><button type="button" class="secondary" id="vbMovePageLeft">← Mover antes</button><button type="button" class="secondary" id="vbMovePageRight">Mover después →</button><button type="button" class="secondary" id="vbRemovePage">Retirar pantalla nueva</button></div>
 <div class="vb-toolbar"><strong id="vbCurrentPage">INICIO</strong><div><button class="secondary" id="vbPhone" type="button">Celular</button> <button class="secondary" id="vbDesktop" type="button">Computador</button> <button class="primary" id="vbPreviewToggle" type="button" aria-pressed="false">▶ Vista previa</button></div></div>
@@ -350,7 +351,7 @@
 <div class="actions"><button class="primary" id="saveSectionContent">Guardar portada y contenido</button></div><p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
 </section>
 <section class="panel section-editor-panel space-items-panel tech-screen" data-tech-screen="cards">
-<h2>Biblioteca de bloques y tarjetas</h2><p class="sub">Edita cada tarjeta de Espacios por separado. Las imágenes de los productos de Colección se administran en el catálogo comercial.</p>
+<h2>Tarjetas de Espacios</h2><p class="sub">Este módulo administra el contenido real de las cuatro tarjetas existentes: nombre, texto superior, descripción e imagen. El Constructor visual se ocupa de la composición libre; aquí cambias los datos que leen esas tarjetas. Las fotos de productos de Colección se administran en el catálogo comercial.</p>
 <label for="spaceItemKey">Tarjeta que quieres editar</label><select id="spaceItemKey"><option value="salas">Salas</option><option value="comedores">Comedores</option><option value="habitaciones">Habitaciones</option><option value="decoracion">Decoración</option></select>
 <label for="spaceItemEyebrow">Texto pequeño superior</label><input id="spaceItemEyebrow" maxlength="100" placeholder="Ej. 01 / RELAJARSE">
 <label for="spaceItemTitle">Nombre del botón o tarjeta</label><input id="spaceItemTitle" maxlength="80" placeholder="Ej. Salas">
@@ -361,8 +362,8 @@
 <div class="actions"><button class="primary" id="saveSpaceItem">Guardar tarjeta</button></div><p class="message" id="spaceItemMessage" aria-live="polite">Cargando tarjetas...</p>
 </section>
 <section class="panel tech-screen" data-tech-screen="themes">
-<h2>Fondos, ambientes e identidad visual</h2>
-<p class="sub">Administra los fondos y la identidad visual general. El Constructor de pantallas es el espacio principal para diseñar las nuevas páginas, organizar elementos y preparar sus fondos antes de publicar.</p>
+<h2>Ambientes y marca visual</h2>
+<p class="sub">Aquí defines los colores globales, tipografía, estilo de botones y fotografías de ambiente de cada pantalla. El Constructor visual controla la composición libre y los videos de fondo. Guarda un ambiente como borrador; solo usa «Aplicar en tienda» cuando quieras cambiar lo que ven los clientes.</p>
 <div class="pill" id="themeActiveState">CARGANDO AMBIENTES</div>
 <label for="themeSelect">Ambiente guardado</label><select id="themeSelect"></select>
 <div class="actions"><button class="secondary" type="button" id="themeNew">＋ Crear nuevo ambiente</button></div>
