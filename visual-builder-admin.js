@@ -27,6 +27,10 @@ function bringLayer(front){const i=items.findIndex(x=>x.id===selected);if(i<0)re
 function renderPageTabs(){
  const host=$("vbPages");host.innerHTML="";
  pages.forEach((p,i)=>{const b=document.createElement("button");b.type="button";b.dataset.vbPage=p.id;b.className=p.id===activePage?"active":"";b.textContent=String(i+1).padStart(2,"0")+" · "+p.name;host.append(b);});
+ const index=pages.findIndex(p=>p.id===activePage);
+ const left=$("vbMovePageLeft"),right=$("vbMovePageRight");
+ if(left)left.disabled=index<=0;
+ if(right)right.disabled=index<0||index>=pages.length-1;
 }
 function switchPage(id){
  if(!pages.some(p=>p.id===id))return;
