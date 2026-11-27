@@ -219,7 +219,12 @@
 <section id="denied" class="panel hidden"><p class="eyebrow">ACCESO RESTRINGIDO</p><h1>Cuenta sin permisos técnicos</h1><p class="sub">La sesión de Google está activa, pero esta cuenta no tiene autorización para cambiar la apariencia de MUBIRA.</p><p id="signedEmail"></p><button class="secondary" id="signOutDenied">Cerrar sesión</button></section>
 <div id="techApp" class="hidden">
 <div class="intro tech-hero"><div><p class="eyebrow">MUBIRA · CONTROL CENTER</p><h1>Estudio de administración técnica</h1><p>Un solo lugar para controlar el acceso, la identidad visual y cada pantalla de la tienda. Organiza tu trabajo por módulos y revisa los cambios antes de publicarlos.</p><span class="pill">ESPACIO PRIVADO · DISEÑO Y CONFIGURACIÓN</span></div><div class="tech-hero-links"><a href="/" target="_blank" rel="noopener"><span>↗</span><b>Ver tienda</b><small>Experiencia pública</small></a><a href="/admin.html"><span>▤</span><b>Catálogo comercial</b><small>Productos y pedidos</small></a></div></div>
-<div class="tech-nav-heading"><span id="techScreenStatus" aria-live="polite">Sección 1 de 6 · Accesos</span><div><button type="button" class="tech-step" id="techPrev" aria-label="Sección anterior">← Anterior</button><button type="button" class="tech-step" id="techNext" aria-label="Sección siguiente">Siguiente →</button></div></div><nav class="tech-nav" aria-label="Secciones del administrador técnico"><button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Seguridad</button><button type="button" class="tech-tab" data-tech-target="audit"><span>02</span> Actividad</button><button type="button" class="tech-tab" data-tech-target="covers"><span>03</span> Pantallas</button><button type="button" class="tech-tab" data-tech-target="cards"><span>04</span> Tarjetas</button><button type="button" class="tech-tab" data-tech-target="themes"><span>05</span> Identidad</button><button type="button" class="tech-tab" data-tech-target="builder"><span>06</span> Editor visual</button></nav><div class="tech-workspace"><section class="panel tech-screen" data-tech-screen="builder" id="visualBuilderPanel">
+<div class="tech-test-notice" role="status">MODO DE PRUEBAS · Los cambios del constructor se preparan como borradores. No se debe considerar la tienda lista para operación comercial.</div><div class="tech-nav-heading"><span id="techScreenStatus" aria-live="polite">Módulo 1 de 4 · Seguridad</span><div><button type="button" class="tech-step" id="techPrev" aria-label="Sección anterior">← Anterior</button><button type="button" class="tech-step" id="techNext" aria-label="Sección siguiente">Siguiente →</button></div></div><nav class="tech-nav" aria-label="Módulos del administrador técnico">
+<button type="button" class="tech-tab active" data-tech-target="access"><span>01</span> Seguridad y accesos</button>
+<button type="button" class="tech-tab" data-tech-target="builder"><span>02</span> Constructor de pantallas</button>
+<button type="button" class="tech-tab" data-tech-target="cards"><span>03</span> Biblioteca de bloques</button>
+<button type="button" class="tech-tab" data-tech-target="themes"><span>04</span> Fondos e identidad</button>
+</nav><div class="tech-workspace"><section class="panel tech-screen" data-tech-screen="builder" id="visualBuilderPanel">
 <style>
 #visualBuilderPanel .vb-pages{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 14px;scrollbar-width:thin}
 #visualBuilderPanel .vb-pages button{flex:0 0 auto;border:1px solid #e8ddec;background:#fff;color:#594865;border-radius:13px;padding:11px 16px;font-size:12px}
@@ -273,6 +278,10 @@
 #visualBuilderPanel .vb-layer-action{width:30px;min-width:30px;height:30px;padding:0!important;margin:0!important;border:1px solid #e8ddeb!important;border-radius:8px;background:#fff!important;color:#76517b!important}
 #visualBuilderPanel .vb-layer.is-hidden{opacity:.62}
 #visualBuilderPanel .vb-layer.is-locked{border-style:dashed!important}
+
+/* Módulos heredados conservados en código, retirados de la navegación durante el rediseño y las pruebas. */
+#technicalAuditPanel,#visualBuilderPanel~[data-tech-screen="covers"]{display:none!important}
+.tech-test-notice{margin:0 0 18px;padding:12px 16px;border:1px solid #d9c8e5;border-radius:14px;background:linear-gradient(110deg,#f5eef9,#fff);color:#5b4568;font-size:12px;font-weight:700}
 </style>
 <h2>Constructor visual · Todas tus pantallas</h2>
 <p class="sub">Diseña las cuatro pantallas originales o crea otras nuevas. Puedes agregar fotos, textos, botones, bloques y videos de fondo. Cada pantalla conserva su borrador; guardar aquí no modifica la tienda pública.</p>
@@ -341,7 +350,7 @@
 <div class="actions"><button class="primary" id="saveSectionContent">Guardar portada y contenido</button></div><p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
 </section>
 <section class="panel section-editor-panel space-items-panel tech-screen" data-tech-screen="cards">
-<h2>Imágenes y textos de botones / tarjetas</h2><p class="sub">Edita cada tarjeta de Espacios por separado. Las imágenes de los productos de Colección se administran en el catálogo comercial.</p>
+<h2>Biblioteca de bloques y tarjetas</h2><p class="sub">Edita cada tarjeta de Espacios por separado. Las imágenes de los productos de Colección se administran en el catálogo comercial.</p>
 <label for="spaceItemKey">Tarjeta que quieres editar</label><select id="spaceItemKey"><option value="salas">Salas</option><option value="comedores">Comedores</option><option value="habitaciones">Habitaciones</option><option value="decoracion">Decoración</option></select>
 <label for="spaceItemEyebrow">Texto pequeño superior</label><input id="spaceItemEyebrow" maxlength="100" placeholder="Ej. 01 / RELAJARSE">
 <label for="spaceItemTitle">Nombre del botón o tarjeta</label><input id="spaceItemTitle" maxlength="80" placeholder="Ej. Salas">
@@ -352,8 +361,8 @@
 <div class="actions"><button class="primary" id="saveSpaceItem">Guardar tarjeta</button></div><p class="message" id="spaceItemMessage" aria-live="polite">Cargando tarjetas...</p>
 </section>
 <section class="panel tech-screen" data-tech-screen="themes">
-<h2>Ambiente · Fotografía de fondo</h2>
-<p class="sub">El ambiente es la fotografía grande que ocupa el FONDO de la pantalla, detrás de la portada y del contenido. Aquí eliges y subes una imagen de ambiente distinta. No sustituye ni modifica la portada frontal.</p>
+<h2>Fondos, ambientes e identidad visual</h2>
+<p class="sub">Administra los fondos y la identidad visual general. El Constructor de pantallas es el espacio principal para diseñar las nuevas páginas, organizar elementos y preparar sus fondos antes de publicar.</p>
 <div class="pill" id="themeActiveState">CARGANDO AMBIENTES</div>
 <label for="themeSelect">Ambiente guardado</label><select id="themeSelect"></select>
 <div class="actions"><button class="secondary" type="button" id="themeNew">＋ Crear nuevo ambiente</button></div>
