@@ -1038,7 +1038,7 @@ body[data-mubira-button-style="outline"] .add-button{border-color:var(--mubira-p
 
 
 /* Diseños guardados desde el Constructor Visual: solo lectura en la tienda pública */
-.page-panel>.mubira-visual-public-background{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
+.page-panel{isolation:isolate}\n.page-panel>.mubira-visual-public-background{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;pointer-events:none}
 .page-panel>.mubira-visual-public-layer{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden}
 .mubira-visual-public-element{position:absolute;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px;white-space:pre-wrap;overflow-wrap:anywhere;text-align:center;pointer-events:auto}
 .mubira-visual-public-element img{width:100%;height:100%;object-fit:cover;display:block}
