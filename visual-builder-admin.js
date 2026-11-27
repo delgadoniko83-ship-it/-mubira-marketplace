@@ -7,10 +7,10 @@ const pageSlug=s=>s.toLocaleLowerCase("es-CO").normalize("NFD").replace(/[\u0300
 const say=t=>status.textContent=t,clamp=(v,a,b)=>Math.max(a,Math.min(b,Number(v)||0));
 const uid=()=>"vb-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7);
 const url=p=>p?db.storage.from("mubira-products").getPublicUrl(p).data.publicUrl:"";
-function clean(x){return {id:x.id||uid(),type:x.type||"text",left:clamp(x.left,0,100),top:clamp(x.top,0,100),width:clamp(x.width??80,8,100),height:clamp(x.height??90,30,600),text:String(x.text||""),font:clamp(x.font??24,10,64),color:x.color||"#30263a",background:x.background||"#ffffff",path:x.path||"",localUrl:x.localUrl||"",hidden:!!x.hidden,locked:!!x.locked};}
+function clean(x){return {id:x.id||uid(),type:x.type||"text",left:clamp(x.left,0,100),top:clamp(x.top,0,100),width:clamp(x.width??80,8,100),height:clamp(x.height??90,30,600),text:String(x.text||""),font:clamp(x.font??24,10,64),color:x.color||"#30263a",background:x.background||"#ffffff",path:x.path||"",link:String(x.link||""),localUrl:x.localUrl||"",hidden:!!x.hidden,locked:!!x.locked};}
 function snapshot(){
  drafts[activePage]=items.map(x=>({...x}));
- const state=JSON.stringify(items.map(({id,type,left,top,width,height,text,font,color,background,path,localUrl,hidden,locked})=>({id,type,left,top,width,height,text,font,color,background,path,localUrl,hidden,locked})));
+ const state=JSON.stringify(items.map(({id,type,left,top,width,height,text,font,color,background,path,link,localUrl,hidden,locked})=>({id,type,left,top,width,height,text,font,color,background,path,link,localUrl,hidden,locked})));
  const history=historyByPage[activePage]||(historyByPage[activePage]=[]);
  let index=historyIndexByPage[activePage]??-1;
  if(index>=0&&history[index]===state)return;
@@ -79,9 +79,9 @@ function renderLayers(){
 }
 function syncProps(){
  const x=items.find(v=>v.id===selected);
- for(const id of ["vbWidth","vbHeight","vbLeft","vbTop","vbText","vbFont","vbColor","vbBackground"])$(id).disabled=!x;
+ for(const id of ["vbWidth","vbHeight","vbLeft","vbTop","vbText","vbFont","vbColor","vbBackground","vbLink"])$(id).disabled=!x;
  if(!x)return;
- $("vbWidth").value=x.width;$("vbHeight").value=x.height;$("vbLeft").value=x.left;$("vbTop").value=x.top;$("vbText").value=x.text;$("vbFont").value=x.font;$("vbColor").value=x.color;$("vbBackground").value=x.background;
+ $("vbWidth").value=x.width;$("vbHeight").value=x.height;$("vbLeft").value=x.left;$("vbTop").value=x.top;$("vbText").value=x.text;$("vbFont").value=x.font;$("vbColor").value=x.color;$("vbBackground").value=x.background;$("vbLink").value=x.type==="button"?(x.link||""):"";$("vbLink").closest("label").hidden=x.type!=="button";
 }
 stage.addEventListener("pointermove",e=>{
  if(!drag)return;const x=items.find(v=>v.id===drag.id);if(!x)return;
@@ -102,7 +102,7 @@ function add(type){const x=clean({id:uid(),type,left:8,top:12+items.length*4,wid
 $("vbAddImage").addEventListener("click",()=>$("vbImageFile").click());
 $("vbImageFile").addEventListener("change",()=>{const f=$("vbImageFile").files?.[0];if(!f)return;if(!f.type.startsWith("image/")||f.size>8*1024*1024){say("Elige JPG, PNG o WebP de máximo 8 MB.");return;}const x=clean({id:uid(),type:"image",width:84,height:160,left:8,top:12});x.localUrl=URL.createObjectURL(f);items.push(x);pendingFiles.set(x.id,f);selected=x.id;snapshot();render();syncProps();$("vbImageFile").value="";say("Foto añadida. Se subirá al guardar el borrador.");});
 $("vbAddText").addEventListener("click",()=>add("text"));$("vbAddButton").addEventListener("click",()=>add("button"));$("vbAddPanel").addEventListener("click",()=>add("panel"));
-const props={vbWidth:["width",8,100],vbHeight:["height",30,600],vbLeft:["left",0,100],vbTop:["top",0,100],vbText:["text"],vbFont:["font",10,64],vbColor:["color"],vbBackground:["background"]};
+const props={vbWidth:["width",8,100],vbHeight:["height",30,600],vbLeft:["left",0,100],vbTop:["top",0,100],vbText:["text"],vbFont:["font",10,64],vbColor:["color"],vbBackground:["background"],vbLink:["link"]};
 for(const [id,[key,min,max]] of Object.entries(props))$(id).addEventListener("input",()=>{const x=items.find(v=>v.id===selected);if(!x)return;x[key]=min===undefined?$(id).value:clamp($(id).value,min,max);snapshot();render();});
 $("vbUndo").addEventListener("click",()=>restoreHistory((historyIndexByPage[activePage]??0)-1));
 $("vbRedo").addEventListener("click",()=>restoreHistory((historyIndexByPage[activePage]??-1)+1));
@@ -185,7 +185,7 @@ $("vbSave").addEventListener("click",async()=>{
   for(const [page,list] of Object.entries(drafts))for(const x of list){const file=pendingFiles.get(x.id);if(!file)continue;const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";const path="visual-builder/"+theme.theme_key+"/"+page+"/"+x.id+"-"+Date.now()+"."+ext;const {data,error}=await db.storage.from("mubira-products").upload(path,file,{upsert:false,contentType:file.type});if(error)throw error;x.path=data.path;x.localUrl="";uploaded.push(data.path);}
   for(const [page,file] of pendingBackgroundFiles){const ext=(file.name.split(".").pop()||"mp4").toLowerCase().replace(/[^a-z0-9]/g,"")||"mp4";const path="visual-builder/"+theme.theme_key+"/"+page+"/background-"+Date.now()+"."+ext;const {data,error}=await db.storage.from("mubira-products").upload(path,file,{upsert:false,contentType:file.type});if(error)throw error;pageMeta[page]={...(pageMeta[page]||{}),background_type:"video",background_path:data.path};delete pageMeta[page].background_local_url;uploaded.push(data.path);}
   const {data:latest,error:readError}=await db.from("site_themes").select("settings").eq("id",theme.id).single();if(readError)throw readError;
-  const settings={...(latest.settings||{}),visual_builder:{version:3,updated_at:new Date().toISOString(),page_list:pages.map(({id,name})=>({id,name})),page_meta:pageMeta,pages:Object.fromEntries(Object.entries(drafts).map(([id,list])=>[id,list.map(({id:elementId,type,left,top,width,height,text,font,color,background,path,hidden,locked})=>({id:elementId,type,left,top,width,height,text,font,color,background,path,hidden:!!hidden,locked:!!locked}))]))}};
+  const settings={...(latest.settings||{}),visual_builder:{version:3,updated_at:new Date().toISOString(),page_list:pages.map(({id,name})=>({id,name})),page_meta:pageMeta,pages:Object.fromEntries(Object.entries(drafts).map(([id,list])=>[id,list.map(({id:elementId,type,left,top,width,height,text,font,color,background,path,link,hidden,locked})=>({id:elementId,type,left,top,width,height,text,font,color,background,path,link:String(link||""),hidden:!!hidden,locked:!!locked}))]))}};
   const {data:saved,error}=await db.from("site_themes").update({settings,updated_by:session.user.id}).eq("id",theme.id).select("id,settings").single();if(error)throw error;
   if(!saved?.settings?.visual_builder?.pages)throw new Error("No se pudo verificar el guardado.");
   theme.settings=saved.settings;pendingFiles.clear();pendingBackgroundFiles.clear();items=(drafts[activePage]||[]).map(clean);renderPageTabs();render();say("¡Guardado! "+pages.length+" pantallas y sus fondos quedaron como borradores. La tienda pública no se publicó ni se alteró.");
