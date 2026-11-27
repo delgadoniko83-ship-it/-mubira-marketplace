@@ -80,6 +80,7 @@ function renderLayers(){
 function syncProps(){
  const x=items.find(v=>v.id===selected);
  for(const id of ["vbWidth","vbHeight","vbLeft","vbTop","vbText","vbFont","vbColor","vbBackground","vbLink"])$(id).disabled=!x;
+ $("vbLink").closest("label").hidden=!x||x.type!=="button";
  if(!x)return;
  $("vbWidth").value=x.width;$("vbHeight").value=x.height;$("vbLeft").value=x.left;$("vbTop").value=x.top;$("vbText").value=x.text;$("vbFont").value=x.font;$("vbColor").value=x.color;$("vbBackground").value=x.background;$("vbLink").value=x.type==="button"?(x.link||""):"";$("vbLink").closest("label").hidden=x.type!=="button";
 }
