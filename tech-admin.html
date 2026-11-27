@@ -278,6 +278,11 @@
 #visualBuilderPanel .vb-layer-action{width:30px;min-width:30px;height:30px;padding:0!important;margin:0!important;border:1px solid #e8ddeb!important;border-radius:8px;background:#fff!important;color:#76517b!important}
 #visualBuilderPanel .vb-layer.is-hidden{opacity:.62}
 #visualBuilderPanel .vb-layer.is-locked{border-style:dashed!important}
+#visualBuilderPanel .vb-cover-editor{margin-top:18px;border:1px solid #e7d9ec;border-radius:16px;background:#fff;overflow:hidden}
+#visualBuilderPanel .vb-cover-editor>summary{padding:14px 16px;background:linear-gradient(110deg,#f8f0fa,#fff);cursor:pointer}
+#visualBuilderPanel .vb-cover-editor .vb-group-body{padding:16px}
+#visualBuilderPanel .vb-cover-editor .cover-composition-preview{max-width:620px}
+#visualBuilderPanel .vb-cover-editor .cover-preview-stage{max-width:100%}
 
 /* Módulos heredados conservados en código, retirados de la navegación durante el rediseño y las pruebas. */
 #technicalAuditPanel,[data-tech-screen="covers"]{display:none!important}
@@ -301,22 +306,8 @@
 <button type="button" id="vbClear" class="vb-danger">Vaciar esta pantalla</button>
 </aside>
 <div class="vb-stage-wrap"><div class="vb-stage" id="vbStage"><div class="vb-empty" id="vbEmpty">Esta pantalla está lista para diseñarse.</div></div><div class="actions"><button class="primary" type="button" id="vbSave">Guardar borradores · No publicar</button></div><p class="vb-status" id="vbStatus" aria-live="polite">Cargando...</p></div>
-</div></section>
-<section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
-<h2>Personas autorizadas</h2><p class="sub">Agrega los correos de Google que pueden entrar al administrador técnico. La persona debe iniciar sesión con ese mismo correo. Puedes retirar el acceso cuando lo necesites.</p>
-<form id="technicalInviteForm">
-<label for="technicalInviteEmail">Correo de Google que vas a autorizar</label><input id="technicalInviteEmail" type="email" required maxlength="254" placeholder="persona@gmail.com" autocomplete="email">
-<div class="actions"><button class="primary" type="submit" id="technicalInviteSave">Autorizar acceso técnico</button></div>
-</form><p class="message" id="technicalInviteMessage" aria-live="polite"></p>
-<div id="technicalInviteList" class="sub">Cargando accesos...</div>
-</section>
-<section class="panel tech-screen" id="technicalAuditPanel" data-tech-screen="audit">
-<h2>Historial y responsabilidad</h2><p class="sub">Cada cambio queda registrado con el correo de la sesión, fecha, tipo de acción y campos modificados. Este registro es de solo lectura para proteger la trazabilidad: puedes actualizarlo, pero no alterar ni borrar evidencias desde aquí.</p>
-<div class="actions"><button class="secondary" id="refreshTechnicalAudit" type="button">Actualizar historial</button></div>
-<div id="technicalAuditList" class="sub">Cargando historial...</div>
-</section>
-<section class="panel section-editor-panel tech-screen" data-tech-screen="covers">
-<h2>Portada · Imagen que va delante</h2><p class="sub">La portada es la imagen principal que se monta ENCIMA del ambiente. En Inicio aparece como una capa independiente dentro del espacio visual; no reemplaza el fondo. Aquí también puedes cambiar títulos y textos.</p>
+</div><details class="vb-group vb-cover-editor"><summary><span class="vb-group-icon">▧</span><span><b>Textos y portada original</b><small>Editar títulos, descripciones e imagen frontal de las cuatro pantallas</small></span></summary><div class="vb-group-body">
+<h3>Contenido y portada de la pantalla</h3><p class="sub">La portada es la imagen principal que se monta ENCIMA del ambiente. En Inicio aparece como una capa independiente dentro del espacio visual; no reemplaza el fondo. Aquí también puedes cambiar títulos y textos.</p>
 <label for="sectionKey">Pantalla que quieres editar</label><select id="sectionKey"><option value="inicio">Inicio</option><option value="espacios">Espacios</option><option value="coleccion">Colección</option><option value="nuestro_mundo">Nuestro mundo</option></select>
 <label for="sectionNavLabel">Nombre en el menú</label><input id="sectionNavLabel" maxlength="60" placeholder="Nombre de la pantalla">
 <label for="sectionEyebrow">Texto pequeño superior</label><input id="sectionEyebrow" maxlength="120" placeholder="Frase corta">
@@ -349,7 +340,21 @@
 </div>
 <div class="check"><input type="checkbox" id="removeSectionImage"><label for="removeSectionImage">Quitar fotografía y restaurar el diseño original</label></div>
 <div class="actions"><button class="primary" id="saveSectionContent">Guardar portada y contenido</button></div><p class="message" id="sectionContentMessage" aria-live="polite">Cargando editor...</p>
+</div></details></section>
+<section class="panel tech-screen active" id="technicalAccessPanel" data-tech-screen="access">
+<h2>Personas autorizadas</h2><p class="sub">Agrega los correos de Google que pueden entrar al administrador técnico. La persona debe iniciar sesión con ese mismo correo. Puedes retirar el acceso cuando lo necesites.</p>
+<form id="technicalInviteForm">
+<label for="technicalInviteEmail">Correo de Google que vas a autorizar</label><input id="technicalInviteEmail" type="email" required maxlength="254" placeholder="persona@gmail.com" autocomplete="email">
+<div class="actions"><button class="primary" type="submit" id="technicalInviteSave">Autorizar acceso técnico</button></div>
+</form><p class="message" id="technicalInviteMessage" aria-live="polite"></p>
+<div id="technicalInviteList" class="sub">Cargando accesos...</div>
 </section>
+<section class="panel tech-screen" id="technicalAuditPanel" data-tech-screen="audit">
+<h2>Historial y responsabilidad</h2><p class="sub">Cada cambio queda registrado con el correo de la sesión, fecha, tipo de acción y campos modificados. Este registro es de solo lectura para proteger la trazabilidad: puedes actualizarlo, pero no alterar ni borrar evidencias desde aquí.</p>
+<div class="actions"><button class="secondary" id="refreshTechnicalAudit" type="button">Actualizar historial</button></div>
+<div id="technicalAuditList" class="sub">Cargando historial...</div>
+</section>
+
 <section class="panel section-editor-panel space-items-panel tech-screen" data-tech-screen="cards">
 <h2>Tarjetas de Espacios</h2><p class="sub">Este módulo administra el contenido real de las cuatro tarjetas existentes: nombre, texto superior, descripción e imagen. El Constructor visual se ocupa de la composición libre; aquí cambias los datos que leen esas tarjetas. Las fotos de productos de Colección se administran en el catálogo comercial.</p>
 <label for="spaceItemKey">Tarjeta que quieres editar</label><select id="spaceItemKey"><option value="salas">Salas</option><option value="comedores">Comedores</option><option value="habitaciones">Habitaciones</option><option value="decoracion">Decoración</option></select>
