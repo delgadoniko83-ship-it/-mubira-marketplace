@@ -54,6 +54,19 @@ function render(){
   }
   stage.append(el);
  }
+ renderLayers();
+}
+function renderLayers(){
+ const host=$("vbLayers");if(!host)return;host.innerHTML="";
+ const labels={image:"Fotografía",text:"Texto",button:"Botón",panel:"Bloque"};
+ if(!items.length){const empty=document.createElement("p");empty.className="vb-layers-empty";empty.textContent="Aún no hay elementos en esta pantalla.";host.append(empty);return;}
+ [...items].reverse().forEach((x,index)=>{
+  const row=document.createElement("button");row.type="button";row.className="vb-layer"+(x.id===selected?" active":"");row.dataset.layerId=x.id;
+  const icon=document.createElement("span");icon.className="vb-layer-icon";icon.textContent=({image:"▧",text:"T",button:"▢",panel:"▤"})[x.type]||"•";
+  const name=document.createElement("span");name.className="vb-layer-name";name.textContent=(x.text||labels[x.type]||"Elemento").slice(0,36);
+  const order=document.createElement("small");order.textContent=String(items.length-index).padStart(2,"0");
+  row.append(icon,name,order);host.append(row);
+ });
 }
 function syncProps(){
  const x=items.find(v=>v.id===selected);
@@ -90,6 +103,7 @@ $("vbDelete").addEventListener("click",()=>{if(!selected)return;items=items.filt
 $("vbClear").addEventListener("click",()=>{if(!confirm("¿Vaciar solamente "+pages.find(p=>p.id===activePage).name+"?"))return;for(const item of items)pendingFiles.delete(item.id);items=[];selected=null;snapshot();render();syncProps();});
 $("vbPhone").addEventListener("click",()=>{mode="phone";render();});$("vbDesktop").addEventListener("click",()=>{mode="desktop";render();});
 $("vbPages").addEventListener("click",e=>{const b=e.target.closest("[data-vb-page]");if(b)switchPage(b.dataset.vbPage);});
+$("vbLayers").addEventListener("click",e=>{const row=e.target.closest("[data-layer-id]");if(!row)return;selected=row.dataset.layerId;syncProps();render();});
 $("vbAddPage").addEventListener("click",()=>{const name=prompt("Nombre de la nueva pantalla:");if(!name?.trim())return;const id=pageSlug(name);if(!id||pages.some(p=>p.id===id)){say("Ese nombre ya existe o no es válido. Prueba con otro.");return;}pages.push({id,name:name.trim().slice(0,48)});drafts[id]=[];pageMeta[id]={};switchPage(id);say("Pantalla creada como borrador. Todavía no aparece en la tienda pública.");});
 $("vbRemovePage").addEventListener("click",()=>{const p=pages.find(x=>x.id===activePage);if(!p||["inicio","espacios","coleccion","estudio"].includes(p.id)){say("Las cuatro pantallas originales están protegidas.");return;}if(!confirm("¿Eliminar el borrador de «"+p.name+"»? Esta acción se guardará cuando pulses Guardar borradores."))return;snapshot();pages=pages.filter(x=>x.id!==p.id);delete drafts[p.id];delete pageMeta[p.id];pendingBackgroundFiles.delete(p.id);activePage="inicio";items=(drafts.inicio||[]).map(clean);selected=null;renderPageTabs();render();syncProps();say("Pantalla retirada del borrador. Guarda para confirmar el cambio.");});
 $("vbBackgroundVideoButton").addEventListener("click",()=>$("vbBackgroundVideo").click());
