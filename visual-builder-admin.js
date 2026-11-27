@@ -3,11 +3,11 @@ const db=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publishable
 const $=id=>document.getElementById(id),stage=$("vbStage"),status=$("vbStatus");
 let pages=[{id:"inicio",name:"Inicio"},{id:"espacios",name:"Espacios"},{id:"coleccion",name:"Colección"},{id:"estudio",name:"Nuestro mundo"}];
 let theme=null,session=null,activePage="inicio",drafts={},pageMeta={},items=[],selected=null,mode="phone",drag=null,pendingFiles=new Map(),pendingBackgroundFiles=new Map();
-const pageSlug=s=>s.toLocaleLowerCase("es-CO").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,42);
+const pageSlug=s=>s.toLocaleLowerCase("es-CO").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,42);
 const say=t=>status.textContent=t,clamp=(v,a,b)=>Math.max(a,Math.min(b,Number(v)||0));
 const uid=()=>"vb-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7);
 const url=p=>p?db.storage.from("mubira-products").getPublicUrl(p).data.publicUrl:"";
-function clean(x){return {id:x.id||uid(),type:x.type||"text",left:clamp(x.left,0,100),top:clamp(x.top,0,100),width:clamp(x.width??80,8,100),height:clamp(x.height??90,30,600),text:String(x.text||""),font:clamp(x.font??24,10,64),color:x.color||"#30263a",background:x.background||"#ffffff",path:x.path||""};}
+function clean(x){return {id:x.id||uid(),type:x.type||"text",left:clamp(x.left,0,100),top:clamp(x.top,0,100),width:clamp(x.width??80,8,100),height:clamp(x.height??90,30,600),text:String(x.text||""),font:clamp(x.font??24,10,64),color:x.color||"#30263a",background:x.background||"#ffffff",path:x.path||"",localUrl:x.localUrl||""};}
 function snapshot(){drafts[activePage]=items.map(x=>({...x}));}
 function renderPageTabs(){
  const host=$("vbPages");host.innerHTML="";
