@@ -192,6 +192,13 @@
 #visualBuilderPanel .vb-copy{white-space:pre-wrap;text-align:center;overflow-wrap:anywhere;font-weight:800}
 #visualBuilderPanel .vb-button{display:inline-block;padding:10px 18px;border-radius:999px;background:linear-gradient(110deg,#c934a6,#8e78d7);color:white;font-weight:800}
 #visualBuilderPanel .vb-empty{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:28px;color:#8b7b93;pointer-events:none}
+#visualBuilderPanel .vb-layers{display:flex;flex-direction:column;gap:5px;max-height:240px;overflow:auto;margin:9px 0}
+#visualBuilderPanel .vb-layer{display:flex!important;align-items:center;gap:8px;width:100%;margin:0!important;padding:9px 10px!important;border:1px solid #eee4f0!important;border-radius:10px;background:#fff!important;color:#594865!important;text-align:left!important}
+#visualBuilderPanel .vb-layer.active{border-color:#c934a6!important;background:#fbf0fa!important}
+#visualBuilderPanel .vb-layer-icon{width:25px;height:25px;display:grid;place-items:center;border-radius:7px;background:#f2e8f4;color:#9a398e;font-weight:800}
+#visualBuilderPanel .vb-layer-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+#visualBuilderPanel .vb-layer small{color:#98899e;font-variant-numeric:tabular-nums}
+#visualBuilderPanel .vb-layers-empty{font-size:11px;color:#98899e;padding:8px 2px}
 #visualBuilderPanel .vb-props{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 #visualBuilderPanel .vb-props label{margin:6px 0;font-size:10px}
 #visualBuilderPanel .vb-props input{font-size:14px;padding:8px;min-height:38px}
@@ -208,7 +215,10 @@
 <hr style="border:0;border-top:1px solid #eee4f0;margin:14px 0"><strong>Fondo de pantalla</strong>
 <button type="button" id="vbBackgroundVideoButton">▶ Poner video de fondo</button><button type="button" id="vbClearBackground">Quitar fondo de video</button>
 <input id="vbBackgroundVideo" type="file" accept="video/mp4,video/webm,video/quicktime" hidden>
-<input id="vbImageFile" type="file" accept="image/jpeg,image/png,image/webp" hidden><hr style="border:0;border-top:1px solid #eee4f0;margin:14px 0"><strong>Editar elemento seleccionado</strong>
+<input id="vbImageFile" type="file" accept="image/jpeg,image/png,image/webp" hidden><hr style="border:0;border-top:1px solid #eee4f0;margin:14px 0"><strong>Capas de esta pantalla</strong>
+<div id="vbLayers" class="vb-layers" aria-label="Capas y elementos de la pantalla"></div>
+<hr style="border:0;border-top:1px solid #eee4f0;margin:14px 0">
+<strong>Editar elemento seleccionado</strong>
 <div class="vb-props"><label>Ancho (%)<input id="vbWidth" type="number" min="8" max="100" value="80"></label><label>Alto (px)<input id="vbHeight" type="number" min="30" max="600" value="90"></label><label>Izquierda (%)<input id="vbLeft" type="number" min="0" max="100" value="10"></label><label>Arriba (%)<input id="vbTop" type="number" min="0" max="100" value="10"></label><label>Texto<input id="vbText" type="text" maxlength="180" placeholder="Tu mensaje"></label><label>Tamaño texto<input id="vbFont" type="number" min="10" max="64" value="24"></label><label>Color<input id="vbColor" type="color" value="#30263a"></label><label>Fondo<input id="vbBackground" type="color" value="#ffffff"></label></div>
 <div class="vb-toolbar"><button type="button" id="vbUndo" disabled>↶ Deshacer</button><button type="button" id="vbRedo" disabled>↷ Rehacer</button></div>
 <button type="button" id="vbBringFront">Traer al frente</button><button type="button" id="vbSendBack">Enviar al fondo</button>
