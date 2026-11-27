@@ -1,22 +1,31 @@
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.2";
 const db=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publishable_01DxOQWRyBJAdrUeXh7_gQ_j_qlTvtz");
 const $=id=>document.getElementById(id),stage=$("vbStage"),status=$("vbStatus");
-const pages=[{id:"inicio",name:"Inicio"},{id:"espacios",name:"Espacios"},{id:"coleccion",name:"Colección"},{id:"estudio",name:"Nuestro mundo"}];
-let theme=null,session=null,activePage="inicio",drafts={},items=[],selected=null,mode="phone",drag=null,pendingFiles=new Map();
+let pages=[{id:"inicio",name:"Inicio"},{id:"espacios",name:"Espacios"},{id:"coleccion",name:"Colección"},{id:"estudio",name:"Nuestro mundo"}];
+let theme=null,session=null,activePage="inicio",drafts={},pageMeta={},items=[],selected=null,mode="phone",drag=null,pendingFiles=new Map(),pendingBackgroundFiles=new Map();
+const pageSlug=s=>s.toLocaleLowerCase("es-CO").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,42);
 const say=t=>status.textContent=t,clamp=(v,a,b)=>Math.max(a,Math.min(b,Number(v)||0));
 const uid=()=>"vb-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7);
 const url=p=>p?db.storage.from("mubira-products").getPublicUrl(p).data.publicUrl:"";
 function clean(x){return {id:x.id||uid(),type:x.type||"text",left:clamp(x.left,0,100),top:clamp(x.top,0,100),width:clamp(x.width??80,8,100),height:clamp(x.height??90,30,600),text:String(x.text||""),font:clamp(x.font??24,10,64),color:x.color||"#30263a",background:x.background||"#ffffff",path:x.path||""};}
 function snapshot(){drafts[activePage]=items.map(x=>({...x}));}
+function renderPageTabs(){
+ const host=$("vbPages");host.innerHTML="";
+ pages.forEach((p,i)=>{const b=document.createElement("button");b.type="button";b.dataset.vbPage=p.id;b.className=p.id===activePage?"active":"";b.textContent=String(i+1).padStart(2,"0")+" · "+p.name;host.append(b);});
+}
 function switchPage(id){
  if(!pages.some(p=>p.id===id))return;
  snapshot();activePage=id;items=(drafts[id]||[]).map(clean);selected=null;
  $("vbCurrentPage").textContent=pages.find(p=>p.id===id).name.toLocaleUpperCase("es-CO");
- document.querySelectorAll("[data-vb-page]").forEach(b=>b.classList.toggle("active",b.dataset.vbPage===id));
- render();syncProps();say("Editando "+pages.find(p=>p.id===id).name+". El borrador de las otras pantallas se conserva.");
+ renderPageTabs();render();syncProps();say("Editando "+pages.find(p=>p.id===id).name+". El borrador de las demás pantallas se conserva.");
 }
 function render(){
- stage.classList.toggle("desktop",mode==="desktop");$("vbEmpty").hidden=items.length>0;
+ stage.classList.toggle("desktop",mode==="desktop");
+ const oldBg=stage.querySelector(".vb-bg-video");if(oldBg)oldBg.remove();
+ const meta=pageMeta[activePage]||{};
+ if(meta.background_type==="video"&&(meta.background_local_url||meta.background_path)){const bg=document.createElement("video");bg.className="vb-bg-video";bg.muted=true;bg.autoplay=true;bg.loop=true;bg.playsInline=true;bg.setAttribute("aria-label","Video de fondo de la pantalla");bg.src=meta.background_local_url||url(meta.background_path);stage.insertBefore(bg,stage.firstChild);}
+ stage.style.background=meta.background_type==="color"?(meta.background_color||"#eee7f4"):"linear-gradient(145deg,#f8f2fa,#eee7f4)";
+ $("vbEmpty").hidden=items.length>0;
  stage.querySelectorAll(".vb-element").forEach(n=>n.remove());
  for(const x of items){
   const el=document.createElement("div");el.className="vb-element"+(x.id===selected?" selected":"");el.dataset.id=x.id;
@@ -48,7 +57,12 @@ $("vbDuplicate").addEventListener("click",()=>{const x=items.find(v=>v.id===sele
 $("vbDelete").addEventListener("click",()=>{if(!selected)return;items=items.filter(v=>v.id!==selected);pendingFiles.delete(selected);selected=null;snapshot();render();syncProps();});
 $("vbClear").addEventListener("click",()=>{if(!confirm("¿Vaciar solamente "+pages.find(p=>p.id===activePage).name+"?"))return;for(const item of items)pendingFiles.delete(item.id);items=[];selected=null;snapshot();render();syncProps();});
 $("vbPhone").addEventListener("click",()=>{mode="phone";render();});$("vbDesktop").addEventListener("click",()=>{mode="desktop";render();});
-document.querySelectorAll("[data-vb-page]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.vbPage)));
+$("vbPages").addEventListener("click",e=>{const b=e.target.closest("[data-vb-page]");if(b)switchPage(b.dataset.vbPage);});
+$("vbAddPage").addEventListener("click",()=>{const name=prompt("Nombre de la nueva pantalla:");if(!name?.trim())return;const id=pageSlug(name);if(!id||pages.some(p=>p.id===id)){say("Ese nombre ya existe o no es válido. Prueba con otro.");return;}pages.push({id,name:name.trim().slice(0,48)});drafts[id]=[];pageMeta[id]={};switchPage(id);say("Pantalla creada como borrador. Todavía no aparece en la tienda pública.");});
+$("vbRemovePage").addEventListener("click",()=>{const p=pages.find(x=>x.id===activePage);if(!p||["inicio","espacios","coleccion","estudio"].includes(p.id)){say("Las cuatro pantallas originales están protegidas.");return;}if(!confirm("¿Eliminar el borrador de «"+p.name+"»? Esta acción se guardará cuando pulses Guardar borradores."))return;pages=pages.filter(x=>x.id!==p.id);delete drafts[p.id];delete pageMeta[p.id];pendingBackgroundFiles.delete(p.id);switchPage("inicio");say("Pantalla retirada del borrador. Guarda para confirmar el cambio.");});
+$("vbBackgroundVideoButton").addEventListener("click",()=>$("vbBackgroundVideo").click());
+$("vbBackgroundVideo").addEventListener("change",()=>{const f=$("vbBackgroundVideo").files?.[0];if(!f)return;if(!f.type.startsWith("video/")||f.size>30*1024*1024){say("Elige un video compatible de máximo 30 MB para cuidar la carga.");$("vbBackgroundVideo").value="";return;}const old=pageMeta[activePage]?.background_local_url;if(old)URL.revokeObjectURL(old);pageMeta[activePage]={...(pageMeta[activePage]||{}),background_type:"video",background_local_url:URL.createObjectURL(f),background_path:""};pendingBackgroundFiles.set(activePage,f);render();say("Video de fondo añadido. Se subirá al guardar el borrador.");$("vbBackgroundVideo").value="";});
+$("vbClearBackground").addEventListener("click",()=>{delete pageMeta[activePage];pendingBackgroundFiles.delete(activePage);render();say("Fondo retirado de esta pantalla. Guarda para conservar el cambio.");});
 async function load(){
  const {data:{session:s}}=await db.auth.getSession();session=s;
  if(!s?.user){say("Inicia sesión con Google en el administrador técnico.");return;}
@@ -58,19 +72,22 @@ async function load(){
  if(error||!data){say("No se encontró un ambiente activo. Abre Ambientes y selecciona uno.");return;}
  theme=data;const saved=data.settings?.visual_builder||{};
  if(saved.pages)drafts=saved.pages;else if(saved.elements?.length)drafts.inicio=saved.elements;
- switchPage("inicio");say("Constructor listo. Cada pantalla conserva su propio diseño.");
+ if(Array.isArray(saved.page_list)&&saved.page_list.length)pages=saved.page_list.filter(p=>p&&p.id&&p.name);
+ pageMeta=saved.page_meta&&typeof saved.page_meta==="object"?saved.page_meta:{};
+ renderPageTabs();switchPage("inicio");say("Constructor listo. Puedes crear pantallas nuevas y asignarles fondos de video. Todo queda como borrador.");
 }
 $("vbSave").addEventListener("click",async()=>{
  if(!theme||!session?.user){say("No hay un ambiente activo o una sesión autorizada.");return;}
- snapshot();const btn=$("vbSave");btn.disabled=true;say("Guardando borradores de las cuatro pantallas...");
+ snapshot();const btn=$("vbSave");btn.disabled=true;say("Guardando borradores de "+pages.length+" pantallas...");
  const uploaded=[];
  try{
   for(const [page,list] of Object.entries(drafts))for(const x of list){const file=pendingFiles.get(x.id);if(!file)continue;const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";const path="visual-builder/"+theme.theme_key+"/"+page+"/"+x.id+"-"+Date.now()+"."+ext;const {data,error}=await db.storage.from("mubira-products").upload(path,file,{upsert:false,contentType:file.type});if(error)throw error;x.path=data.path;x.localUrl="";uploaded.push(data.path);}
+  for(const [page,file] of pendingBackgroundFiles){const ext=(file.name.split(".").pop()||"mp4").toLowerCase().replace(/[^a-z0-9]/g,"")||"mp4";const path="visual-builder/"+theme.theme_key+"/"+page+"/background-"+Date.now()+"."+ext;const {data,error}=await db.storage.from("mubira-products").upload(path,file,{upsert:false,contentType:file.type});if(error)throw error;pageMeta[page]={...(pageMeta[page]||{}),background_type:"video",background_path:data.path};delete pageMeta[page].background_local_url;uploaded.push(data.path);}
   const {data:latest,error:readError}=await db.from("site_themes").select("settings").eq("id",theme.id).single();if(readError)throw readError;
-  const settings={...(latest.settings||{}),visual_builder:{version:2,updated_at:new Date().toISOString(),pages:Object.fromEntries(Object.entries(drafts).map(([id,list])=>[id,list.map(({id:elementId,type,left,top,width,height,text,font,color,background,path})=>({id:elementId,type,left,top,width,height,text,font,color,background,path}))]))}};
+  const settings={...(latest.settings||{}),visual_builder:{version:3,updated_at:new Date().toISOString(),page_list:pages.map(({id,name})=>({id,name})),page_meta:pageMeta,pages:Object.fromEntries(Object.entries(drafts).map(([id,list])=>[id,list.map(({id:elementId,type,left,top,width,height,text,font,color,background,path})=>({id:elementId,type,left,top,width,height,text,font,color,background,path}))]))}};
   const {data:saved,error}=await db.from("site_themes").update({settings,updated_by:session.user.id}).eq("id",theme.id).select("id,settings").single();if(error)throw error;
   if(!saved?.settings?.visual_builder?.pages)throw new Error("No se pudo verificar el guardado.");
-  theme.settings=saved.settings;pendingFiles.clear();items=(drafts[activePage]||[]).map(clean);render();say("¡Guardado! Los cuatro borradores quedaron en el ambiente. La tienda pública no se publicó ni se alteró.");
+  theme.settings=saved.settings;pendingFiles.clear();pendingBackgroundFiles.clear();items=(drafts[activePage]||[]).map(clean);renderPageTabs();render();say("¡Guardado! "+pages.length+" pantallas y sus fondos quedaron como borradores. La tienda pública no se publicó ni se alteró.");
  }catch(e){if(uploaded.length)await db.storage.from("mubira-products").remove(uploaded);say("No se pudo guardar: "+(e.message||"Error desconocido"));}
  finally{btn.disabled=false;}
 });
