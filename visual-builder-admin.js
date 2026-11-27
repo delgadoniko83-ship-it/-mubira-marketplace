@@ -2,20 +2,35 @@ import {createClient} from "https://esm.sh/@supabase/supabase-js@2.119.2";
 const db=createClient("https://ncfjussqankxpmcrhhij.supabase.co","sb_publishable_01DxOQWRyBJAdrUeXh7_gQ_j_qlTvtz");
 const $=id=>document.getElementById(id),stage=$("vbStage"),status=$("vbStatus");
 let pages=[{id:"inicio",name:"Inicio"},{id:"espacios",name:"Espacios"},{id:"coleccion",name:"Colección"},{id:"estudio",name:"Nuestro mundo"}];
-let theme=null,session=null,activePage="inicio",drafts={},pageMeta={},items=[],selected=null,mode="phone",drag=null,pendingFiles=new Map(),pendingBackgroundFiles=new Map();
+let theme=null,session=null,activePage="inicio",drafts={},pageMeta={},items=[],selected=null,mode="phone",drag=null,pendingFiles=new Map(),pendingBackgroundFiles=new Map(),historyByPage={},historyIndexByPage={};
 const pageSlug=s=>s.toLocaleLowerCase("es-CO").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,42);
 const say=t=>status.textContent=t,clamp=(v,a,b)=>Math.max(a,Math.min(b,Number(v)||0));
 const uid=()=>"vb-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7);
 const url=p=>p?db.storage.from("mubira-products").getPublicUrl(p).data.publicUrl:"";
 function clean(x){return {id:x.id||uid(),type:x.type||"text",left:clamp(x.left,0,100),top:clamp(x.top,0,100),width:clamp(x.width??80,8,100),height:clamp(x.height??90,30,600),text:String(x.text||""),font:clamp(x.font??24,10,64),color:x.color||"#30263a",background:x.background||"#ffffff",path:x.path||"",localUrl:x.localUrl||""};}
-function snapshot(){drafts[activePage]=items.map(x=>({...x}));}
+function snapshot(){
+ drafts[activePage]=items.map(x=>({...x}));
+ const state=JSON.stringify(items.map(({id,type,left,top,width,height,text,font,color,background,path,localUrl})=>({id,type,left,top,width,height,text,font,color,background,path,localUrl})));
+ const history=historyByPage[activePage]||(historyByPage[activePage]=[]);
+ let index=historyIndexByPage[activePage]??-1;
+ if(index>=0&&history[index]===state)return;
+ history.splice(index+1);history.push(state);if(history.length>60)history.shift();
+ historyIndexByPage[activePage]=history.length-1;syncHistoryButtons();
+}
+function restoreHistory(next){
+ const history=historyByPage[activePage]||[];let index=historyIndexByPage[activePage]??-1;
+ if(next<0||next>=history.length)return;
+ historyIndexByPage[activePage]=next;items=JSON.parse(history[next]).map(clean);selected=null;drafts[activePage]=items.map(x=>({...x}));render();syncProps();syncHistoryButtons();say(next===history.length-1?"Cambios restaurados.":"Historial recuperado.");
+}
+function syncHistoryButtons(){const i=historyIndexByPage[activePage]??-1,h=historyByPage[activePage]||[];$("vbUndo").disabled=i<=0;$ ("vbRedo").disabled=i<0||i>=h.length-1;}
+function bringLayer(front){const i=items.findIndex(x=>x.id===selected);if(i<0)return;const [x]=items.splice(i,1);items.splice(front?items.length:0,0,x);snapshot();render();syncProps();say(front?"Elemento al frente.":"Elemento al fondo.");}
 function renderPageTabs(){
  const host=$("vbPages");host.innerHTML="";
  pages.forEach((p,i)=>{const b=document.createElement("button");b.type="button";b.dataset.vbPage=p.id;b.className=p.id===activePage?"active":"";b.textContent=String(i+1).padStart(2,"0")+" · "+p.name;host.append(b);});
 }
 function switchPage(id){
  if(!pages.some(p=>p.id===id))return;
- snapshot();activePage=id;items=(drafts[id]||[]).map(clean);selected=null;
+ if(items.length||!historyByPage[activePage])snapshot();activePage=id;items=(drafts[id]||[]).map(clean);selected=null;
  $("vbCurrentPage").textContent=pages.find(p=>p.id===id).name.toLocaleUpperCase("es-CO");
  renderPageTabs();render();syncProps();say("Editando "+pages.find(p=>p.id===id).name+". El borrador de las demás pantallas se conserva.");
 }
@@ -53,6 +68,9 @@ $("vbImageFile").addEventListener("change",()=>{const f=$("vbImageFile").files?.
 $("vbAddText").addEventListener("click",()=>add("text"));$("vbAddButton").addEventListener("click",()=>add("button"));$("vbAddPanel").addEventListener("click",()=>add("panel"));
 const props={vbWidth:["width",8,100],vbHeight:["height",30,600],vbLeft:["left",0,100],vbTop:["top",0,100],vbText:["text"],vbFont:["font",10,64],vbColor:["color"],vbBackground:["background"]};
 for(const [id,[key,min,max]] of Object.entries(props))$(id).addEventListener("input",()=>{const x=items.find(v=>v.id===selected);if(!x)return;x[key]=min===undefined?$(id).value:clamp($(id).value,min,max);snapshot();render();});
+$("vbUndo").addEventListener("click",()=>restoreHistory((historyIndexByPage[activePage]??0)-1));
+$("vbRedo").addEventListener("click",()=>restoreHistory((historyIndexByPage[activePage]??-1)+1));
+$("vbBringFront").addEventListener("click",()=>bringLayer(true));$("vbSendBack").addEventListener("click",()=>bringLayer(false));
 $("vbDuplicate").addEventListener("click",()=>{const x=items.find(v=>v.id===selected);if(!x)return;const y=clean({...x,id:uid(),left:clamp(x.left+4,0,90),top:clamp(x.top+5,0,95)});items.push(y);selected=y.id;snapshot();render();syncProps();});
 $("vbDelete").addEventListener("click",()=>{if(!selected)return;items=items.filter(v=>v.id!==selected);pendingFiles.delete(selected);selected=null;snapshot();render();syncProps();});
 $("vbClear").addEventListener("click",()=>{if(!confirm("¿Vaciar solamente "+pages.find(p=>p.id===activePage).name+"?"))return;for(const item of items)pendingFiles.delete(item.id);items=[];selected=null;snapshot();render();syncProps();});
